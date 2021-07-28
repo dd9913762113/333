@@ -1,0 +1,162 @@
+PODS:
+  - Alamofire (5.4.3)
+  - FFmpeg (4.4):
+    - FFmpeg/FFmpeg (= 4.4)
+  - FFmpeg/FFmpeg (4.4):
+    - OpenSSL
+  - KeychainAccess (4.2.2)
+  - Kingfisher (6.3.0)
+  - KSPlayer (1.0):
+    - KSPlayer/Audio (= 1.0)
+    - KSPlayer/AVPlayer (= 1.0)
+    - KSPlayer/Basic (= 1.0)
+    - KSPlayer/Core (= 1.0)
+    - KSPlayer/MEPlayer (= 1.0)
+    - KSPlayer/Metal (= 1.0)
+    - KSPlayer/Subtitle (= 1.0)
+    - KSPlayer/UXKit (= 1.0)
+    - KSPlayer/Video (= 1.0)
+  - KSPlayer/Audio (1.0):
+    - KSPlayer/Core
+  - KSPlayer/AVPlayer (1.0):
+    - KSPlayer/Basic
+  - KSPlayer/Basic (1.0):
+    - KSPlayer/UXKit
+  - KSPlayer/Core (1.0):
+    - KSPlayer/AVPlayer
+  - KSPlayer/MEPlayer (1.0):
+    - FFmpeg
+    - KSPlayer/AVPlayer
+    - KSPlayer/Metal
+    - KSPlayer/Subtitle
+  - KSPlayer/Metal (1.0)
+  - KSPlayer/Subtitle (1.0)
+  - KSPlayer/UXKit (1.0)
+  - KSPlayer/Video (1.0):
+    - KSPlayer/Core
+    - KSPlayer/Subtitle
+  - OpenSSL (1.1.1):
+    - OpenSSL/OpenSSL (= 1.1.1)
+  - OpenSSL/OpenSSL (1.1.1)
+  - PhoneNumberKit (3.3.3):
+    - PhoneNumberKit/PhoneNumberKitCore (= 3.3.3)
+    - PhoneNumberKit/UIKit (= 3.3.3)
+  - PhoneNumberKit/PhoneNumberKitCore (3.3.3)
+  - PhoneNumberKit/UIKit (3.3.3):
+    - PhoneNumberKit/PhoneNumberKitCore
+  - PINCache (3.0.3):
+    - PINCache/Arc-exception-safe (= 3.0.3)
+    - PINCache/Core (= 3.0.3)
+  - PINCache/Arc-exception-safe (3.0.3):
+    - PINCache/Core
+  - PINCache/Core (3.0.3):
+    - PINOperation (~> 1.2.1)
+  - PINOperation (1.2.1)
+  - PINRemoteImage/Core (3.0.3):
+    - PINOperation
+  - PINRemoteImage/iOS (3.0.3):
+    - PINRemoteImage/Core
+  - PINRemoteImage/PINCache (3.0.3):
+    - PINCache (~> 3.0.3)
+    - PINRemoteImage/Core
+  - SnapKit (5.0.1)
+  - SwiftLint (0.43.1)
+  - SwiftSignalKit (0.1.0)
+  - SwiftyJSON (5.0.1)
+  - Texture (3.0.0):
+    - Texture/AssetsLibrary (= 3.0.0)
+    - Texture/Core (= 3.0.0)
+    - Texture/MapKit (= 3.0.0)
+    - Texture/Photos (= 3.0.0)
+    - Texture/PINRemoteImage (= 3.0.0)
+    - Texture/Video (= 3.0.0)
+  - Texture/AssetsLibrary (3.0.0):
+    - Texture/Core
+  - Texture/Core (3.0.0)
+  - Texture/MapKit (3.0.0):
+    - Texture/Core
+  - Texture/Photos (3.0.0):
+    - Texture/Core
+  - Texture/PINRemoteImage (3.0.0):
+    - PINRemoteImage/iOS (~> 3.0.0)
+    - PINRemoteImage/PINCache
+    - Texture/Core
+  - Texture/Video (3.0.0):
+    - Texture/Core
+  - Tiercel (3.2.2)
+
+DEPENDENCIES:
+  - Alamofire
+  - FFmpeg (from `https://github.com/kingslay/KSPlayer.git`, branch `develop`)
+  - KeychainAccess
+  - Kingfisher
+  - KSPlayer (from `https://github.com/kingslay/KSPlayer.git`, branch `develop`)
+  - OpenSSL (from `https://github.com/kingslay/KSPlayer.git`, branch `develop`)
+  - PhoneNumberKit
+  - SnapKit
+  - SwiftLint
+  - SwiftSignalKit
+  - SwiftyJSON
+  - Texture
+  - Tiercel
+
+SPEC REPOS:
+  https://github.com/CocoaPods/Specs.git:
+    - Alamofire
+    - Kingfisher
+    - PhoneNumberKit
+    - PINCache
+    - PINOperation
+    - PINRemoteImage
+    - SwiftSignalKit
+    - SwiftyJSON
+    - Texture
+  trunk:
+    - KeychainAccess
+    - SnapKit
+    - SwiftLint
+    - Tiercel
+
+EXTERNAL SOURCES:
+  FFmpeg:
+    :branch: develop
+    :git: https://github.com/kingslay/KSPlayer.git
+  KSPlayer:
+    :branch: develop
+    :git: https://github.com/kingslay/KSPlayer.git
+  OpenSSL:
+    :branch: develop
+    :git: https://github.com/kingslay/KSPlayer.git
+
+CHECKOUT OPTIONS:
+  FFmpeg:
+    :commit: 416d9515c8e6e59d8795d63d9decf05dc7b654bd
+    :git: https://github.com/kingslay/KSPlayer.git
+  KSPlayer:
+    :commit: 416d9515c8e6e59d8795d63d9decf05dc7b654bd
+    :git: https://github.com/kingslay/KSPlayer.git
+  OpenSSL:
+    :commit: 416d9515c8e6e59d8795d63d9decf05dc7b654bd
+    :git: https://github.com/kingslay/KSPlayer.git
+
+SPEC CHECKSUMS:
+  Alamofire: e447a2774a40c996748296fa2c55112fdbbc42f9
+  FFmpeg: 411e46c4d9257a7bca2e26be633751bba9bd17dd
+  KeychainAccess: c0c4f7f38f6fc7bbe58f5702e25f7bd2f65abf51
+  Kingfisher: 6c3df386db71d82c0817a429d2c9421a77396529
+  KSPlayer: 00e5acede9598c4685314ba7bc344d92ef8664b0
+  OpenSSL: d016bd5616b251ceabf8d8f1630f763c0fb0d15b
+  PhoneNumberKit: 4ce83273551c4d2ae10b7361162f4283dd02835f
+  PINCache: 7a8fc1a691173d21dbddbf86cd515de6efa55086
+  PINOperation: 00c935935f1e8cf0d1e2d6b542e75b88fc3e5e20
+  PINRemoteImage: f1295b29f8c5e640e25335a1b2bd9d805171bd01
+  SnapKit: 97b92857e3df3a0c71833cce143274bf6ef8e5eb
+  SwiftLint: 99f82d07b837b942dd563c668de129a03fc3fb52
+  SwiftSignalKit: e39d87deeb25f6719bb8803a35722499b453e076
+  SwiftyJSON: 2f33a42c6fbc52764d96f13368585094bfd8aa5e
+  Texture: 2f109e937850d94d1d07232041c9c7313ccddb81
+  Tiercel: 8827f8c2fa90067e377e30666521eef6b3a79232
+
+PODFILE CHECKSUM: 1f69cb70472c17bac4e7f2717e0aad7d8cc549c8
+
+COCOAPODS: 1.10.1

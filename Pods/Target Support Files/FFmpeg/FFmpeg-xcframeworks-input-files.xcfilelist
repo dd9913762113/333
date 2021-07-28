@@ -1,0 +1,6 @@
+${PODS_ROOT}/Target Support Files/FFmpeg/FFmpeg-xcframeworks.sh
+${PODS_ROOT}/FFmpeg/Sources/Libavcodec.xcframework
+${PODS_ROOT}/FFmpeg/Sources/Libavformat.xcframework
+${PODS_ROOT}/FFmpeg/Sources/Libavutil.xcframework
+${PODS_ROOT}/FFmpeg/Sources/Libswresample.xcframework
+${PODS_ROOT}/FFmpeg/Sources/Libswscale.xcframework

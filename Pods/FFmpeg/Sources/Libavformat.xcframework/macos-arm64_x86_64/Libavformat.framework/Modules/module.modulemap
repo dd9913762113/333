@@ -1,0 +1,5 @@
+framework module Libavformat [system] {
+    header "avformat.h"
+    header "avio.h"
+    export *
+}
