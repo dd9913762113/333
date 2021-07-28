@@ -10,6 +10,34 @@
 		6328303226B1060F0041F5BF /* MetalKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 6328303126B1060F0041F5BF /* MetalKit.framework */; };
 		6328303526B125210041F5BF /* TVListVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6328303426B125210041F5BF /* TVListVC.swift */; };
 		6328303E26B127100041F5BF /* cn.m3u in Resources */ = {isa = PBXBuildFile; fileRef = 6328303D26B127100041F5BF /* cn.m3u */; };
+		6328305C26B16FAA0041F5BF /* 123.html in Resources */ = {isa = PBXBuildFile; fileRef = 6328303F26B16FAA0041F5BF /* 123.html */; };
+		6328305D26B16FAA0041F5BF /* vendors_main.c2c699b3fe57ccb8281f.js in Resources */ = {isa = PBXBuildFile; fileRef = 6328304126B16FAA0041F5BF /* vendors_main.c2c699b3fe57ccb8281f.js */; };
+		6328305E26B16FAA0041F5BF /* 4.340df4e8.chunk.css in Resources */ = {isa = PBXBuildFile; fileRef = 6328304226B16FAA0041F5BF /* 4.340df4e8.chunk.css */; };
+		6328305F26B16FAA0041F5BF /* images_8a6e68f1.6451261237807196528b.js in Resources */ = {isa = PBXBuildFile; fileRef = 6328304326B16FAA0041F5BF /* images_8a6e68f1.6451261237807196528b.js */; };
+		6328306026B16FAA0041F5BF /* [index].2fb4b723.chunk.css in Resources */ = {isa = PBXBuildFile; fileRef = 6328304426B16FAA0041F5BF /* [index].2fb4b723.chunk.css */; };
+		6328306126B16FAA0041F5BF /* _app.2c752c5a.chunk.css in Resources */ = {isa = PBXBuildFile; fileRef = 6328304526B16FAA0041F5BF /* _app.2c752c5a.chunk.css */; };
+		6328306226B16FAA0041F5BF /* 2.f4a6fcb05c2466249790.js in Resources */ = {isa = PBXBuildFile; fileRef = 6328304626B16FAA0041F5BF /* 2.f4a6fcb05c2466249790.js */; };
+		6328306326B16FAA0041F5BF /* [index].9e84e0fc3226dcee7adc.js in Resources */ = {isa = PBXBuildFile; fileRef = 6328304726B16FAA0041F5BF /* [index].9e84e0fc3226dcee7adc.js */; };
+		6328306426B16FAA0041F5BF /* [index]-14677d744322fa29edab.js in Resources */ = {isa = PBXBuildFile; fileRef = 6328304826B16FAA0041F5BF /* [index]-14677d744322fa29edab.js */; };
+		6328306526B16FAA0041F5BF /* login.788abab0f8583ade9f3d.js in Resources */ = {isa = PBXBuildFile; fileRef = 6328304926B16FAA0041F5BF /* login.788abab0f8583ade9f3d.js */; };
+		6328306626B16FAA0041F5BF /* e_25e02703.f2efbac7b2acfa570282.js in Resources */ = {isa = PBXBuildFile; fileRef = 6328304A26B16FAA0041F5BF /* e_25e02703.f2efbac7b2acfa570282.js */; };
+		6328306726B16FAA0041F5BF /* [...value].a47f4c620948206b0737.js in Resources */ = {isa = PBXBuildFile; fileRef = 6328304B26B16FAA0041F5BF /* [...value].a47f4c620948206b0737.js */; };
+		6328306826B16FAA0041F5BF /* _ssgManifest.js in Resources */ = {isa = PBXBuildFile; fileRef = 6328304C26B16FAA0041F5BF /* _ssgManifest.js */; };
+		6328306926B16FAA0041F5BF /* [...value]_42ee8ae3.72c6e3ef478c2b8b7f37.js in Resources */ = {isa = PBXBuildFile; fileRef = 6328304D26B16FAA0041F5BF /* [...value]_42ee8ae3.72c6e3ef478c2b8b7f37.js */; };
+		6328306A26B16FAA0041F5BF /* iosBeta.7a194ab3b377cc61d66f.js in Resources */ = {isa = PBXBuildFile; fileRef = 6328304E26B16FAA0041F5BF /* iosBeta.7a194ab3b377cc61d66f.js */; };
+		6328306B26B16FAA0041F5BF /* [...value]_d49bf158.1c19524f23e56726a569.js in Resources */ = {isa = PBXBuildFile; fileRef = 6328304F26B16FAA0041F5BF /* [...value]_d49bf158.1c19524f23e56726a569.js */; };
+		6328306C26B16FAA0041F5BF /* _app.4ffbb07aea233ca49409.js in Resources */ = {isa = PBXBuildFile; fileRef = 6328305026B16FAA0041F5BF /* _app.4ffbb07aea233ca49409.js */; };
+		6328306D26B16FAA0041F5BF /* polyfills-d8117228f5b0dae63159.js in Resources */ = {isa = PBXBuildFile; fileRef = 6328305126B16FAA0041F5BF /* polyfills-d8117228f5b0dae63159.js */; };
+		6328306E26B16FAA0041F5BF /* main-cda4eead2144a2a420c5.js in Resources */ = {isa = PBXBuildFile; fileRef = 6328305226B16FAA0041F5BF /* main-cda4eead2144a2a420c5.js */; };
+		6328306F26B16FAA0041F5BF /* _app.8932b2c4.chunk.css in Resources */ = {isa = PBXBuildFile; fileRef = 6328305326B16FAA0041F5BF /* _app.8932b2c4.chunk.css */; };
+		6328307026B16FAA0041F5BF /* 4.0cc446367404be6415d2.js in Resources */ = {isa = PBXBuildFile; fileRef = 6328305426B16FAA0041F5BF /* 4.0cc446367404be6415d2.js */; };
+		6328307126B16FAA0041F5BF /* [...value].f139963e.chunk.css in Resources */ = {isa = PBXBuildFile; fileRef = 6328305526B16FAA0041F5BF /* [...value].f139963e.chunk.css */; };
+		6328307226B16FAA0041F5BF /* _app-e363bf75d54d7fadad3c.js in Resources */ = {isa = PBXBuildFile; fileRef = 6328305626B16FAA0041F5BF /* _app-e363bf75d54d7fadad3c.js */; };
+		6328307326B16FAA0041F5BF /* webpack-196e0ae0a5743fd550a7.js in Resources */ = {isa = PBXBuildFile; fileRef = 6328305726B16FAA0041F5BF /* webpack-196e0ae0a5743fd550a7.js */; };
+		6328307426B16FAA0041F5BF /* tyscm.2-1adfcde5ce.2.2.js in Resources */ = {isa = PBXBuildFile; fileRef = 6328305826B16FAA0041F5BF /* tyscm.2-1adfcde5ce.2.2.js */; };
+		6328307526B16FAA0041F5BF /* vendors_polyfills.bd440854da42e82d065d.js in Resources */ = {isa = PBXBuildFile; fileRef = 6328305926B16FAA0041F5BF /* vendors_polyfills.bd440854da42e82d065d.js */; };
+		6328307626B16FAA0041F5BF /* login.97dabcdb.chunk.css in Resources */ = {isa = PBXBuildFile; fileRef = 6328305A26B16FAA0041F5BF /* login.97dabcdb.chunk.css */; };
+		6328307726B16FAA0041F5BF /* _buildManifest.js in Resources */ = {isa = PBXBuildFile; fileRef = 6328305B26B16FAA0041F5BF /* _buildManifest.js */; };
 		6366E05526AFF59F00C40126 /* DownloadManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6366E05426AFF59F00C40126 /* DownloadManager.swift */; };
 		6366E05726B0043D00C40126 /* MTCacheManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6366E05626B0043D00C40126 /* MTCacheManager.swift */; };
 		63A6677B269861B4009235A3 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 63A6677A269861B4009235A3 /* AppDelegate.swift */; };
@@ -44,6 +72,34 @@
 		6328303126B1060F0041F5BF /* MetalKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = MetalKit.framework; path = System/Library/Frameworks/MetalKit.framework; sourceTree = SDKROOT; };
 		6328303426B125210041F5BF /* TVListVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TVListVC.swift; sourceTree = "<group>"; };
 		6328303D26B127100041F5BF /* cn.m3u */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = cn.m3u; sourceTree = "<group>"; };
+		6328303F26B16FAA0041F5BF /* 123.html */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.html; path = 123.html; sourceTree = "<group>"; };
+		6328304126B16FAA0041F5BF /* vendors_main.c2c699b3fe57ccb8281f.js */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.javascript; path = vendors_main.c2c699b3fe57ccb8281f.js; sourceTree = "<group>"; };
+		6328304226B16FAA0041F5BF /* 4.340df4e8.chunk.css */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.css; path = 4.340df4e8.chunk.css; sourceTree = "<group>"; };
+		6328304326B16FAA0041F5BF /* images_8a6e68f1.6451261237807196528b.js */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.javascript; path = images_8a6e68f1.6451261237807196528b.js; sourceTree = "<group>"; };
+		6328304426B16FAA0041F5BF /* [index].2fb4b723.chunk.css */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.css; path = "[index].2fb4b723.chunk.css"; sourceTree = "<group>"; };
+		6328304526B16FAA0041F5BF /* _app.2c752c5a.chunk.css */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.css; path = _app.2c752c5a.chunk.css; sourceTree = "<group>"; };
+		6328304626B16FAA0041F5BF /* 2.f4a6fcb05c2466249790.js */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.javascript; path = 2.f4a6fcb05c2466249790.js; sourceTree = "<group>"; };
+		6328304726B16FAA0041F5BF /* [index].9e84e0fc3226dcee7adc.js */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.javascript; path = "[index].9e84e0fc3226dcee7adc.js"; sourceTree = "<group>"; };
+		6328304826B16FAA0041F5BF /* [index]-14677d744322fa29edab.js */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.javascript; path = "[index]-14677d744322fa29edab.js"; sourceTree = "<group>"; };
+		6328304926B16FAA0041F5BF /* login.788abab0f8583ade9f3d.js */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.javascript; path = login.788abab0f8583ade9f3d.js; sourceTree = "<group>"; };
+		6328304A26B16FAA0041F5BF /* e_25e02703.f2efbac7b2acfa570282.js */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.javascript; path = e_25e02703.f2efbac7b2acfa570282.js; sourceTree = "<group>"; };
+		6328304B26B16FAA0041F5BF /* [...value].a47f4c620948206b0737.js */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.javascript; path = "[...value].a47f4c620948206b0737.js"; sourceTree = "<group>"; };
+		6328304C26B16FAA0041F5BF /* _ssgManifest.js */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.javascript; path = _ssgManifest.js; sourceTree = "<group>"; };
+		6328304D26B16FAA0041F5BF /* [...value]_42ee8ae3.72c6e3ef478c2b8b7f37.js */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.javascript; path = "[...value]_42ee8ae3.72c6e3ef478c2b8b7f37.js"; sourceTree = "<group>"; };
+		6328304E26B16FAA0041F5BF /* iosBeta.7a194ab3b377cc61d66f.js */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.javascript; path = iosBeta.7a194ab3b377cc61d66f.js; sourceTree = "<group>"; };
+		6328304F26B16FAA0041F5BF /* [...value]_d49bf158.1c19524f23e56726a569.js */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.javascript; path = "[...value]_d49bf158.1c19524f23e56726a569.js"; sourceTree = "<group>"; };
+		6328305026B16FAA0041F5BF /* _app.4ffbb07aea233ca49409.js */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.javascript; path = _app.4ffbb07aea233ca49409.js; sourceTree = "<group>"; };
+		6328305126B16FAA0041F5BF /* polyfills-d8117228f5b0dae63159.js */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.javascript; path = "polyfills-d8117228f5b0dae63159.js"; sourceTree = "<group>"; };
+		6328305226B16FAA0041F5BF /* main-cda4eead2144a2a420c5.js */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.javascript; path = "main-cda4eead2144a2a420c5.js"; sourceTree = "<group>"; };
+		6328305326B16FAA0041F5BF /* _app.8932b2c4.chunk.css */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.css; path = _app.8932b2c4.chunk.css; sourceTree = "<group>"; };
+		6328305426B16FAA0041F5BF /* 4.0cc446367404be6415d2.js */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.javascript; path = 4.0cc446367404be6415d2.js; sourceTree = "<group>"; };
+		6328305526B16FAA0041F5BF /* [...value].f139963e.chunk.css */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.css; path = "[...value].f139963e.chunk.css"; sourceTree = "<group>"; };
+		6328305626B16FAA0041F5BF /* _app-e363bf75d54d7fadad3c.js */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.javascript; path = "_app-e363bf75d54d7fadad3c.js"; sourceTree = "<group>"; };
+		6328305726B16FAA0041F5BF /* webpack-196e0ae0a5743fd550a7.js */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.javascript; path = "webpack-196e0ae0a5743fd550a7.js"; sourceTree = "<group>"; };
+		6328305826B16FAA0041F5BF /* tyscm.2-1adfcde5ce.2.2.js */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.javascript; path = "tyscm.2-1adfcde5ce.2.2.js"; sourceTree = "<group>"; };
+		6328305926B16FAA0041F5BF /* vendors_polyfills.bd440854da42e82d065d.js */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.javascript; path = vendors_polyfills.bd440854da42e82d065d.js; sourceTree = "<group>"; };
+		6328305A26B16FAA0041F5BF /* login.97dabcdb.chunk.css */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.css; path = login.97dabcdb.chunk.css; sourceTree = "<group>"; };
+		6328305B26B16FAA0041F5BF /* _buildManifest.js */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.javascript; path = _buildManifest.js; sourceTree = "<group>"; };
 		6366E05426AFF59F00C40126 /* DownloadManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DownloadManager.swift; sourceTree = "<group>"; };
 		6366E05626B0043D00C40126 /* MTCacheManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MTCacheManager.swift; sourceTree = "<group>"; };
 		63A66777269861B4009235A3 /* 3332323.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = 3332323.app; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -102,6 +158,40 @@
 			path = TVListPlayer;
 			sourceTree = "<group>";
 		};
+		6328304026B16FAA0041F5BF /* 123_files */ = {
+			isa = PBXGroup;
+			children = (
+				6328304126B16FAA0041F5BF /* vendors_main.c2c699b3fe57ccb8281f.js */,
+				6328304226B16FAA0041F5BF /* 4.340df4e8.chunk.css */,
+				6328304326B16FAA0041F5BF /* images_8a6e68f1.6451261237807196528b.js */,
+				6328304426B16FAA0041F5BF /* [index].2fb4b723.chunk.css */,
+				6328304526B16FAA0041F5BF /* _app.2c752c5a.chunk.css */,
+				6328304626B16FAA0041F5BF /* 2.f4a6fcb05c2466249790.js */,
+				6328304726B16FAA0041F5BF /* [index].9e84e0fc3226dcee7adc.js */,
+				6328304826B16FAA0041F5BF /* [index]-14677d744322fa29edab.js */,
+				6328304926B16FAA0041F5BF /* login.788abab0f8583ade9f3d.js */,
+				6328304A26B16FAA0041F5BF /* e_25e02703.f2efbac7b2acfa570282.js */,
+				6328304B26B16FAA0041F5BF /* [...value].a47f4c620948206b0737.js */,
+				6328304C26B16FAA0041F5BF /* _ssgManifest.js */,
+				6328304D26B16FAA0041F5BF /* [...value]_42ee8ae3.72c6e3ef478c2b8b7f37.js */,
+				6328304E26B16FAA0041F5BF /* iosBeta.7a194ab3b377cc61d66f.js */,
+				6328304F26B16FAA0041F5BF /* [...value]_d49bf158.1c19524f23e56726a569.js */,
+				6328305026B16FAA0041F5BF /* _app.4ffbb07aea233ca49409.js */,
+				6328305126B16FAA0041F5BF /* polyfills-d8117228f5b0dae63159.js */,
+				6328305226B16FAA0041F5BF /* main-cda4eead2144a2a420c5.js */,
+				6328305326B16FAA0041F5BF /* _app.8932b2c4.chunk.css */,
+				6328305426B16FAA0041F5BF /* 4.0cc446367404be6415d2.js */,
+				6328305526B16FAA0041F5BF /* [...value].f139963e.chunk.css */,
+				6328305626B16FAA0041F5BF /* _app-e363bf75d54d7fadad3c.js */,
+				6328305726B16FAA0041F5BF /* webpack-196e0ae0a5743fd550a7.js */,
+				6328305826B16FAA0041F5BF /* tyscm.2-1adfcde5ce.2.2.js */,
+				6328305926B16FAA0041F5BF /* vendors_polyfills.bd440854da42e82d065d.js */,
+				6328305A26B16FAA0041F5BF /* login.97dabcdb.chunk.css */,
+				6328305B26B16FAA0041F5BF /* _buildManifest.js */,
+			);
+			path = 123_files;
+			sourceTree = "<group>";
+		};
 		63A6676E269861B4009235A3 = {
 			isa = PBXGroup;
 			children = (
@@ -154,6 +244,8 @@
 				63B3154826A431E200F5D180 /* 1111111111.json */,
 				63B3154926A431E200F5D180 /* 22222.json */,
 				63B3154A26A431E200F5D180 /* 5555555.json */,
+				6328304026B16FAA0041F5BF /* 123_files */,
+				6328303F26B16FAA0041F5BF /* 123.html */,
 			);
 			path = TestJson;
 			sourceTree = "<group>";
@@ -269,13 +361,41 @@
 			buildActionMask = 2147483647;
 			files = (
 				63A66787269861B5009235A3 /* LaunchScreen.storyboard in Resources */,
+				6328306A26B16FAA0041F5BF /* iosBeta.7a194ab3b377cc61d66f.js in Resources */,
+				6328306926B16FAA0041F5BF /* [...value]_42ee8ae3.72c6e3ef478c2b8b7f37.js in Resources */,
+				6328306D26B16FAA0041F5BF /* polyfills-d8117228f5b0dae63159.js in Resources */,
 				63B3154D26A431E200F5D180 /* 1111111111.json in Resources */,
+				6328305E26B16FAA0041F5BF /* 4.340df4e8.chunk.css in Resources */,
+				6328307426B16FAA0041F5BF /* tyscm.2-1adfcde5ce.2.2.js in Resources */,
+				6328306026B16FAA0041F5BF /* [index].2fb4b723.chunk.css in Resources */,
+				6328307226B16FAA0041F5BF /* _app-e363bf75d54d7fadad3c.js in Resources */,
+				6328305F26B16FAA0041F5BF /* images_8a6e68f1.6451261237807196528b.js in Resources */,
+				6328307026B16FAA0041F5BF /* 4.0cc446367404be6415d2.js in Resources */,
+				6328307626B16FAA0041F5BF /* login.97dabcdb.chunk.css in Resources */,
 				6328303E26B127100041F5BF /* cn.m3u in Resources */,
+				6328306526B16FAA0041F5BF /* login.788abab0f8583ade9f3d.js in Resources */,
+				6328306E26B16FAA0041F5BF /* main-cda4eead2144a2a420c5.js in Resources */,
+				6328306B26B16FAA0041F5BF /* [...value]_d49bf158.1c19524f23e56726a569.js in Resources */,
+				6328306726B16FAA0041F5BF /* [...value].a47f4c620948206b0737.js in Resources */,
+				6328307326B16FAA0041F5BF /* webpack-196e0ae0a5743fd550a7.js in Resources */,
+				6328305C26B16FAA0041F5BF /* 123.html in Resources */,
 				63B3154B26A431E200F5D180 /* 333333.json in Resources */,
 				63A66784269861B5009235A3 /* Assets.xcassets in Resources */,
+				6328307526B16FAA0041F5BF /* vendors_polyfills.bd440854da42e82d065d.js in Resources */,
 				63B3154C26A431E200F5D180 /* 444444.json in Resources */,
+				6328306226B16FAA0041F5BF /* 2.f4a6fcb05c2466249790.js in Resources */,
+				6328306426B16FAA0041F5BF /* [index]-14677d744322fa29edab.js in Resources */,
 				63B3154E26A431E200F5D180 /* 22222.json in Resources */,
+				6328306F26B16FAA0041F5BF /* _app.8932b2c4.chunk.css in Resources */,
+				6328306126B16FAA0041F5BF /* _app.2c752c5a.chunk.css in Resources */,
+				6328306326B16FAA0041F5BF /* [index].9e84e0fc3226dcee7adc.js in Resources */,
 				63B3154F26A431E200F5D180 /* 5555555.json in Resources */,
+				6328306626B16FAA0041F5BF /* e_25e02703.f2efbac7b2acfa570282.js in Resources */,
+				6328306826B16FAA0041F5BF /* _ssgManifest.js in Resources */,
+				6328306C26B16FAA0041F5BF /* _app.4ffbb07aea233ca49409.js in Resources */,
+				6328307126B16FAA0041F5BF /* [...value].f139963e.chunk.css in Resources */,
+				6328307726B16FAA0041F5BF /* _buildManifest.js in Resources */,
+				6328305D26B16FAA0041F5BF /* vendors_main.c2c699b3fe57ccb8281f.js in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
