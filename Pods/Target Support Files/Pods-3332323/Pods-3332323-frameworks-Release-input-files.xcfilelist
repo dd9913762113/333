@@ -6,8 +6,17 @@ ${BUILT_PRODUCTS_DIR}/PINCache/PINCache.framework
 ${BUILT_PRODUCTS_DIR}/PINOperation/PINOperation.framework
 ${BUILT_PRODUCTS_DIR}/PINRemoteImage/PINRemoteImage.framework
 ${BUILT_PRODUCTS_DIR}/PhoneNumberKit/PhoneNumberKit.framework
+${BUILT_PRODUCTS_DIR}/SPConfetti/SPConfetti.framework
+${BUILT_PRODUCTS_DIR}/SPDiffable/SPDiffable.framework
+${BUILT_PRODUCTS_DIR}/SPPermissions/SPPermissions.framework
 ${BUILT_PRODUCTS_DIR}/SnapKit/SnapKit.framework
+${BUILT_PRODUCTS_DIR}/SparrowKit/SparrowKit.framework
+${BUILT_PRODUCTS_DIR}/SwiftBrick/SwiftBrick.framework
+${BUILT_PRODUCTS_DIR}/SwiftGuideView/SwiftGuideView.framework
+${BUILT_PRODUCTS_DIR}/SwiftMediator/SwiftMediator.framework
+${BUILT_PRODUCTS_DIR}/SwiftPageView/SwiftPageView.framework
 ${BUILT_PRODUCTS_DIR}/SwiftSignalKit/SwiftSignalKit.framework
+${BUILT_PRODUCTS_DIR}/Swift_Log/Swift_Log.framework
 ${BUILT_PRODUCTS_DIR}/SwiftyJSON/SwiftyJSON.framework
 ${BUILT_PRODUCTS_DIR}/Texture/AsyncDisplayKit.framework
 ${BUILT_PRODUCTS_DIR}/Tiercel/Tiercel.framework

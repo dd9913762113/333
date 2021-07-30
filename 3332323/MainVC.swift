@@ -31,6 +31,8 @@ private class TableViewCell: UITableViewCell {
 
 class MainVC: UIViewController,  UITableViewDelegate, UITableViewDataSource {
     var array = [String]()
+    var arrayVC = [UIViewController]()
+    
     private var tableView = UITableView()
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -45,8 +47,8 @@ class MainVC: UIViewController,  UITableViewDelegate, UITableViewDataSource {
         tableView.delegate = self
         tableView.dataSource = self
       
-        self.array = ["DownLoad" , "collectionview" , "TVListVC"]
-
+        self.array = ["DownLoad" , "collectionview" , "TVListVC" , "天女散花" , "各种权限" ]
+        self.arrayVC = [DownLoadTabbar(), MediaCollectionView(), TVListVC(), PreviewController(), SPPermissionsVC() ]
         tableView.rowHeight = 50
         tableView.register(TableViewCell.self, forCellReuseIdentifier: "Cell")
         tableView.reloadData()
@@ -79,28 +81,26 @@ class MainVC: UIViewController,  UITableViewDelegate, UITableViewDataSource {
         return cell
     }
 
+   
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         tableView.deselectRow(at: indexPath, animated: true)
         
+//        if #available(iOS 14.0, *) {
+//            let controller = PreviewController().wrapToNavigationController(prefersLargeTitles: false)
+//        }
         if indexPath.row == 0 {
-            
             let tabBar = DownLoadTabbar()
             if #available(iOS 13, *) {
                 tabBar.modalPresentationStyle = .fullScreen
             }
             self.present(tabBar, animated: true, completion: nil)
-            
-        }else if  indexPath.row == 1 {
-            let controller = MediaCollectionView()
-            navigationController?.pushViewController(controller, animated: true)
-            
-        }else if  indexPath.row == 2 {
-            let controller = TVListVC()
-            navigationController?.pushViewController(controller, animated: true)
-            
-        }else{
-            
+            return
         }
+        
+        let controller = self.arrayVC[indexPath.row]
+
+        navigationController?.pushViewController(controller, animated: true)
+
       
     }
 }

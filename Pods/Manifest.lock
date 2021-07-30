@@ -60,7 +60,60 @@ PODS:
     - PINCache (~> 3.0.3)
     - PINRemoteImage/Core
   - SnapKit (5.0.1)
+  - SparrowKit (3.2.1)
+  - SPConfetti (1.2.1)
+  - SPDiffable (1.4.1)
+  - SPPermissions (6.6.1):
+    - SPPermissions/Core (= 6.6.1)
+  - SPPermissions/Bluetooth (6.6.1):
+    - SPPermissions/Core
+  - SPPermissions/Calendar (6.6.1):
+    - SPPermissions/Core
+  - SPPermissions/Camera (6.6.1):
+    - SPPermissions/Core
+  - SPPermissions/Contacts (6.6.1):
+    - SPPermissions/Core
+  - SPPermissions/Core (6.6.1)
+  - SPPermissions/Health (6.6.1):
+    - SPPermissions/Core
+  - SPPermissions/LocationAlways (6.6.1):
+    - SPPermissions/Core
+  - SPPermissions/LocationWhenInUse (6.6.1):
+    - SPPermissions/Core
+  - SPPermissions/Microphone (6.6.1):
+    - SPPermissions/Core
+  - SPPermissions/Motion (6.6.1):
+    - SPPermissions/Core
+  - SPPermissions/Music (6.6.1):
+    - SPPermissions/Core
+  - SPPermissions/Notification (6.6.1):
+    - SPPermissions/Core
+  - SPPermissions/PhotoLibrary (6.6.1):
+    - SPPermissions/Core
+  - SPPermissions/Reminders (6.6.1):
+    - SPPermissions/Core
+  - SPPermissions/Siri (6.6.1):
+    - SPPermissions/Core
+  - SPPermissions/SpeechRecognizer (6.6.1):
+    - SPPermissions/Core
+  - SPPermissions/Tracking (6.6.1):
+    - SPPermissions/Core
+  - Swift_Log (0.8.0)
+  - SwiftBrick/Extensions (1.8.7):
+    - SnapKit
+    - SwiftBrick/Util
+  - SwiftBrick/Util (1.8.7):
+    - SnapKit
+  - SwiftBrick/ViewFactory (1.8.7):
+    - SnapKit
+    - SwiftBrick/Extensions
+    - SwiftBrick/Util
+  - SwiftGuideView (0.8.0):
+    - SnapKit
+    - SwiftPageView
   - SwiftLint (0.43.1)
+  - SwiftMediator (1.1.0)
+  - SwiftPageView (0.8.1)
   - SwiftSignalKit (0.1.0)
   - SwiftyJSON (5.0.1)
   - Texture (3.0.0):
@@ -94,7 +147,31 @@ DEPENDENCIES:
   - OpenSSL (from `https://github.com/kingslay/KSPlayer.git`, branch `develop`)
   - PhoneNumberKit
   - SnapKit
+  - SparrowKit
+  - SPConfetti
+  - SPDiffable
+  - SPPermissions
+  - SPPermissions/Bluetooth
+  - SPPermissions/Calendar
+  - SPPermissions/Camera
+  - SPPermissions/Contacts
+  - SPPermissions/Health
+  - SPPermissions/LocationAlways
+  - SPPermissions/LocationWhenInUse
+  - SPPermissions/Microphone
+  - SPPermissions/Motion
+  - SPPermissions/Music
+  - SPPermissions/Notification
+  - SPPermissions/PhotoLibrary
+  - SPPermissions/Reminders
+  - SPPermissions/Siri
+  - SPPermissions/SpeechRecognizer
+  - SPPermissions/Tracking
+  - Swift_Log
+  - SwiftBrick/ViewFactory
+  - SwiftGuideView
   - SwiftLint
+  - SwiftMediator
   - SwiftSignalKit
   - SwiftyJSON
   - Texture
@@ -114,7 +191,16 @@ SPEC REPOS:
   trunk:
     - KeychainAccess
     - SnapKit
+    - SparrowKit
+    - SPConfetti
+    - SPDiffable
+    - SPPermissions
+    - Swift_Log
+    - SwiftBrick
+    - SwiftGuideView
     - SwiftLint
+    - SwiftMediator
+    - SwiftPageView
     - Tiercel
 
 EXTERNAL SOURCES:
@@ -151,12 +237,21 @@ SPEC CHECKSUMS:
   PINOperation: 00c935935f1e8cf0d1e2d6b542e75b88fc3e5e20
   PINRemoteImage: f1295b29f8c5e640e25335a1b2bd9d805171bd01
   SnapKit: 97b92857e3df3a0c71833cce143274bf6ef8e5eb
+  SparrowKit: 25216d712ab12a7d8065f3375d633c08ba35f1c8
+  SPConfetti: a3826306f978d48dcff9fee8c52df3d2c55ac5cd
+  SPDiffable: 2f9b53aa62e778e8f8a8759dea03c04326c70d23
+  SPPermissions: ea8a2fe9276af6d18174e45ba347f3c9cec4b3a5
+  Swift_Log: 82d84e33c65b0a1bc3bb7cf5b7ce225218fa8f1f
+  SwiftBrick: db0f03e78067709b9d638df0c2ca942c839ba593
+  SwiftGuideView: 8988229927d7da71b6bb05bf7589a28eb1b94abe
   SwiftLint: 99f82d07b837b942dd563c668de129a03fc3fb52
+  SwiftMediator: f38c29603d0069b39362c040dd09bf3a24d79fef
+  SwiftPageView: 942c4602ecd27b96ee4600f3d13f39dda13d3eb7
   SwiftSignalKit: e39d87deeb25f6719bb8803a35722499b453e076
   SwiftyJSON: 2f33a42c6fbc52764d96f13368585094bfd8aa5e
   Texture: 2f109e937850d94d1d07232041c9c7313ccddb81
   Tiercel: 8827f8c2fa90067e377e30666521eef6b3a79232
 
-PODFILE CHECKSUM: 1f69cb70472c17bac4e7f2717e0aad7d8cc549c8
+PODFILE CHECKSUM: 45d628824298a14887f0d931557ecd888fce486d
 
 COCOAPODS: 1.10.1

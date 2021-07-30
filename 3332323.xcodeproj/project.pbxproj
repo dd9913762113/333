@@ -38,6 +38,9 @@
 		6328307526B16FAA0041F5BF /* vendors_polyfills.bd440854da42e82d065d.js in Resources */ = {isa = PBXBuildFile; fileRef = 6328305926B16FAA0041F5BF /* vendors_polyfills.bd440854da42e82d065d.js */; };
 		6328307626B16FAA0041F5BF /* login.97dabcdb.chunk.css in Resources */ = {isa = PBXBuildFile; fileRef = 6328305A26B16FAA0041F5BF /* login.97dabcdb.chunk.css */; };
 		6328307726B16FAA0041F5BF /* _buildManifest.js in Resources */ = {isa = PBXBuildFile; fileRef = 6328305B26B16FAA0041F5BF /* _buildManifest.js */; };
+		6328307926B296120041F5BF /* DelegateMediator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6328307826B296120041F5BF /* DelegateMediator.swift */; };
+		6328308026B2B0B10041F5BF /* PreviewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6328307F26B2B0B10041F5BF /* PreviewController.swift */; };
+		6328308326B2BD750041F5BF /* SPPermissionsVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6328308226B2BD750041F5BF /* SPPermissionsVC.swift */; };
 		6366E05526AFF59F00C40126 /* DownloadManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6366E05426AFF59F00C40126 /* DownloadManager.swift */; };
 		6366E05726B0043D00C40126 /* MTCacheManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6366E05626B0043D00C40126 /* MTCacheManager.swift */; };
 		63A6677B269861B4009235A3 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 63A6677A269861B4009235A3 /* AppDelegate.swift */; };
@@ -100,6 +103,9 @@
 		6328305926B16FAA0041F5BF /* vendors_polyfills.bd440854da42e82d065d.js */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.javascript; path = vendors_polyfills.bd440854da42e82d065d.js; sourceTree = "<group>"; };
 		6328305A26B16FAA0041F5BF /* login.97dabcdb.chunk.css */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.css; path = login.97dabcdb.chunk.css; sourceTree = "<group>"; };
 		6328305B26B16FAA0041F5BF /* _buildManifest.js */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.javascript; path = _buildManifest.js; sourceTree = "<group>"; };
+		6328307826B296120041F5BF /* DelegateMediator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DelegateMediator.swift; sourceTree = "<group>"; };
+		6328307F26B2B0B10041F5BF /* PreviewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PreviewController.swift; sourceTree = "<group>"; };
+		6328308226B2BD750041F5BF /* SPPermissionsVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SPPermissionsVC.swift; sourceTree = "<group>"; };
 		6366E05426AFF59F00C40126 /* DownloadManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DownloadManager.swift; sourceTree = "<group>"; };
 		6366E05626B0043D00C40126 /* MTCacheManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MTCacheManager.swift; sourceTree = "<group>"; };
 		63A66777269861B4009235A3 /* 3332323.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = 3332323.app; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -192,6 +198,30 @@
 			path = 123_files;
 			sourceTree = "<group>";
 		};
+		6328307D26B2B0B10041F5BF /* 动画 */ = {
+			isa = PBXGroup;
+			children = (
+				6328307E26B2B0B10041F5BF /* 天女散花 */,
+			);
+			path = "动画";
+			sourceTree = "<group>";
+		};
+		6328307E26B2B0B10041F5BF /* 天女散花 */ = {
+			isa = PBXGroup;
+			children = (
+				6328307F26B2B0B10041F5BF /* PreviewController.swift */,
+			);
+			path = "天女散花";
+			sourceTree = "<group>";
+		};
+		6328308126B2BD590041F5BF /* 权限 */ = {
+			isa = PBXGroup;
+			children = (
+				6328308226B2BD750041F5BF /* SPPermissionsVC.swift */,
+			);
+			path = "权限";
+			sourceTree = "<group>";
+		};
 		63A6676E269861B4009235A3 = {
 			isa = PBXGroup;
 			children = (
@@ -214,9 +244,12 @@
 			isa = PBXGroup;
 			children = (
 				63A6677A269861B4009235A3 /* AppDelegate.swift */,
+				6328307826B296120041F5BF /* DelegateMediator.swift */,
 				63D6155426AC220C00CDBA38 /* AppDelegate+Download.swift */,
 				63A7739C26A6B5C7000DE05B /* MainVC.swift */,
 				63D6155826AC27A400CDBA38 /* BaseTableVC.swift */,
+				6328308126B2BD590041F5BF /* 权限 */,
+				6328307D26B2B0B10041F5BF /* 动画 */,
 				6328303326B124FF0041F5BF /* TVListPlayer */,
 				63D6155E26AD0CC400CDBA38 /* MediaPlayer */,
 				63D6155126AC205200CDBA38 /* DownLoad */,
@@ -473,10 +506,13 @@
 				63D6156526AD0CC400CDBA38 /* MediaPlay.swift in Sources */,
 				63D6156926AD0CC400CDBA38 /* HomeVidelItem.swift in Sources */,
 				63D6156726AD0CC400CDBA38 /* MediaCollectionView.swift in Sources */,
+				6328308326B2BD750041F5BF /* SPPermissionsVC.swift in Sources */,
 				63D6155526AC220C00CDBA38 /* AppDelegate+Download.swift in Sources */,
 				6366E05726B0043D00C40126 /* MTCacheManager.swift in Sources */,
 				63A6677B269861B4009235A3 /* AppDelegate.swift in Sources */,
+				6328307926B296120041F5BF /* DelegateMediator.swift in Sources */,
 				6366E05526AFF59F00C40126 /* DownloadManager.swift in Sources */,
+				6328308026B2B0B10041F5BF /* PreviewController.swift in Sources */,
 				63D6156826AD0CC400CDBA38 /* CommunityModel.swift in Sources */,
 				63D6155726AC253800CDBA38 /* DownLoadVC.swift in Sources */,
 				63D6155B26AC284500CDBA38 /* DownloadTaskCell.swift in Sources */,
@@ -550,7 +586,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 11.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 13.0;
 				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
 				MTL_FAST_MATH = YES;
 				ONLY_ACTIVE_ARCH = YES;
@@ -605,7 +641,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 11.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 13.0;
 				MTL_ENABLE_DEBUG_INFO = NO;
 				MTL_FAST_MATH = YES;
 				SDKROOT = iphoneos;
@@ -647,7 +683,7 @@
 					"\"${PODS_CONFIGURATION_BUILD_DIR}/Texture/AsyncDisplayKit.framework/Headers\"",
 				);
 				INFOPLIST_FILE = 3332323/Info.plist;
-				IPHONEOS_DEPLOYMENT_TARGET = 11.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 13.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -697,7 +733,7 @@
 					"\"${PODS_CONFIGURATION_BUILD_DIR}/Texture/AsyncDisplayKit.framework/Headers\"",
 				);
 				INFOPLIST_FILE = 3332323/Info.plist;
-				IPHONEOS_DEPLOYMENT_TARGET = 11.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 13.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",

@@ -7,6 +7,7 @@
 
 import UIKit
 import SwiftSignalKit
+import SwiftMediator
 
 let appDelegate = UIApplication.shared.delegate as! AppDelegate
 
@@ -15,16 +16,20 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
     var window: UIWindow?
     
+    lazy var manager: AppDelegateManager = {
+        return AppDelegateManager.init(delegates: [AppDe.init(window)])
+    }()
     
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
 
         let window = UIWindow(frame: UIScreen.main.bounds)
-//        window.backgroundColor = .systemRed
         window.rootViewController = UINavigationController(rootViewController: MainVC())
         window.makeKeyAndVisible()
         self.window = window
 //        sleep(30)
         
+        manager.application(application, didFinishLaunchingWithOptions: launchOptions)
+
         return true
     }
     
