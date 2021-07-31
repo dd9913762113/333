@@ -137,6 +137,10 @@ PODS:
   - Texture/Video (3.0.0):
     - Texture/Core
   - Tiercel (3.2.2)
+  - VIMediaCache (0.4)
+  - ZLPhotoBrowser (4.1.7):
+    - ZLPhotoBrowser/Core (= 4.1.7)
+  - ZLPhotoBrowser/Core (4.1.7)
 
 DEPENDENCIES:
   - Alamofire
@@ -176,6 +180,8 @@ DEPENDENCIES:
   - SwiftyJSON
   - Texture
   - Tiercel
+  - VIMediaCache
+  - ZLPhotoBrowser (= 4.1.7)
 
 SPEC REPOS:
   https://github.com/CocoaPods/Specs.git:
@@ -202,6 +208,8 @@ SPEC REPOS:
     - SwiftMediator
     - SwiftPageView
     - Tiercel
+    - VIMediaCache
+    - ZLPhotoBrowser
 
 EXTERNAL SOURCES:
   FFmpeg:
@@ -251,7 +259,9 @@ SPEC CHECKSUMS:
   SwiftyJSON: 2f33a42c6fbc52764d96f13368585094bfd8aa5e
   Texture: 2f109e937850d94d1d07232041c9c7313ccddb81
   Tiercel: 8827f8c2fa90067e377e30666521eef6b3a79232
+  VIMediaCache: aa650f82cb114c68a343beb4e67416cf5eb2f3a2
+  ZLPhotoBrowser: 8ea81aa5cbaaf8b97bf8830fed1b1f756a5e8894
 
-PODFILE CHECKSUM: 45d628824298a14887f0d931557ecd888fce486d
+PODFILE CHECKSUM: 124183385e054df23ea6e9ff618c6cc0a2f2fe4a
 
 COCOAPODS: 1.10.1

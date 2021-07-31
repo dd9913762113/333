@@ -11,6 +11,7 @@ target '3332323' do
 # pod 'LookinServer'
  pod 'Texture'
  pod 'SwiftSignalKit'
+ 
  pod 'SnapKit'
  pod 'Alamofire'
  pod 'Kingfisher'
@@ -18,14 +19,21 @@ target '3332323' do
 # pod "OpenSSL-Apple"
  pod 'PhoneNumberKit'
  pod 'SwiftyJSON'
- 
+
+# 微信图片框架
+ pod 'ZLPhotoBrowser' , '4.1.7'
+
 # pod 'mobile-ffmpeg-full', '4.4'
 
 # 下载框架
  pod 'Tiercel'
  pod 'KeychainAccess'
-
  
+# 播放视频的时候 带上缓存
+ pod 'VIMediaCache'
+ 
+# pod 'ImagePicker'
+# 播放器
  pod 'SwiftLint' 
  pod 'KSPlayer',:git => 'https://github.com/kingslay/KSPlayer.git', :branch => 'develop'
  pod 'FFmpeg',:git => 'https://github.com/kingslay/KSPlayer.git', :branch => 'develop'

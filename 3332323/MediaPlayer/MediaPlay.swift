@@ -9,6 +9,7 @@
 import Foundation
 import KSPlayer
 import UIKit
+import VIMediaCache
 
 class MediaPlay : UIViewController, PlayerControllerDelegate {
 
@@ -35,6 +36,11 @@ class MediaPlay : UIViewController, PlayerControllerDelegate {
             options.hardwareDecodeH264 = true
             playerView.set(url: url, options: options)
             playerView.play()
+            
+            let resourceLoaderManager = VIResourceLoaderManager()
+            let playerItem = resourceLoaderManager.playerItem(with: url)
+            let player = AVPlayer(playerItem: playerItem)
+
         }
     }
     var resource: KSPlayerResource? {

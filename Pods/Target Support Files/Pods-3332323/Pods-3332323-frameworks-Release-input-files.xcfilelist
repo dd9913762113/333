@@ -20,3 +20,5 @@ ${BUILT_PRODUCTS_DIR}/Swift_Log/Swift_Log.framework
 ${BUILT_PRODUCTS_DIR}/SwiftyJSON/SwiftyJSON.framework
 ${BUILT_PRODUCTS_DIR}/Texture/AsyncDisplayKit.framework
 ${BUILT_PRODUCTS_DIR}/Tiercel/Tiercel.framework
+${BUILT_PRODUCTS_DIR}/VIMediaCache/VIMediaCache.framework
+${BUILT_PRODUCTS_DIR}/ZLPhotoBrowser/ZLPhotoBrowser.framework

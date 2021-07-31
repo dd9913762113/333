@@ -47,8 +47,8 @@ class MainVC: UIViewController,  UITableViewDelegate, UITableViewDataSource {
         tableView.delegate = self
         tableView.dataSource = self
       
-        self.array = ["DownLoad" , "collectionview" , "TVListVC" , "天女散花" , "各种权限" ]
-        self.arrayVC = [DownLoadTabbar(), MediaCollectionView(), TVListVC(), PreviewController(), SPPermissionsVC() ]
+        self.array = ["DownLoad" , "collectionview" , "TVListVC" , "天女散花" , "各种权限" , "图片选择器" , "图文发布"]
+        self.arrayVC = [DownLoadTabbar(), MediaCollectionView(), TVListVC(), PreviewController(), SPPermissionsVC(), WXZLPhoto() ,PublishPostVC()]
         tableView.rowHeight = 50
         tableView.register(TableViewCell.self, forCellReuseIdentifier: "Cell")
         tableView.reloadData()
@@ -64,7 +64,6 @@ class MainVC: UIViewController,  UITableViewDelegate, UITableViewDataSource {
     }
 
     // MARK: - Table View
-
     func numberOfSections(in _: UITableView) -> Int {
         1
     }
