@@ -2,6 +2,9 @@ ${PODS_ROOT}/Target Support Files/Pods-3332323/Pods-3332323-frameworks.sh
 ${BUILT_PRODUCTS_DIR}/Alamofire/Alamofire.framework
 ${BUILT_PRODUCTS_DIR}/AttributedString/AttributedString.framework
 ${BUILT_PRODUCTS_DIR}/CryptoSwift/CryptoSwift.framework
+${BUILT_PRODUCTS_DIR}/EFColorPicker/EFColorPicker.framework
+${BUILT_PRODUCTS_DIR}/EFFoundation/EFFoundation.framework
+${BUILT_PRODUCTS_DIR}/EFQRCode/EFQRCode.framework
 ${BUILT_PRODUCTS_DIR}/FDFullscreenPopGesture/FDFullscreenPopGesture.framework
 ${BUILT_PRODUCTS_DIR}/FSPagerView/FSPagerView.framework
 ${BUILT_PRODUCTS_DIR}/JXSegmentedView/JXSegmentedView.framework

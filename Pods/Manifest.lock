@@ -2,6 +2,12 @@ PODS:
   - Alamofire (5.5.0)
   - AttributedString (2.2.2)
   - CryptoSwift (1.4.2)
+  - EFColorPicker (5.2.2)
+  - EFFoundation (1.4.11):
+    - EFFoundation/Core (= 1.4.11)
+  - EFFoundation/Core (1.4.11)
+  - EFQRCode (6.2.0):
+    - swift_qrcodejs (~> 2.2.2)
   - FDFullscreenPopGesture (1.1)
   - FFmpeg (5.0):
     - FFmpeg/FFmpeg (= 5.0)
@@ -188,6 +194,9 @@ DEPENDENCIES:
   - Alamofire
   - AttributedString
   - CryptoSwift (~> 1.4.1)
+  - EFColorPicker
+  - EFFoundation
+  - EFQRCode (~> 6.2.0)
   - FDFullscreenPopGesture (= 1.1)
   - FFmpeg (from `https://github.com/kingslay/KSPlayer.git`, branch `develop`)
   - FSPagerView
@@ -252,6 +261,9 @@ SPEC REPOS:
     - Alamofire
     - AttributedString
     - CryptoSwift
+    - EFColorPicker
+    - EFFoundation
+    - EFQRCode
     - FDFullscreenPopGesture
     - FSPagerView
     - JitsiMeetSDK
@@ -324,6 +336,9 @@ SPEC CHECKSUMS:
   Alamofire: 1c4fb5369c3fe93d2857c780d8bbe09f06f97e7c
   AttributedString: 320bb12ef89a666cee4a2f79e3cee36748a63145
   CryptoSwift: a532e74ed010f8c95f611d00b8bbae42e9fe7c17
+  EFColorPicker: 6a67701ea834bd9b6f4c3e29aa2e78a6d4ea88f4
+  EFFoundation: 950f99ddbc81c6cbbf6a375dbff500b3eef95bf4
+  EFQRCode: e93a5776d607c83b1c6c3bce7a86e1b487be48a2
   FDFullscreenPopGesture: a8a620179e3d9c40e8e00256dcee1c1a27c6d0f0
   FFmpeg: 6593f811126654982330f647e8c0a54b5fb38257
   FSPagerView: 670405b2f18e2a87fa37f20b00de783e562c25a8
@@ -373,6 +388,6 @@ SPEC CHECKSUMS:
   YYWebImage: 5f7f36aee2ae293f016d418c7d6ba05c4863e928
   ZLPhotoBrowser: 8ea81aa5cbaaf8b97bf8830fed1b1f756a5e8894
 
-PODFILE CHECKSUM: 13ea284a63c20898b0d91484be85e01b40f8dbbf
+PODFILE CHECKSUM: 5d602791e3a0f9be371fcdd50908f7087be8c8aa
 
 COCOAPODS: 1.11.2

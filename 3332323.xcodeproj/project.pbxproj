@@ -44,6 +44,14 @@
 		6359945527AE56F800CF4A93 /* MineApplyAnchorVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6359945427AE56F800CF4A93 /* MineApplyAnchorVC.swift */; };
 		6359945A27AE675B00CF4A93 /* MineApplyAnchorModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6359945927AE675B00CF4A93 /* MineApplyAnchorModel.swift */; };
 		6359945E27AE711400CF4A93 /* MineApplyAnchorData.json in Resources */ = {isa = PBXBuildFile; fileRef = 6359945D27AE711400CF4A93 /* MineApplyAnchorData.json */; };
+		63608D6D27BE580C00760485 /* EFQRCodeVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 63608D6C27BE580C00760485 /* EFQRCodeVC.swift */; };
+		63608D7327BE586C00760485 /* StorageUserDefaults.swift in Sources */ = {isa = PBXBuildFile; fileRef = 63608D6E27BE586B00760485 /* StorageUserDefaults.swift */; };
+		63608D7427BE586C00760485 /* UIImage+Example.swift in Sources */ = {isa = PBXBuildFile; fileRef = 63608D6F27BE586B00760485 /* UIImage+Example.swift */; };
+		63608D7527BE586C00760485 /* GeneratorController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 63608D7027BE586B00760485 /* GeneratorController.swift */; };
+		63608D7627BE586C00760485 /* CGFloat+Example.swift in Sources */ = {isa = PBXBuildFile; fileRef = 63608D7127BE586B00760485 /* CGFloat+Example.swift */; };
+		63608D7727BE586C00760485 /* RecognizerController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 63608D7227BE586C00760485 /* RecognizerController.swift */; };
+		63608D7927BE58FA00760485 /* PointStyle.swift in Sources */ = {isa = PBXBuildFile; fileRef = 63608D7827BE58FA00760485 /* PointStyle.swift */; };
+		63608DDE27BE5B9A00760485 /* Localized.swift in Sources */ = {isa = PBXBuildFile; fileRef = 63608DDD27BE5B9A00760485 /* Localized.swift */; };
 		6366E05526AFF59F00C40126 /* DownloadManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6366E05426AFF59F00C40126 /* DownloadManager.swift */; };
 		6366E05726B0043D00C40126 /* MTCacheManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6366E05626B0043D00C40126 /* MTCacheManager.swift */; };
 		63A1E68D27BE13A900A7C766 /* JitsiMeetVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 63A1E68C27BE13A900A7C766 /* JitsiMeetVC.swift */; };
@@ -156,6 +164,14 @@
 		6359945427AE56F800CF4A93 /* MineApplyAnchorVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MineApplyAnchorVC.swift; sourceTree = "<group>"; };
 		6359945927AE675B00CF4A93 /* MineApplyAnchorModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MineApplyAnchorModel.swift; sourceTree = "<group>"; };
 		6359945D27AE711400CF4A93 /* MineApplyAnchorData.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = MineApplyAnchorData.json; sourceTree = "<group>"; };
+		63608D6C27BE580C00760485 /* EFQRCodeVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EFQRCodeVC.swift; sourceTree = "<group>"; };
+		63608D6E27BE586B00760485 /* StorageUserDefaults.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = StorageUserDefaults.swift; sourceTree = "<group>"; };
+		63608D6F27BE586B00760485 /* UIImage+Example.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "UIImage+Example.swift"; sourceTree = "<group>"; };
+		63608D7027BE586B00760485 /* GeneratorController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GeneratorController.swift; sourceTree = "<group>"; };
+		63608D7127BE586B00760485 /* CGFloat+Example.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "CGFloat+Example.swift"; sourceTree = "<group>"; };
+		63608D7227BE586C00760485 /* RecognizerController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RecognizerController.swift; sourceTree = "<group>"; };
+		63608D7827BE58FA00760485 /* PointStyle.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PointStyle.swift; sourceTree = "<group>"; };
+		63608DDD27BE5B9A00760485 /* Localized.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Localized.swift; sourceTree = "<group>"; };
 		6366E05426AFF59F00C40126 /* DownloadManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DownloadManager.swift; sourceTree = "<group>"; };
 		6366E05626B0043D00C40126 /* MTCacheManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MTCacheManager.swift; sourceTree = "<group>"; };
 		63A1E68C27BE13A900A7C766 /* JitsiMeetVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = JitsiMeetVC.swift; sourceTree = "<group>"; };
@@ -322,6 +338,7 @@
 			isa = PBXGroup;
 			children = (
 				63A7739C26A6B5C7000DE05B /* MainVC.swift */,
+				63608D6B27BE57D600760485 /* EFQRCode */,
 				63A1E68B27BE137B00A7C766 /* Jitsi Meet */,
 				6359945327AE56BD00CF4A93 /* 申请主播 */,
 				63B9A0A926B4F664004AC889 /* 图片选择器 */,
@@ -358,6 +375,21 @@
 			children = (
 			);
 			path = MineCell;
+			sourceTree = "<group>";
+		};
+		63608D6B27BE57D600760485 /* EFQRCode */ = {
+			isa = PBXGroup;
+			children = (
+				63608D6C27BE580C00760485 /* EFQRCodeVC.swift */,
+				63608D7227BE586C00760485 /* RecognizerController.swift */,
+				63608D7027BE586B00760485 /* GeneratorController.swift */,
+				63608D6E27BE586B00760485 /* StorageUserDefaults.swift */,
+				63608D7127BE586B00760485 /* CGFloat+Example.swift */,
+				63608D6F27BE586B00760485 /* UIImage+Example.swift */,
+				63608D7827BE58FA00760485 /* PointStyle.swift */,
+				63608DDD27BE5B9A00760485 /* Localized.swift */,
+			);
+			path = EFQRCode;
 			sourceTree = "<group>";
 		};
 		63A1E68B27BE137B00A7C766 /* Jitsi Meet */ = {
@@ -825,6 +857,7 @@
 				63A48B9027A00C2500022B9F /* UIColor+Extension.swift in Sources */,
 				63D6155926AC27A400CDBA38 /* BaseTableVC.swift in Sources */,
 				63D6156A26AD0CC400CDBA38 /* mediaResModel.swift in Sources */,
+				63608D7627BE586C00760485 /* CGFloat+Example.swift in Sources */,
 				63B9A0CC26B52D6E004AC889 /* UIView+Xib.swift in Sources */,
 				63A48B9427A00C2500022B9F /* Int+Extension.swift in Sources */,
 				63D6156626AD0CC400CDBA38 /* mediaCateModel.swift in Sources */,
@@ -838,12 +871,15 @@
 				63A1E68D27BE13A900A7C766 /* JitsiMeetVC.swift in Sources */,
 				63A48B9327A00C2500022B9F /* UIFont+Extension.swift in Sources */,
 				63D616C626AD644A00CDBA38 /* DownLoadTabbar.swift in Sources */,
+				63608D7327BE586C00760485 /* StorageUserDefaults.swift in Sources */,
 				63A48B9627A00C2500022B9F /* NonIntegerNumber+Extension.swift in Sources */,
 				63A48B7827A0080E00022B9F /* FollowVC.swift in Sources */,
 				63A48B9227A00C2500022B9F /* UIImage+Extension.swift in Sources */,
 				63B9A0BE26B518D3004AC889 /* PublishPostScrollView.swift in Sources */,
 				63B9A0B626B4F74C004AC889 /* ZLCustomFilter.swift in Sources */,
+				63608D7427BE586C00760485 /* UIImage+Example.swift in Sources */,
 				63D6156526AD0CC400CDBA38 /* MediaPlay.swift in Sources */,
+				63608D7727BE586C00760485 /* RecognizerController.swift in Sources */,
 				63A48B7627A0080200022B9F /* LiveVC.swift in Sources */,
 				63D6156926AD0CC400CDBA38 /* HomeVidelItem.swift in Sources */,
 				63B9A0D226B530DC004AC889 /* UIDevice+Extension.swift in Sources */,
@@ -857,11 +893,13 @@
 				6328308326B2BD750041F5BF /* SPPermissionsVC.swift in Sources */,
 				63A48B9827A00C2500022B9F /* Array+Extension.swift in Sources */,
 				63A48B7D27A0088E00022B9F /* R.swift in Sources */,
+				63608D6D27BE580C00760485 /* EFQRCodeVC.swift in Sources */,
 				63B9A0D026B52EB2004AC889 /* PublishPostTopicCell.swift in Sources */,
 				63B9A0C626B52C84004AC889 /* UIButton+Extension.swift in Sources */,
 				63D6155526AC220C00CDBA38 /* AppDelegate+Download.swift in Sources */,
 				63A48B9F27A00F0900022B9F /* Util.m in Sources */,
 				6366E05726B0043D00C40126 /* MTCacheManager.swift in Sources */,
+				63608D7927BE58FA00760485 /* PointStyle.swift in Sources */,
 				63B9A0BA26B4F74C004AC889 /* WeChatMomentDemoViewController.swift in Sources */,
 				6359945A27AE675B00CF4A93 /* MineApplyAnchorModel.swift in Sources */,
 				63A6677B269861B4009235A3 /* AppDelegate.swift in Sources */,
@@ -869,11 +907,13 @@
 				63A48B7F27A008FD00022B9F /* SportBaseVC.swift in Sources */,
 				6328307926B296120041F5BF /* DelegateMediator.swift in Sources */,
 				6366E05526AFF59F00C40126 /* DownloadManager.swift in Sources */,
+				63608DDE27BE5B9A00760485 /* Localized.swift in Sources */,
 				63B9A0C126B52B3B004AC889 /* PublishPostInputView.swift in Sources */,
 				63A1E69A27BE2AF700A7C766 /* XYNavigationController.swift in Sources */,
 				6328308026B2B0B10041F5BF /* PreviewController.swift in Sources */,
 				63D6156826AD0CC400CDBA38 /* CommunityModel.swift in Sources */,
 				63D6155726AC253800CDBA38 /* DownLoadVC.swift in Sources */,
+				63608D7527BE586C00760485 /* GeneratorController.swift in Sources */,
 				63A48B7427A007F300022B9F /* MineVC.swift in Sources */,
 				63B9A0C326B52B8E004AC889 /* CommonTextView.swift in Sources */,
 				63B9A0CE26B52DFF004AC889 /* PublishPostAddPicView.swift in Sources */,

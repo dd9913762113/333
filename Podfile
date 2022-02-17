@@ -122,9 +122,10 @@ target '3332323' do
  pod 'XYNav'
 
  
- 
- 
- 
+# https://github.com/EFPrefix/EFQRCode
+ pod 'EFQRCode', '~> 6.2.0'
+ pod 'EFFoundation'
+ pod 'EFColorPicker'
  
  
  
