@@ -11,16 +11,16 @@ import CommonCrypto
 // MARK: - Base64
 extension String {
     
-    public func encodeToBase64() -> String {
-        return Data(self.utf8).base64EncodedString()
-    }
-    
-    public func decodeFromBase64() -> String? {
-        guard let data = Data(base64Encoded: self) else {
-            return nil
-        }
-        return String(data: data, encoding: .utf8)
-    }
+//    public func encodeToBase64() -> String {
+//        return Data(self.utf8).base64EncodedString()
+//    }
+//
+//    public func decodeFromBase64() -> String? {
+//        guard let data = Data(base64Encoded: self) else {
+//            return nil
+//        }
+//        return String(data: data, encoding: .utf8)
+//    }
 }
 
 
@@ -118,9 +118,9 @@ extension String {
 
 extension String {
     /// 将中文字符串转换为拼音
-    func transformToPinyin() -> String? {
-        return applyingTransform(.toLatin, reverse: false)?.applyingTransform(.stripCombiningMarks, reverse: false)
-    }
+//    func transformToPinyin() -> String? {
+//        return applyingTransform(.toLatin, reverse: false)?.applyingTransform(.stripCombiningMarks, reverse: false)
+//    }
     
     /// 获取中文首字母
     func transformToPinyinHeader(_ needCompareWithAlphabet: Bool = false) -> String {
@@ -147,13 +147,13 @@ extension String {
 
 extension String{
     
-    func urlValue() -> URL? {
-        do {
-            return try self.asURL()
-        } catch {
-            return nil
-        }
-    }
+//    func urlValue() -> URL? {
+//        do {
+//            return try self.asURL()
+//        } catch {
+//            return nil
+//        }
+//    }
     
     func match(min: Double, max: Double)  -> Bool {
         let value = Double(self.filter_ForCurrency()) ?? .zero
@@ -169,23 +169,23 @@ extension String{
 
         return match(min: min, max: max)
     }
-    var intValue: Int {
-        return Int(self.filter_ForCurrency()) ?? .zero
-    }
-    
-    var realVipLevel: String {
-        return "\(intValue == 0 ? intValue : intValue - 1)"
-    }
-    
-    var floatValue: Float {
-        let temp = self.filter_isNotNumber().amountString
-        return Float(temp) ?? .zero
-    }
-    
-    var doubleValue: Double {
-        let temp = self.filter_isNotNumber().amountString
-        return Double(temp) ?? .zero
-    }
+//    var intValue: Int {
+//        return Int(self.filter_ForCurrency()) ?? .zero
+//    }
+//
+//    var realVipLevel: String {
+//        return "\(intValue == 0 ? intValue : intValue - 1)"
+//    }
+//
+//    var floatValue: Float {
+//        let temp = self.filter_isNotNumber().amountString
+//        return Float(temp) ?? .zero
+//    }
+//
+//    var doubleValue: Double {
+//        let temp = self.filter_isNotNumber().amountString
+//        return Double(temp) ?? .zero
+//    }
     
     var amountString: String {
         //以防精度丢失问题
@@ -246,11 +246,11 @@ extension String {
     /// 判断是否为金额
     ///
     /// - Returns: true(是) or false(不是)
-    public func isValidMoney() -> Bool {
-        let isValidMoneyRegex = "^([1-9]\\d{0,20}|0)([.]?|(\\.\\d{1,2})?)$"
-        let money: NSPredicate = NSPredicate(format: "SELF MATCHES %@", isValidMoneyRegex)
-        return money.evaluate(with: self)
-    }
+//    public func isValidMoney() -> Bool {
+//        let isValidMoneyRegex = "^([1-9]\\d{0,20}|0)([.]?|(\\.\\d{1,2})?)$"
+//        let money: NSPredicate = NSPredicate(format: "SELF MATCHES %@", isValidMoneyRegex)
+//        return money.evaluate(with: self)
+//    }
 }
 
 extension String {
@@ -362,12 +362,12 @@ extension String {
         return self
     }
     
-    public func isPureChinese() -> Bool {
-        let phoneRegex = "^[\\u4e00-\\u9fa5]+$"
-        let phonePred = NSPredicate(format: "SELF MATCHES %@", phoneRegex)
-        let phoneIsMatch = phonePred.evaluate(with: self)
-        return phoneIsMatch
-    }
+//    public func isPureChinese() -> Bool {
+//        let phoneRegex = "^[\\u4e00-\\u9fa5]+$"
+//        let phonePred = NSPredicate(format: "SELF MATCHES %@", phoneRegex)
+//        let phoneIsMatch = phonePred.evaluate(with: self)
+//        return phoneIsMatch
+//    }
     
     /// 便于链式判断是否包含特定string
     func containsCertain(_ string: String) -> String? {
@@ -806,13 +806,13 @@ extension  String {
 //    }
 
     // 格式化金额千位符字符串
-    func formattedNumber() -> String {
-        let numberFormatter = NumberFormatter()
-        numberFormatter.formatterBehavior = .behavior10_4
-        numberFormatter.numberStyle = .decimal
-        guard let numberString = numberFormatter.string(from: NSNumber(value: self.doubleValue)) else { return "0.00" }
-        return numberString;
-    }
+//    func formattedNumber() -> String {
+//        let numberFormatter = NumberFormatter()
+//        numberFormatter.formatterBehavior = .behavior10_4
+//        numberFormatter.numberStyle = .decimal
+//        guard let numberString = numberFormatter.string(from: NSNumber(value: self.doubleValue)) else { return "0.00" }
+//        return numberString;
+//    }
 }
 
 

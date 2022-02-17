@@ -46,18 +46,15 @@ public class DownloadTask: Task<DownloadTask> {
     
     internal var sessionTask: URLSessionDownloadTask? {
         get { protectedDownloadState.read { _ in _sessionTask }}
-        set { protectedDownloadState.read { _ in _sessionTask = newValue }}
+        set { protectedDownloadState.write { _ in _sessionTask = newValue }}
     }
     
 
-    public internal(set) var response: HTTPURLResponse? {
-        get { protectedDownloadState.directValue.response }
+    public private(set) var response: HTTPURLResponse? {
+        get { protectedDownloadState.wrappedValue.response }
         set { protectedDownloadState.write { $0.response = newValue } }
     }
     
-    public var statusCode: Int? {
-        response?.statusCode
-    }
 
     public var filePath: String {
         return cache.filePath(fileName: fileName)!
@@ -81,20 +78,20 @@ public class DownloadTask: Task<DownloadTask> {
         var shouldValidateFile: Bool = false
     }
     
-    private let protectedDownloadState: Protector<DownloadState> = Protector(DownloadState())
+    private let protectedDownloadState: Protected<DownloadState> = Protected(DownloadState())
     
     
     private var resumeData: Data? {
-        get { protectedDownloadState.directValue.resumeData }
+        get { protectedDownloadState.wrappedValue.resumeData }
         set { protectedDownloadState.write { $0.resumeData = newValue } }
     }
     
     internal var tmpFileName: String? {
-        protectedDownloadState.directValue.tmpFileName
+        protectedDownloadState.wrappedValue.tmpFileName
     }
 
     private var shouldValidateFile: Bool {
-        get { protectedDownloadState.directValue.shouldValidateFile }
+        get { protectedDownloadState.wrappedValue.shouldValidateFile }
         set { protectedDownloadState.write { $0.shouldValidateFile = newValue } }
     }
 
@@ -207,6 +204,7 @@ extension DownloadTask {
             }
         }
         error = nil
+        response = nil
         start(fileExists: fileExists)
     }
 
@@ -241,9 +239,10 @@ extension DownloadTask {
                 progress.totalUnitCount = 0
             }
             progress.setUserInfoObject(progress.completedUnitCount, forKey: .fileCompletedCountKey)
-            manager?.maintainTasks(with: .appendRunningTasks(self))
-            executeControl()
             sessionTask?.resume()
+            manager?.maintainTasks(with: .appendRunningTasks(self))
+            manager?.storeTasks()
+            executeControl()
         }
     }
 
@@ -386,8 +385,8 @@ extension DownloadTask {
         case let .statusCode(statusCode):
             self.error = TiercelError.unacceptableStatusCode(code: statusCode)
             status = .failed
-        case .manual:
-            fromRunning = false
+        case let .manual(fromRunningTask):
+            fromRunning = fromRunningTask
         }
         
         switch status {
@@ -507,9 +506,10 @@ extension DownloadTask {
 
 // MARK: - callback
 extension DownloadTask {
-    internal func didWriteData(bytesWritten: Int64, totalBytesWritten: Int64, totalBytesExpectedToWrite: Int64) {
+    internal func didWriteData(downloadTask: URLSessionDownloadTask, bytesWritten: Int64, totalBytesWritten: Int64, totalBytesExpectedToWrite: Int64) {
         progress.completedUnitCount = totalBytesWritten
         progress.totalUnitCount = totalBytesExpectedToWrite
+        response = downloadTask.response as? HTTPURLResponse
         progressExecuter?.execute(self)
         manager?.updateProgress()
         NotificationCenter.default.postNotification(name: DownloadTask.runningNotification, downloadTask: self)
@@ -531,7 +531,7 @@ extension DownloadTask {
             
             switch status {
             case .willSuspend,.willCancel, .willRemove:
-                determineStatus(with: .manual)
+                determineStatus(with: .manual(false))
             case .running:
                 succeeded(fromRunning: false, immediately: true)
             default:
@@ -544,7 +544,7 @@ extension DownloadTask {
 
             switch status {
             case .willCancel, .willRemove:
-                determineStatus(with: .manual)
+                determineStatus(with: .manual(true))
                 return
             case .willSuspend, .running:
                 progress.totalUnitCount = task.countOfBytesExpectedToReceive

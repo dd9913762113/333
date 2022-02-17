@@ -29,6 +29,7 @@ public protocol BufferProtocol: AnyObject {
     func textures(frome cache: MetalTextureCache) -> [MTLTexture]
     func image() -> CGImage?
 }
+
 extension BufferProtocol {
     var size: CGSize { CGSize(width: width, height: height) }
 }

@@ -1,11 +1,18 @@
 PODS:
-  - Alamofire (5.4.3)
-  - FFmpeg (4.4):
-    - FFmpeg/FFmpeg (= 4.4)
-  - FFmpeg/FFmpeg (4.4):
+  - Alamofire (5.5.0)
+  - AttributedString (2.2.2)
+  - CryptoSwift (1.4.2)
+  - FDFullscreenPopGesture (1.1)
+  - FFmpeg (5.0):
+    - FFmpeg/FFmpeg (= 5.0)
+  - FFmpeg/FFmpeg (5.0):
     - OpenSSL
+  - FSPagerView (0.8.3)
+  - JitsiMeetSDK (4.1.0)
+  - JXSegmentedView (1.3.0)
+  - KakaJSON (1.1.2)
   - KeychainAccess (4.2.2)
-  - Kingfisher (6.3.0)
+  - Kingfisher (7.1.2)
   - KSPlayer (1.0):
     - KSPlayer/Audio (= 1.0)
     - KSPlayer/AVPlayer (= 1.0)
@@ -35,9 +42,15 @@ PODS:
   - KSPlayer/Video (1.0):
     - KSPlayer/Core
     - KSPlayer/Subtitle
-  - OpenSSL (1.1.1):
-    - OpenSSL/OpenSSL (= 1.1.1)
-  - OpenSSL/OpenSSL (1.1.1)
+  - LookinServer (1.0.4)
+  - MJRefresh (3.7.5)
+  - Moya (15.0.0):
+    - Moya/Core (= 15.0.0)
+  - Moya/Core (15.0.0):
+    - Alamofire (~> 5.0)
+  - OpenSSL (3.0.1):
+    - OpenSSL/OpenSSL (= 3.0.1)
+  - OpenSSL/OpenSSL (3.0.1)
   - PhoneNumberKit (3.3.3):
     - PhoneNumberKit/PhoneNumberKitCore (= 3.3.3)
     - PhoneNumberKit/UIKit (= 3.3.3)
@@ -59,97 +72,142 @@ PODS:
   - PINRemoteImage/PINCache (3.0.3):
     - PINCache (~> 3.0.3)
     - PINRemoteImage/Core
+  - PromiseKit (6.15.3):
+    - PromiseKit/CorePromise (= 6.15.3)
+    - PromiseKit/Foundation (= 6.15.3)
+    - PromiseKit/UIKit (= 6.15.3)
+  - PromiseKit/CorePromise (6.15.3)
+  - PromiseKit/Foundation (6.15.3):
+    - PromiseKit/CorePromise
+  - PromiseKit/UIKit (6.15.3):
+    - PromiseKit/CorePromise
+  - PureLayout (3.1.9)
+  - QuickTableViewController (1.3.1)
+  - RxCocoa (4.5.0):
+    - RxSwift (>= 4.4.2, ~> 4.4)
+  - RxSwift (4.5.0)
+  - SDWebImage (5.12.2):
+    - SDWebImage/Core (= 5.12.2)
+  - SDWebImage/Core (5.12.2)
   - SnapKit (5.0.1)
-  - SparrowKit (3.2.1)
-  - SPConfetti (1.2.1)
-  - SPDiffable (1.4.1)
-  - SPPermissions (6.6.1):
-    - SPPermissions/Core (= 6.6.1)
-  - SPPermissions/Bluetooth (6.6.1):
+  - SparrowKit (3.4.6)
+  - SPConfetti (1.3.3)
+  - SPDiffable (2.2.0)
+  - SPPermissions (7.0.1):
+    - SPPermissions/Core (= 7.0.1)
+  - SPPermissions/Bluetooth (7.0.1):
     - SPPermissions/Core
-  - SPPermissions/Calendar (6.6.1):
+  - SPPermissions/Calendar (7.0.1):
     - SPPermissions/Core
-  - SPPermissions/Camera (6.6.1):
+  - SPPermissions/Camera (7.0.1):
     - SPPermissions/Core
-  - SPPermissions/Contacts (6.6.1):
+  - SPPermissions/Contacts (7.0.1):
     - SPPermissions/Core
-  - SPPermissions/Core (6.6.1)
-  - SPPermissions/Health (6.6.1):
+  - SPPermissions/Core (7.0.1)
+  - SPPermissions/Health (7.0.1):
     - SPPermissions/Core
-  - SPPermissions/LocationAlways (6.6.1):
+  - SPPermissions/LocationAlways (7.0.1):
     - SPPermissions/Core
-  - SPPermissions/LocationWhenInUse (6.6.1):
+  - SPPermissions/LocationWhenInUse (7.0.1):
     - SPPermissions/Core
-  - SPPermissions/Microphone (6.6.1):
+  - SPPermissions/Microphone (7.0.1):
     - SPPermissions/Core
-  - SPPermissions/Motion (6.6.1):
+  - SPPermissions/Motion (7.0.1):
     - SPPermissions/Core
-  - SPPermissions/Music (6.6.1):
+  - SPPermissions/Music (7.0.1):
     - SPPermissions/Core
-  - SPPermissions/Notification (6.6.1):
+  - SPPermissions/Notification (7.0.1):
     - SPPermissions/Core
-  - SPPermissions/PhotoLibrary (6.6.1):
+  - SPPermissions/PhotoLibrary (7.0.1):
     - SPPermissions/Core
-  - SPPermissions/Reminders (6.6.1):
+  - SPPermissions/Reminders (7.0.1):
     - SPPermissions/Core
-  - SPPermissions/Siri (6.6.1):
+  - SPPermissions/Siri (7.0.1):
     - SPPermissions/Core
-  - SPPermissions/SpeechRecognizer (6.6.1):
+  - SPPermissions/SpeechRecognizer (7.0.1):
     - SPPermissions/Core
-  - SPPermissions/Tracking (6.6.1):
+  - SPPermissions/Tracking (7.0.1):
     - SPPermissions/Core
   - Swift_Log (0.8.0)
-  - SwiftBrick/Extensions (1.8.7):
+  - SwiftBrick/Extensions (1.9.0):
     - SnapKit
     - SwiftBrick/Util
-  - SwiftBrick/Util (1.8.7):
+  - SwiftBrick/Util (1.9.0):
     - SnapKit
-  - SwiftBrick/ViewFactory (1.8.7):
+  - SwiftBrick/ViewFactory (1.9.0):
     - SnapKit
     - SwiftBrick/Extensions
     - SwiftBrick/Util
   - SwiftGuideView (0.8.0):
     - SnapKit
     - SwiftPageView
-  - SwiftLint (0.43.1)
-  - SwiftMediator (1.1.0)
+  - SwiftLint (0.45.1)
+  - SwiftMediator (1.1.1)
   - SwiftPageView (0.8.1)
   - SwiftSignalKit (0.1.0)
   - SwiftyJSON (5.0.1)
-  - Texture (3.0.0):
-    - Texture/AssetsLibrary (= 3.0.0)
-    - Texture/Core (= 3.0.0)
-    - Texture/MapKit (= 3.0.0)
-    - Texture/Photos (= 3.0.0)
-    - Texture/PINRemoteImage (= 3.0.0)
-    - Texture/Video (= 3.0.0)
-  - Texture/AssetsLibrary (3.0.0):
+  - TangramKit (1.4.2)
+  - Texture (3.1.0):
+    - Texture/AssetsLibrary (= 3.1.0)
+    - Texture/Core (= 3.1.0)
+    - Texture/MapKit (= 3.1.0)
+    - Texture/Photos (= 3.1.0)
+    - Texture/PINRemoteImage (= 3.1.0)
+    - Texture/Video (= 3.1.0)
+  - Texture/AssetsLibrary (3.1.0):
     - Texture/Core
-  - Texture/Core (3.0.0)
-  - Texture/MapKit (3.0.0):
+  - Texture/Core (3.1.0)
+  - Texture/MapKit (3.1.0):
     - Texture/Core
-  - Texture/Photos (3.0.0):
+  - Texture/Photos (3.1.0):
     - Texture/Core
-  - Texture/PINRemoteImage (3.0.0):
+  - Texture/PINRemoteImage (3.1.0):
     - PINRemoteImage/iOS (~> 3.0.0)
     - PINRemoteImage/PINCache
     - Texture/Core
-  - Texture/Video (3.0.0):
+  - Texture/Video (3.1.0):
     - Texture/Core
-  - Tiercel (3.2.2)
+  - Then (2.7.0)
+  - Tiercel (3.2.5)
+  - Toast-Swift (5.0.1)
+  - TXScrollLabelView (1.3.2)
   - VIMediaCache (0.4)
+  - XYNav (1.2.0)
+  - YYCache (1.0.4)
+  - YYImage (1.0.4):
+    - YYImage/Core (= 1.0.4)
+  - YYImage/Core (1.0.4)
+  - YYWebImage (1.0.5):
+    - YYCache
+    - YYImage
   - ZLPhotoBrowser (4.1.7):
     - ZLPhotoBrowser/Core (= 4.1.7)
   - ZLPhotoBrowser/Core (4.1.7)
 
 DEPENDENCIES:
   - Alamofire
+  - AttributedString
+  - CryptoSwift (~> 1.4.1)
+  - FDFullscreenPopGesture (= 1.1)
   - FFmpeg (from `https://github.com/kingslay/KSPlayer.git`, branch `develop`)
+  - FSPagerView
+  - JitsiMeetSDK (~> 4.1.0)
+  - JXSegmentedView
+  - KakaJSON (~> 1.1.2)
   - KeychainAccess
   - Kingfisher
   - KSPlayer (from `https://github.com/kingslay/KSPlayer.git`, branch `develop`)
+  - LookinServer
+  - MJRefresh
+  - Moya (~> 15.0)
   - OpenSSL (from `https://github.com/kingslay/KSPlayer.git`, branch `develop`)
   - PhoneNumberKit
+  - PromiseKit
+  - PureLayout
+  - QuickTableViewController
+  - RxCocoa (~> 4.0)
+  - RxSwift (~> 4.0)
+  - SDWebImage
   - SnapKit
   - SparrowKit
   - SPConfetti
@@ -178,24 +236,42 @@ DEPENDENCIES:
   - SwiftMediator
   - SwiftSignalKit
   - SwiftyJSON
+  - TangramKit
   - Texture
+  - Then
   - Tiercel
+  - Toast-Swift
+  - TXScrollLabelView
   - VIMediaCache
-  - ZLPhotoBrowser (= 4.1.7)
+  - XYNav
+  - YYWebImage
+  - ZLPhotoBrowser
 
 SPEC REPOS:
-  https://github.com/CocoaPods/Specs.git:
+  trunk:
     - Alamofire
+    - AttributedString
+    - CryptoSwift
+    - FDFullscreenPopGesture
+    - FSPagerView
+    - JitsiMeetSDK
+    - JXSegmentedView
+    - KakaJSON
+    - KeychainAccess
     - Kingfisher
+    - LookinServer
+    - MJRefresh
+    - Moya
     - PhoneNumberKit
     - PINCache
     - PINOperation
     - PINRemoteImage
-    - SwiftSignalKit
-    - SwiftyJSON
-    - Texture
-  trunk:
-    - KeychainAccess
+    - PromiseKit
+    - PureLayout
+    - QuickTableViewController
+    - RxCocoa
+    - RxSwift
+    - SDWebImage
     - SnapKit
     - SparrowKit
     - SPConfetti
@@ -207,8 +283,19 @@ SPEC REPOS:
     - SwiftLint
     - SwiftMediator
     - SwiftPageView
+    - SwiftSignalKit
+    - SwiftyJSON
+    - TangramKit
+    - Texture
+    - Then
     - Tiercel
+    - Toast-Swift
+    - TXScrollLabelView
     - VIMediaCache
+    - XYNav
+    - YYCache
+    - YYImage
+    - YYWebImage
     - ZLPhotoBrowser
 
 EXTERNAL SOURCES:
@@ -224,44 +311,68 @@ EXTERNAL SOURCES:
 
 CHECKOUT OPTIONS:
   FFmpeg:
-    :commit: 416d9515c8e6e59d8795d63d9decf05dc7b654bd
+    :commit: 9e72a6989ac418b730670e193f07ebe822a9bf46
     :git: https://github.com/kingslay/KSPlayer.git
   KSPlayer:
-    :commit: 416d9515c8e6e59d8795d63d9decf05dc7b654bd
+    :commit: 9e72a6989ac418b730670e193f07ebe822a9bf46
     :git: https://github.com/kingslay/KSPlayer.git
   OpenSSL:
-    :commit: 416d9515c8e6e59d8795d63d9decf05dc7b654bd
+    :commit: 9e72a6989ac418b730670e193f07ebe822a9bf46
     :git: https://github.com/kingslay/KSPlayer.git
 
 SPEC CHECKSUMS:
-  Alamofire: e447a2774a40c996748296fa2c55112fdbbc42f9
-  FFmpeg: 411e46c4d9257a7bca2e26be633751bba9bd17dd
+  Alamofire: 1c4fb5369c3fe93d2857c780d8bbe09f06f97e7c
+  AttributedString: 320bb12ef89a666cee4a2f79e3cee36748a63145
+  CryptoSwift: a532e74ed010f8c95f611d00b8bbae42e9fe7c17
+  FDFullscreenPopGesture: a8a620179e3d9c40e8e00256dcee1c1a27c6d0f0
+  FFmpeg: 6593f811126654982330f647e8c0a54b5fb38257
+  FSPagerView: 670405b2f18e2a87fa37f20b00de783e562c25a8
+  JitsiMeetSDK: 0716f9a49278330a57d8b28304f78c25ae5ab963
+  JXSegmentedView: fec0d335355b6e019c494fe2e030bde8a36d2df6
+  KakaJSON: cc5ff50a8c1cfbb09413db8496cb709a209e6137
   KeychainAccess: c0c4f7f38f6fc7bbe58f5702e25f7bd2f65abf51
-  Kingfisher: 6c3df386db71d82c0817a429d2c9421a77396529
-  KSPlayer: 00e5acede9598c4685314ba7bc344d92ef8664b0
-  OpenSSL: d016bd5616b251ceabf8d8f1630f763c0fb0d15b
+  Kingfisher: 44ed6a8504763f27bab46163adfac83f5deb240c
+  KSPlayer: a6ea8483d44447d4b7282e3723ebed9101efb3ad
+  LookinServer: 743c1681771d0a8dcc38825325a080c3186404a5
+  MJRefresh: fdf5e979eb406a0341468932d1dfc8b7f9fce961
+  Moya: 138f0573e53411fb3dc17016add0b748dfbd78ee
+  OpenSSL: a253b4b80f6c9512a45960472ddc5140342356bf
   PhoneNumberKit: 4ce83273551c4d2ae10b7361162f4283dd02835f
   PINCache: 7a8fc1a691173d21dbddbf86cd515de6efa55086
   PINOperation: 00c935935f1e8cf0d1e2d6b542e75b88fc3e5e20
   PINRemoteImage: f1295b29f8c5e640e25335a1b2bd9d805171bd01
+  PromiseKit: 3b2b6995e51a954c46dbc550ce3da44fbfb563c5
+  PureLayout: 5fb5e5429519627d60d079ccb1eaa7265ce7cf88
+  QuickTableViewController: 25e698de1546c2b829c543d91b64ebc6e884acfc
+  RxCocoa: cbf70265dc65a981d4ac982e513c10cf23df24a0
+  RxSwift: f172070dfd1a93d70a9ab97a5a01166206e1c575
+  SDWebImage: 240e5c12b592fb1268c1d03b8c90d90e8c2ffe82
   SnapKit: 97b92857e3df3a0c71833cce143274bf6ef8e5eb
-  SparrowKit: 25216d712ab12a7d8065f3375d633c08ba35f1c8
-  SPConfetti: a3826306f978d48dcff9fee8c52df3d2c55ac5cd
-  SPDiffable: 2f9b53aa62e778e8f8a8759dea03c04326c70d23
-  SPPermissions: ea8a2fe9276af6d18174e45ba347f3c9cec4b3a5
+  SparrowKit: 8a1454099b3aa429b8129189a91fcac47e2d0efc
+  SPConfetti: d74dd5b433a0ca39cf567969757a0b019bfcc5aa
+  SPDiffable: 22478e82f455219b4e28e2dcf750b8636d514f07
+  SPPermissions: 47102275aa242f64b9020db6b5d0fa0b66732c6f
   Swift_Log: 82d84e33c65b0a1bc3bb7cf5b7ce225218fa8f1f
-  SwiftBrick: db0f03e78067709b9d638df0c2ca942c839ba593
+  SwiftBrick: 066a63fb1546745cf3e21bf896848e7e1244e746
   SwiftGuideView: 8988229927d7da71b6bb05bf7589a28eb1b94abe
-  SwiftLint: 99f82d07b837b942dd563c668de129a03fc3fb52
-  SwiftMediator: f38c29603d0069b39362c040dd09bf3a24d79fef
+  SwiftLint: 06ac37e4d38c7068e0935bb30cda95f093bec761
+  SwiftMediator: 7f13edc86f8d788a3687b125be63fd8cef7d3a14
   SwiftPageView: 942c4602ecd27b96ee4600f3d13f39dda13d3eb7
   SwiftSignalKit: e39d87deeb25f6719bb8803a35722499b453e076
   SwiftyJSON: 2f33a42c6fbc52764d96f13368585094bfd8aa5e
-  Texture: 2f109e937850d94d1d07232041c9c7313ccddb81
-  Tiercel: 8827f8c2fa90067e377e30666521eef6b3a79232
+  TangramKit: aad3ab8f9617418c9da96d59cddd71134ae8af83
+  Texture: 2e8ab2519452515f7f5a520f5a8f7e0a413abfa3
+  Then: acfe0be7e98221c6204e12f8161459606d5d822d
+  Tiercel: c0a73f876a72800333b15f4e7e48791f4ad21e90
+  Toast-Swift: 9b6a70f28b3bf0b96c40d46c0c4b9d6639846711
+  TXScrollLabelView: 0e1650caf61198bf5dc0938ea6493254aeb80f90
   VIMediaCache: aa650f82cb114c68a343beb4e67416cf5eb2f3a2
+  XYNav: cd632211142b8c20c116218ced311dcf099a4077
+  YYCache: 8105b6638f5e849296c71f331ff83891a4942952
+  YYImage: 1e1b62a9997399593e4b9c4ecfbbabbf1d3f3b54
+  YYWebImage: 5f7f36aee2ae293f016d418c7d6ba05c4863e928
   ZLPhotoBrowser: 8ea81aa5cbaaf8b97bf8830fed1b1f756a5e8894
 
-PODFILE CHECKSUM: 124183385e054df23ea6e9ff618c6cc0a2f2fe4a
+PODFILE CHECKSUM: 13ea284a63c20898b0d91484be85e01b40f8dbbf
 
-COCOAPODS: 1.10.1
+COCOAPODS: 1.11.2

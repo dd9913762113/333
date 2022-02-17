@@ -1,0 +1,91 @@
+{
+    "error": 0,
+    "message": "Success",
+    "data": [
+        {
+            "title": "直播赛事",
+            "right": "足球,篮球,电竞",
+            "type" : "titleARSelect",
+            "isRedImage": "1"
+        },
+        {
+            "title": "直播经验",
+            "right": "1个月",
+            "type" : "titleARActionsheet",
+            "isRedImage": "1"
+        },
+        {
+            "title": "真实姓名",
+            "right": "请输入您的真实姓名",
+            "type" : "titleARTextField",
+            "isRedImage": "1"
+        },
+        {
+            "title": "联系方式",
+            "right": "QQ号码,微信号码",
+            "type" : "titleARSelect",
+            "isRedImage": "2"
+        },
+        {
+            "title": "请输入QQ号码、微信号码（非必填）",
+            "right": "",
+            "type" : "textFieldPlace",
+            "isRedImage": "2"
+        },
+        {
+            "title": "身份证号",
+            "right": "请输入您的身份证号码",
+            "type" : "titleARTextField",
+            "isRedImage": "1"
+        },
+        {
+            "title": "身份证正面照",
+            "right": "",
+            "type" : "titleARBigImage",
+            "imageName": "",
+            "isRedImage": "1"
+        },
+        {
+            "title": "身份证反面照",
+            "right": "",
+            "type" : "titleARBigImage",
+            "imageName": "",
+            "isRedImage": "1"
+        },
+        {
+            "title": "手持身份证正面照",
+            "right": "",
+            "type" : "titleARBigImage",
+            "imageName": "",
+            "isRedImage": "1"
+        },
+        {
+            "title": "个人简介",
+            "right": " 1.主播经验几年\n 2.在那些平台上担任过主播\n 3.曾过得过那些荣誉\n 4.擅长直播哪类赛事（足球、篮球、电竞、娱乐、其他）\n 5.不少于15字",
+            "type" : "titleARTextviewPlace",
+            "imageName": "",
+            "isRedImage": "1"
+        },
+        {
+            "title": "推荐人",
+            "right": "请输入推荐人",
+            "type" : "titleARTextField",
+            "imageName": "",
+            "isRedImage": "2"
+        },
+        {
+            "title": "电话号码",
+            "right": "",
+            "type" : "titleARActionsheet",
+            "imageName": "",
+            "isRedImage": "1"
+        },
+        {
+            "title": "请输入验证码",
+            "right": "",
+            "type" : "textFieldARBtn",
+            "imageName": "",
+            "isRedImage": "1"
+        }
+    ]
+}

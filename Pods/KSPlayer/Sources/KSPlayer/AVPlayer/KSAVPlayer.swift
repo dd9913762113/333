@@ -1,5 +1,5 @@
 import AVFoundation
-
+import AVKit
 #if canImport(UIKit)
 import UIKit
 #else
@@ -16,11 +16,12 @@ public final class KSAVPlayerView: UIView {
         player.automaticallyWaitsToMinimizeStalling = false
     }
 
+    @available(*, unavailable)
     public required init?(coder _: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
 
-    public override var contentMode: UIViewContentMode {
+    override public var contentMode: UIViewContentMode {
         get {
             switch playerLayer.videoGravity {
             case .resize:
@@ -48,6 +49,7 @@ public final class KSAVPlayerView: UIView {
             }
         }
     }
+
     #if canImport(UIKit)
     override public class var layerClass: AnyClass { AVPlayerLayer.self }
     #endif
@@ -87,6 +89,11 @@ public class KSAVPlayer {
             }
         }
     }
+
+    @available(tvOS 14.0, macOS 10.15, *)
+    public private(set) lazy var pipController: AVPictureInPictureController? = AVPictureInPictureController(playerLayer: playerView.playerLayer)
+    @available(macOS 12.0, iOS 15.0, tvOS 15.0, *)
+    public private(set) lazy var playbackCoordinator: AVPlaybackCoordinator = playerView.player.playbackCoordinator
 
     public private(set) var bufferingProgress = 0 {
         didSet {
@@ -435,7 +442,7 @@ extension KSAVPlayer: MediaPlayerProtocol {
     }
 
     public func tracks(mediaType: AVMediaType) -> [MediaPlayerTrack] {
-        return player.currentItem?.tracks.filter { $0.assetTrack?.mediaType == mediaType }.map { AVMediaPlayerTrack(track: $0) } ?? []
+        player.currentItem?.tracks.filter { $0.assetTrack?.mediaType == mediaType }.map { AVMediaPlayerTrack(track: $0) } ?? []
     }
 
     public func select(track: MediaPlayerTrack) {
@@ -484,6 +491,7 @@ struct AVMediaPlayerTrack: MediaPlayerTrack {
             track.isEnabled = newValue
         }
     }
+
     init(track: AVPlayerItemTrack) {
         self.track = track
         mediaType = track.assetTrack?.mediaType ?? .video

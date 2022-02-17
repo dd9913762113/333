@@ -6,8 +6,6 @@
 //
 
 import Foundation
-
-import Foundation
 import UIKit
 
 // MARK: - Xib 扩展
@@ -40,41 +38,41 @@ extension UIView {
 // MARK: - UIView+Frame 相关扩展
 extension UIView {
     
-    /// X 轴方向起点
-    public var x: CGFloat {
-        get {
-            return self.frame.origin.x
-        }
-        set {
-            var newFrame = self.frame
-            newFrame.origin.x = newValue
-            self.frame = newFrame
-        }
-    }
-    
-    /// Y 轴方向起点
-    public var y: CGFloat {
-        get {
-            return self.frame.origin.y
-        }
-        set {
-            var newFrame = self.frame
-            newFrame.origin.y = newValue
-            self.frame = newFrame
-        }
-    }
-    
-    /// 视图宽度
-    public var width: CGFloat {
-        get {
-            return self.frame.size.width
-        }
-        set {
-            var newFrame = self.frame
-            newFrame.size.width = newValue
-            self.frame = newFrame
-        }
-    }
+//    /// X 轴方向起点
+//    public var x: CGFloat {
+//        get {
+//            return self.frame.origin.x
+//        }
+//        set {
+//            var newFrame = self.frame
+//            newFrame.origin.x = newValue
+//            self.frame = newFrame
+//        }
+//    }
+//
+//    /// Y 轴方向起点
+//    public var y: CGFloat {
+//        get {
+//            return self.frame.origin.y
+//        }
+//        set {
+//            var newFrame = self.frame
+//            newFrame.origin.y = newValue
+//            self.frame = newFrame
+//        }
+//    }
+//
+//    /// 视图宽度
+//    public var width: CGFloat {
+//        get {
+//            return self.frame.size.width
+//        }
+//        set {
+//            var newFrame = self.frame
+//            newFrame.size.width = newValue
+//            self.frame = newFrame
+//        }
+//    }
     
     /// 视图宽度的一半
     public var halfWidth: CGFloat {
@@ -82,59 +80,59 @@ extension UIView {
     }
     
     /// 视图高度
-    public var height: CGFloat {
-        get {
-            return self.frame.size.height
-        }
-        set {
-            var newFrame = self.frame
-            newFrame.size.height = newValue
-            self.frame = newFrame
-        }
-    }
-    public var right: CGFloat {
-        get {
-            return self.x+self.width
-        }
-        set {
-            var newFrame = self.frame
-            newFrame.origin.x = newValue-self.width
-            self.frame = newFrame
-        }
-    }
-    
-    public var left: CGFloat {
-        get {
-            return self.x
-        }
-        set {
-            var newFrame = self.frame
-            newFrame.origin.x = newValue
-            self.frame = newFrame
-        }
-    }
-    
-    public var top: CGFloat {
-        get {
-            return self.y
-        }
-        set {
-            var newFrame = self.frame
-            newFrame.origin.y = newValue
-            self.frame = newFrame
-        }
-    }
-    
-    public var bottom: CGFloat {
-        get {
-            return self.y+self.height
-        }
-        set {
-            var newFrame = self.frame
-            newFrame.origin.y = newValue - self.height
-            self.frame = newFrame
-        }
-    }
+//    public var height: CGFloat {
+//        get {
+//            return self.frame.size.height
+//        }
+//        set {
+//            var newFrame = self.frame
+//            newFrame.size.height = newValue
+//            self.frame = newFrame
+//        }
+//    }
+//    public var right: CGFloat {
+//        get {
+//            return self.x+self.width
+//        }
+//        set {
+//            var newFrame = self.frame
+//            newFrame.origin.x = newValue-self.width
+//            self.frame = newFrame
+//        }
+//    }
+//
+//    public var left: CGFloat {
+//        get {
+//            return self.x
+//        }
+//        set {
+//            var newFrame = self.frame
+//            newFrame.origin.x = newValue
+//            self.frame = newFrame
+//        }
+//    }
+//
+//    public var top: CGFloat {
+//        get {
+//            return self.y
+//        }
+//        set {
+//            var newFrame = self.frame
+//            newFrame.origin.y = newValue
+//            self.frame = newFrame
+//        }
+//    }
+//
+//    public var bottom: CGFloat {
+//        get {
+//            return self.y+self.height
+//        }
+//        set {
+//            var newFrame = self.frame
+//            newFrame.origin.y = newValue - self.height
+//            self.frame = newFrame
+//        }
+//    }
     
     
     /// 视图高度的一半
@@ -142,61 +140,61 @@ extension UIView {
         return self.height / 2.0
     }
     
-    /// X 轴方向中点
-    public var centerX: CGFloat {
-        get {
-            return self.center.x
-        }
-        set {
-            var newCenter = self.center
-            newCenter.x = newValue
-            self.center = newCenter
-        }
-    }
-    
-    /// Y 轴方向中点
-    public var centerY : CGFloat {
-        get {
-            return self.center.y
-        }
-        set {
-            var newCenter = self.center
-            newCenter.y = newValue
-            self.center = newCenter
-        }
-    }
+//    /// X 轴方向中点
+//    public var centerX: CGFloat {
+//        get {
+//            return self.center.x
+//        }
+//        set {
+//            var newCenter = self.center
+//            newCenter.x = newValue
+//            self.center = newCenter
+//        }
+//    }
+//
+//    /// Y 轴方向中点
+//    public var centerY : CGFloat {
+//        get {
+//            return self.center.y
+//        }
+//        set {
+//            var newCenter = self.center
+//            newCenter.y = newValue
+//            self.center = newCenter
+//        }
+//    }
 }
 
 
 // MARK: - UIView+IBDesignable
 extension UIView {
     
-    @IBInspectable var cornerRadius: Double {
-        get {
-            return Double(self.layer.cornerRadius)
-        }
-        set {
-            self.layer.cornerRadius = CGFloat(newValue)
-        }
-    }
-    
-    @IBInspectable var borderWidth: Double {
-        get {
-            return Double(self.layer.borderWidth)
-        }
-        set {
-            self.layer.borderWidth = CGFloat(newValue)
-        }
-    }
-    
-    @IBInspectable var borderColor: UIColor? {
-        get {
-            return UIColor(cgColor: self.layer.borderColor!)
-        }
-        set {
-            self.layer.borderColor = newValue?.cgColor
-        }
-    }
+//    @IBInspectable var cornerRadius: Double {
+//        get {
+//            return Double(self.layer.cornerRadius)
+//        }
+//        set {
+//            self.layer.cornerRadius = CGFloat(newValue)
+//        }
+//    }
+//
+//    @IBInspectable var borderWidth: Double {
+//        get {
+//            return Double(self.layer.borderWidth)
+//        }
+//        set {
+//            self.layer.borderWidth = CGFloat(newValue)
+//        }
+//    }
+//
+//    @IBInspectable var borderColor: UIColor? {
+//        get {
+//            return UIColor(cgColor: self.layer.borderColor!)
+//        }
+//        set {
+//            self.layer.borderColor = newValue?.cgColor
+//        }
+//    }
     
     @IBInspectable var shadowColor: UIColor? {
         get {

@@ -16,8 +16,15 @@ protocol TrackProtocol: MediaPlayerTrack, CustomStringConvertible {
 extension TrackProtocol {
     var description: String { name }
     var isEnabled: Bool {
-        get { stream.pointee.discard == AVDISCARD_DEFAULT }
-        set { stream.pointee.discard = newValue ? AVDISCARD_DEFAULT : AVDISCARD_ALL }
+        stream.pointee.discard == AVDISCARD_DEFAULT
+    }
+
+    func setIsEnabled(_ isEnabled: Bool) {
+        stream.pointee.discard = isEnabled ? AVDISCARD_DEFAULT : AVDISCARD_ALL
+    }
+
+    var isImageSubtitle: Bool {
+        [AV_CODEC_ID_DVD_SUBTITLE, AV_CODEC_ID_DVB_SUBTITLE, AV_CODEC_ID_DVB_TELETEXT].contains(stream.pointee.codecpar.pointee.codec_id)
     }
 }
 
@@ -47,7 +54,7 @@ struct AssetTrack: TrackProtocol {
     init?(stream: UnsafeMutablePointer<AVStream>) {
         self.stream = stream
         if let bitrateEntry = av_dict_get(stream.pointee.metadata, "variant_bitrate", nil, 0) ?? av_dict_get(stream.pointee.metadata, "BPS", nil, 0),
-            let bitRate = Int64(String(cString: bitrateEntry.pointee.value)) {
+           let bitRate = Int64(String(cString: bitrateEntry.pointee.value)) {
             self.bitRate = bitRate
         } else {
             bitRate = stream.pointee.codecpar.pointee.bit_rate
@@ -74,7 +81,7 @@ struct AssetTrack: TrackProtocol {
         self.timebase = timebase
         rotation = stream.rotation
         let sar = stream.pointee.codecpar.pointee.sample_aspect_ratio.size
-        naturalSize = CGSize(width: Int(stream.pointee.codecpar.pointee.width), height: Int(CGFloat(stream.pointee.codecpar.pointee.height)*sar.height/sar.width))
+        naturalSize = CGSize(width: Int(stream.pointee.codecpar.pointee.width), height: Int(CGFloat(stream.pointee.codecpar.pointee.height) * sar.height / sar.width))
         let frameRate = av_guess_frame_rate(nil, stream, nil)
         if stream.pointee.duration > 0, stream.pointee.nb_frames > 0, stream.pointee.nb_frames != stream.pointee.duration {
             nominalFrameRate = Float(stream.pointee.nb_frames) * Float(timebase.den) / Float(stream.pointee.duration) * Float(timebase.num)
@@ -105,7 +112,6 @@ protocol PlayerItemTrackProtocol: CapacityProtocol, AnyObject {
     // 是否无缝循环
     var isLoopModel: Bool { get set }
     var isEndOfFile: Bool { get set }
-    var assetTrack: TrackProtocol { get }
     var delegate: CodecCapacityDelegate? { get set }
     func decode()
     func seek(time: TimeInterval)
@@ -124,6 +130,7 @@ class FFPlayerItemTrack<Frame: MEFrame>: PlayerItemTrackProtocol, CustomStringCo
             set(isEndOfFile: isEndOfFile)
         }
     }
+
     var packetCount: Int { 0 }
     var frameCount: Int { outputRenderQueue.count }
     let frameMaxCount: Int
@@ -137,20 +144,21 @@ class FFPlayerItemTrack<Frame: MEFrame>: PlayerItemTrackProtocol, CustomStringCo
 
     required init(assetTrack: TrackProtocol, options: KSOptions) {
         self.assetTrack = assetTrack
-        decoderMap[assetTrack.streamIndex] = assetTrack.makeDecode(options: options)
+        self.options = options
         mediaType = assetTrack.mediaType
         description = mediaType.rawValue
         fps = assetTrack.nominalFrameRate
-        self.options = options
         // 默认缓存队列大小跟帧率挂钩,经测试除以4，最优
         if mediaType == .audio {
-            outputRenderQueue = CircularBuffer(initialCapacity: options.audioFrameMaxCount(fps: fps), expanding: false)
+            let capacity = options.audioFrameMaxCount(fps: fps, channels: Int(assetTrack.stream.pointee.codecpar.pointee.channels))
+            outputRenderQueue = CircularBuffer(initialCapacity: capacity, expanding: false)
         } else if mediaType == .video {
             outputRenderQueue = CircularBuffer(initialCapacity: options.videoFrameMaxCount(fps: fps), sorted: true, expanding: false)
         } else {
             outputRenderQueue = CircularBuffer()
         }
         frameMaxCount = outputRenderQueue.maxCount
+        decoderMap[assetTrack.streamIndex] = assetTrack.makeDecode(options: options, delegate: self)
     }
 
     func decode() {
@@ -164,7 +172,6 @@ class FFPlayerItemTrack<Frame: MEFrame>: PlayerItemTrackProtocol, CustomStringCo
         state = .flush
         outputRenderQueue.flush()
         isLoopModel = false
-        delegate?.codecDidChangeCapacity(track: self)
     }
 
     func putPacket(packet: Packet) {
@@ -187,13 +194,9 @@ class FFPlayerItemTrack<Frame: MEFrame>: PlayerItemTrackProtocol, CustomStringCo
 
     func getOutputRender(where predicate: ((MEFrame) -> Bool)?) -> MEFrame? {
         let outputFecthRender = outputRenderQueue.pop(where: predicate)
-        if mediaType != .subtitle {
-            if outputFecthRender == nil {
-                if state == .finished, frameCount == 0 {
-                    delegate?.codecDidFinished(track: self)
-                }
-            } else {
-                delegate?.codecDidChangeCapacity(track: self)
+        if outputFecthRender == nil {
+            if state == .finished, frameCount == 0 {
+                delegate?.codecDidFinished(track: self)
             }
         }
         return outputFecthRender
@@ -208,41 +211,46 @@ class FFPlayerItemTrack<Frame: MEFrame>: PlayerItemTrackProtocol, CustomStringCo
     }
 
     fileprivate func doDecode(packet: Packet) {
-        let decoder = decoderMap.value(for: packet.assetTrack.streamIndex, default: packet.assetTrack.makeDecode(options: options))
+        let decoder = decoderMap.value(for: packet.assetTrack.streamIndex, default: packet.assetTrack.makeDecode(options: options, delegate: self))
         do {
-            let array = try decoder.doDecode(packet: packet.corePacket)
+            try decoder.doDecode(packet: packet.corePacket)
             if options.decodeAudioTime == 0, mediaType == .audio {
                 options.decodeAudioTime = CACurrentMediaTime()
             }
             if options.decodeVideoTime == 0, mediaType == .video {
                 options.decodeVideoTime = CACurrentMediaTime()
             }
-            array.forEach { frame in
-                if state == .flush || state == .closed {
-                    return
-                }
-                if seekTime > 0, options.isAccurateSeek {
-                    let timestamp = frame.position + frame.duration
-                    if timestamp <= 0 || frame.timebase.cmtime(for: timestamp).seconds < seekTime {
-                        return
-                    } else {
-                        seekTime = 0.0
-                    }
-                }
-                if let frame = frame as? Frame {
-                    outputRenderQueue.push(frame)
-                }
-                delegate?.codecDidChangeCapacity(track: self)
-            }
         } catch {
             KSLog("Decoder did Failed : \(error)")
             if decoder is VideoHardwareDecode {
-                decoderMap[packet.assetTrack.streamIndex] = SoftwareDecode(assetTrack: packet.assetTrack, options: options)
+                decoderMap[packet.assetTrack.streamIndex] = SoftwareDecode(assetTrack: packet.assetTrack, options: options, delegate: self)
                 KSLog("VideoCodec switch to software decompression")
                 doDecode(packet: packet)
             } else {
                 state = .failed
             }
+        }
+    }
+}
+
+extension FFPlayerItemTrack: DecodeResultDelegate {
+    func decodeResult(frame: MEFrame?) {
+        guard let frame = frame else {
+            return
+        }
+        if state == .flush || state == .closed {
+            return
+        }
+        if seekTime > 0, options.isAccurateSeek {
+            let timestamp = frame.position + frame.duration
+            if timestamp <= 0 || frame.timebase.cmtime(for: timestamp).seconds < seekTime {
+                return
+            } else {
+                seekTime = 0.0
+            }
+        }
+        if let frame = frame as? Frame {
+            outputRenderQueue.push(frame)
         }
     }
 }
@@ -281,7 +289,6 @@ final class AsyncPlayerItemTrack<Frame: MEFrame>: FFPlayerItemTrack<Frame> {
             if state == .finished, frameCount == 0 {
                 delegate?.codecDidFinished(track: self)
             }
-            delegate?.codecDidChangeCapacity(track: self)
         }
     }
 
@@ -291,7 +298,6 @@ final class AsyncPlayerItemTrack<Frame: MEFrame>: FFPlayerItemTrack<Frame> {
         } else {
             packetQueue.push(packet)
         }
-        delegate?.codecDidChangeCapacity(track: self)
     }
 
     override func decode() {
@@ -319,7 +325,7 @@ final class AsyncPlayerItemTrack<Frame: MEFrame>: FFPlayerItemTrack<Frame> {
             if state == .flush {
                 decoderMap.values.forEach { $0.doFlushCodec() }
                 state = .decoding
-            } else if isEndOfFile && packetQueue.count == 0 {
+            } else if isEndOfFile, packetQueue.count == 0 {
                 state = .finished
                 break
             } else if state == .decoding {
@@ -351,8 +357,8 @@ final class AsyncPlayerItemTrack<Frame: MEFrame>: FFPlayerItemTrack<Frame> {
     }
 }
 
-extension Dictionary {
-    public mutating func value(for key: Key, default defaultValue: @autoclosure () -> Value) -> Value {
+public extension Dictionary {
+    mutating func value(for key: Key, default defaultValue: @autoclosure () -> Value) -> Value {
         if let value = self[key] {
             return value
         } else {

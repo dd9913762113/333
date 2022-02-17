@@ -88,23 +88,26 @@ open class SPConfettiView: UIView {
      
      Change it before start animating.
      */
-    public var animation: SPConfettiAnimation = SPConfettiConfiguration.animation
+    public lazy var animation: SPConfettiAnimation = SPConfettiConfiguration.animation
     
     /**
      SPConfetti: Style of particles. You can set custom image.
      */
-    public var particles: [SPConfettiParticle] = SPConfettiConfiguration.particles
+    public lazy var particles: [SPConfettiParticle] = SPConfettiConfiguration.particles
     
     /**
      SPConfetti: Config of particles.
      */
-    public var particlesConfig = SPConfettiConfiguration.particlesConfig
+    public lazy var particlesConfig = SPConfettiConfiguration.particlesConfig
     
     /**
      SPConfetti: Start animating with selected animation and particles style.
      */
     public func startAnimating() {
-        stopAnimating()
+        if isReleasesParticles {
+            print("SPConfetti - Confetti already releases. Please, call `stopAnimating` func before start new animation. For now this call don't have any effect.")
+            return
+        }
         let emitterLayer = CAEmitterLayer()
         emitterLayer.birthRate = 1
         emitterLayer.lifetime = .zero
@@ -130,7 +133,7 @@ open class SPConfettiView: UIView {
         layer.addSublayer(emitterLayer)
         emitterLayer.lifetime = 1
         self.emitterLayer = emitterLayer
-        delegate?.confettiDidStartAnimating?()
+        delegate?.confettiDidStartAnimating?(view: self)
     }
     
     /**
@@ -141,22 +144,22 @@ open class SPConfettiView: UIView {
     public func stopAnimating(animatable: Bool = true) {
         if animatable {
             emitterLayer?.lifetime = .zero
-            
+            delegate?.confettiDidStopAnimating?(view: self)
             // Clean sublayers which not using already.
             if let time = emitterLayer?.emitterCells?.first?.lifetime {
                 let layerForRemove = self.emitterLayer
                 delay(TimeInterval(time + 0.5), closure: { [weak self] in
                     guard let self = self else { return }
                     layerForRemove?.removeFromSuperlayer()
-                    self.delegate?.confettiDidEndAnimating?()
+                    self.delegate?.confettiDidEndAnimating?(view: self)
                 })
             }
             
         } else {
             emitterLayer?.lifetime = .zero
             emitterLayer?.removeFromSuperlayer()
-            delegate?.confettiDidStopAnimating?()
-            delegate?.confettiDidEndAnimating?()
+            delegate?.confettiDidStopAnimating?(view: self)
+            delegate?.confettiDidEndAnimating?(view: self)
         }
         emitterLayer = nil
     }

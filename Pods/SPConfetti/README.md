@@ -1,4 +1,4 @@
-<img align="left" src="https://github.com/ivanvorobei/SPConfetti/blob/main/Assets/Readme/latest-preview.jpg" width="400"/>
+<img align="left" src="https://cdn.ivanvorobei.by/github/spconfetti/latest-preview.jpg" width="400"/>
 
 # SPConfetti
 
@@ -15,9 +15,9 @@ You can change shapes and switch between styles. It is possible to change the si
 If you like the project, don't forget to `put star ★`<br>Check out my other libraries:
 
 <p float="left">
-<a href="https://opensource.ivanvorobei.by">
-<img src="https://github.com/ivanvorobei/Readme/blob/main/Buttons/more-libraries.svg">
-</a>
+    <a href="https://opensource.ivanvorobei.by">
+        <img src="https://github.com/ivanvorobei/Readme/blob/main/Buttons/more-libraries.svg">
+    </a>
 </p>
 
 ## Navigate
@@ -27,33 +27,37 @@ If you like the project, don't forget to `put star ★`<br>Check out my other li
     - [CocoaPods](#cocoapods)
     - [Manually](#manually)
 - [Quick Start](#quick-start)
-- [Customise](#usage)
+    - [UIKit](#uikit)
+    - [SwiftUI](#swiftui)
+- [Usage UIKit](#usage-uikit)
     - [Animation](#animation)
     - [Particles](#particles)
     - [Shared Configuration](#shared-configuration)
-- [Delegate](#delegate)
-- [Other Projects](#other-projects)
+    - [Delegate](#delegate)
+- [Usage SwiftUI](#usage-swiftui)
 - [Russian Community](#russian-community)
 
 ## Installation
 
-Ready for use on iOS & tvOS 12+. Works with Swift 5+. Required Xcode 12.0 and higher.
+Ready for use on iOS 11+. Works with Swift 5+. Required Xcode 12.0 and higher.
 
-<img align="right" src="https://github.com/ivanvorobei/SPConfetti/blob/main/Assets/Readme/spm-install-preview.png" width="520"/>
+<img align="right" src="https://cdn.ivanvorobei.by/github/spconfetti/spm-install-preview.png" width="520"/>
 
 ### Swift Package Manager
 
-The [Swift Package Manager](https://swift.org/package-manager/) is a tool for managing the distribution of Swift code. It’s integrated with the Swift build system to automate the process of downloading, compiling, and linking dependencies.
+The [Swift Package Manager](https://swift.org/package-manager/) is a tool for automating the distribution of Swift code and is integrated into the `swift` compiler. It’s integrated with the Swift build system to automate the process of downloading, compiling, and linking dependencies.
 
-To integrate `SPConfetti` into your Xcode project using Xcode 12, specify it in `File > Swift Packages > Add Package Dependency...`:
+Once you have your Swift package set up, adding as a dependency is as easy as adding it to the `dependencies` value of your `Package.swift`.
 
-```ogdl
-https://github.com/ivanvorobei/SPConfetti
+```swift
+dependencies: [
+    .package(url: "https://github.com/ivanvorobei/SPConfetti", .upToNextMajor(from: "1.3.3"))
+]
 ```
 
 ### CocoaPods:
 
-[CocoaPods](https://cocoapods.org) is a dependency manager for Cocoa projects. For usage and installation instructions, visit their website. To integrate `SPConfetti` into your Xcode project using CocoaPods, specify it in your `Podfile`:
+[CocoaPods](https://cocoapods.org) is a dependency manager for Cocoa projects. For usage and installation instructions, visit their website. To integrate using CocoaPods, specify it in your `Podfile`:
 
 ```ruby
 pod 'SPConfetti'
@@ -61,9 +65,11 @@ pod 'SPConfetti'
 
 ### Manually
 
-If you prefer not to use any of dependency managers, you can integrate `SPConfetti` into your project manually. Put `Sources/SPConfetti` folder in your Xcode project. Make sure to enable `Copy items if needed` and `Create groups`.
+If you prefer not to use any of dependency managers, you can integrate manually. Put `Sources/SPConfetti` folder in your Xcode project. Make sure to enable `Copy items if needed` and `Create groups`.
 
 ## Quick Start
+
+### UIKit
 
 For easy start confetti animation call this:
 
@@ -83,7 +89,28 @@ SPConfetti.startAnimating(.centerWidthToDown, particles: [.triangle, .arc], dura
 
 You can manage by view `SPConfettiView` with custom layout if need.
 
-## Customise
+### SwiftUI
+
+If you are using SwiftUI, it is recommended that you use the modifier we provide. This will ensure the confetti effects are presented within the corresponding window scene.
+
+```swift
+struct FancyButton: View {
+
+    @State private var isPresenting = false
+    
+    var body: some View {
+        Button("🎉 hooray!", action: { isPresenting.toggle() })
+            .confetti(isPresented: $isPresenting,
+                      animation: .fullWidthToDown,
+                      particles: [.triangle, .arc],
+                      duration: 3.0)
+    }
+}
+```
+
+The confetti modifier can be attached to any of the view hierarchies. It will always produce a full screen effect.
+
+## Usage UIKit
 
 ### Animation
 
@@ -99,7 +126,7 @@ enum SPConfettiAnimation {
 }
 ```
 
-For change animation:
+To change animation:
 
 ```swift
 confettiView.animation = .centerWidthToDown
@@ -128,7 +155,7 @@ You can set global values with configuration object. It will apply for all next 
 ```swift
 // For example, available more
 SPConfettiConfiguration.particles = [.star]
-SPConfettiConfiguration.particlesConfig.colors = [.systemRed, .ssytemBlue]
+SPConfettiConfiguration.particlesConfig.colors = [.systemRed, .sytemBlue]
 ```
 
 ## Delegate
@@ -156,34 +183,43 @@ protocol SPConfettiDelegate: AnyObject {
     func confettiDidEndAnimating()
 }
 ```
-## Other Projects
 
-I love being helpful. Here I have provided a list of libraries that I keep up to date. For see `video previews` of libraries without install open [opensource.ivanvorobei.by](https://opensource.ivanvorobei.by) website.<br>
-I have libraries with native interface and managing permissions. Also available pack of useful extensions for boost your development process.
+## Usage SwiftUI
 
-<p float="left">
-<a href="https://opensource.ivanvorobei.by">
-<img src="https://github.com/ivanvorobei/Readme/blob/main/Buttons/more-libraries.svg">
-</a>
-</p>
+The global configuration above also works in SwiftUI. However, you can set different configurations for each confetti separately by using the `.confettiParticle(_:_:)` modifier.
+
+```swift
+VStack {
+    Button("Fast", action: { isPresenting1.toggle() })
+            .confetti(isPresented: $isPresenting1,
+                      animation: .fullWidthToDown,
+                      particles: [.triangle, .arc],
+                      duration: 3.0)
+            .confettiParticle(\.velocity, 600)
+
+    Button("Slow", action: { isPresenting2.toggle() })
+            .confetti(isPresented: $isPresenting2,
+                      animation: .fullWidthToDown,
+                      particles: [.triangle, .arc],
+                      duration: 3.0)
+            .confettiParticle(\.velocity, 100)
+}
+```
 
 ## Russian Community
 
-Веду каналы об iOS разработке. Один с туториалами и новостями, другой с обзором библиотек.<br>
-Со сложной задачей помогут в чате.
+Подписывайся в телеграм-канал, если хочешь получать уведомления о новых туториалах.<br>
+Со сложными и непонятными задачами помогут в чате.
 
 <p float="left">
-    <a href="https://sparrowcode.by/telegram/channel">
-        <img src="https://github.com/ivanvorobei/Readme/blob/main/Buttons/russian-community-tutorials.svg">
-    </a>
-    <a href="https://sparrowcode.by/telegram/libs">
-        <img src="https://github.com/ivanvorobei/Readme/blob/main/Buttons/russian-community-libraries.svg">
+    <a href="https://sparrowcode.by/telegram">
+        <img src="https://github.com/ivanvorobei/Readme/blob/main/Buttons/open-telegram-channel.svg">
     </a>
     <a href="https://sparrowcode.by/telegram/chat">
         <img src="https://github.com/ivanvorobei/Readme/blob/main/Buttons/russian-community-chat.svg">
     </a>
 </p>
 
-Видео-туториалы выклыдываю на [YouTube](https://sparrowcode.by/youtube):
+Видео-туториалы выклыдываю на [YouTube](https://ivanvorobei.by/youtube):
 
-[![Tutorials on YouTube](https://cdn.ivanvorobei.by/github/readme/youtube-preview.jpg)](https://sparrowcode.by/youtube)
+[![Tutorials on YouTube](https://cdn.ivanvorobei.by/github/readme/youtube-preview.jpg)](https://ivanvorobei.by/youtube)

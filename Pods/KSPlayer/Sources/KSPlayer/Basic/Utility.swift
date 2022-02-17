@@ -26,6 +26,7 @@ open class LayerContainerView: UIView {
         layer = CAGradientLayer()
     }
 
+    @available(*, unavailable)
     public required init?(coder _: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
@@ -95,15 +96,15 @@ extension String {
     }
 }
 
-extension UIColor {
-    public convenience init(hex: Int, alpha: CGFloat = 1) {
+public extension UIColor {
+    convenience init(hex: Int, alpha: CGFloat = 1) {
         let red = CGFloat((hex >> 16) & 0xFF)
         let green = CGFloat((hex >> 8) & 0xFF)
         let blue = CGFloat(hex & 0xFF)
         self.init(red: red / 255.0, green: green / 255.0, blue: blue / 255.0, alpha: alpha)
     }
 
-    public func createImage(size: CGSize = CGSize(width: 1, height: 1)) -> UIImage {
+    func createImage(size: CGSize = CGSize(width: 1, height: 1)) -> UIImage {
         #if canImport(UIKit)
         let rect = CGRect(origin: .zero, size: size)
         UIGraphicsBeginImageContext(rect.size)
@@ -123,7 +124,7 @@ extension UIColor {
     }
 }
 
-public extension UIView {
+extension UIView {
     var widthConstraint: NSLayoutConstraint? {
         // 防止返回NSContentSizeLayoutConstraint
         constraints.first { $0.isMember(of: NSLayoutConstraint.self) && $0.firstAttribute == .width }
@@ -134,12 +135,12 @@ public extension UIView {
         constraints.first { $0.isMember(of: NSLayoutConstraint.self) && $0.firstAttribute == .height }
     }
 
-    var rightConstraint: NSLayoutConstraint? {
-        superview?.constraints.first { $0.firstItem === self && $0.firstAttribute == .right }
+    var trailingConstraint: NSLayoutConstraint? {
+        superview?.constraints.first { $0.firstItem === self && $0.firstAttribute == .trailing }
     }
 
-    var leftConstraint: NSLayoutConstraint? {
-        superview?.constraints.first { $0.firstItem === self && $0.firstAttribute == .left }
+    var leadingConstraint: NSLayoutConstraint? {
+        superview?.constraints.first { $0.firstItem === self && $0.firstAttribute == .leading }
     }
 
     var topConstraint: NSLayoutConstraint? {
@@ -158,32 +159,51 @@ public extension UIView {
         superview?.constraints.first { $0.firstItem === self && $0.firstAttribute == .centerY }
     }
 
+    var frameConstraints: [NSLayoutConstraint] {
+        var frameConstraint = superview?.constraints.filter { constraint in
+            constraint.firstItem === self
+        } ?? [NSLayoutConstraint]()
+        for constraint in constraints where
+            constraint.isMember(of: NSLayoutConstraint.self) && constraint.firstItem === self && (constraint.firstAttribute == .width || constraint.firstAttribute == .height) {
+            frameConstraint.append(constraint)
+        }
+        return frameConstraint
+    }
+
     var safeTopAnchor: NSLayoutYAxisAnchor {
-        if #available(iOS 11.0, tvOS 11.0, macOS 11.0, *) {
+        if #available(macOS 11.0, *) {
             return self.safeAreaLayoutGuide.topAnchor
         } else {
             return topAnchor
         }
     }
 
-    var safeLeftAnchor: NSLayoutXAxisAnchor {
-        if #available(iOS 11.0, tvOS 11.0, macOS 11.0, *) {
-            return self.safeAreaLayoutGuide.leftAnchor
+    var readableTopAnchor: NSLayoutYAxisAnchor {
+        #if os(macOS)
+        topAnchor
+        #else
+        readableContentGuide.topAnchor
+        #endif
+    }
+
+    var safeLeadingAnchor: NSLayoutXAxisAnchor {
+        if #available(macOS 11.0, *) {
+            return self.safeAreaLayoutGuide.leadingAnchor
         } else {
-            return leftAnchor
+            return leadingAnchor
         }
     }
 
-    var safeRightAnchor: NSLayoutXAxisAnchor {
-        if #available(iOS 11.0, tvOS 11.0, macOS 11.0, *) {
-            return self.safeAreaLayoutGuide.rightAnchor
+    var safeTrailingAnchor: NSLayoutXAxisAnchor {
+        if #available(macOS 11.0, *) {
+            return self.safeAreaLayoutGuide.trailingAnchor
         } else {
-            return rightAnchor
+            return trailingAnchor
         }
     }
 
     var safeBottomAnchor: NSLayoutYAxisAnchor {
-        if #available(iOS 11.0, tvOS 11.0, macOS 11.0, *) {
+        if #available(macOS 11.0, *) {
             return self.safeAreaLayoutGuide.bottomAnchor
         } else {
             return bottomAnchor
@@ -203,6 +223,12 @@ extension CMTimeRange {
     }
 }
 
+extension CGPoint {
+    var reverse: CGPoint {
+        CGPoint(x: y, y: x)
+    }
+}
+
 extension CGSize {
     var reverse: CGSize {
         CGSize(width: height, height: width)
@@ -210,6 +236,10 @@ extension CGSize {
 
     var toPoint: CGPoint {
         CGPoint(x: width, y: height)
+    }
+
+    var isHorizonal: Bool {
+        width > height
     }
 }
 
@@ -384,15 +414,15 @@ extension UIImageView {
     }
 }
 
-extension URL {
-    public var isMovie: Bool {
+public extension URL {
+    var isMovie: Bool {
         if let typeID = try? resourceValues(forKeys: [.typeIdentifierKey]).typeIdentifier as CFString? {
             return UTTypeConformsTo(typeID, kUTTypeMovie)
         }
         return false
     }
 
-    public var isAudio: Bool {
+    var isAudio: Bool {
         if let typeID = try? resourceValues(forKeys: [.typeIdentifierKey]).typeIdentifier as CFString? {
             return UTTypeConformsTo(typeID, kUTTypeAudio)
         }

@@ -21,7 +21,7 @@ target '3332323' do
  pod 'SwiftyJSON'
 
 # 微信图片框架
- pod 'ZLPhotoBrowser' , '4.1.7'
+# pod 'ZLPhotoBrowser' , '4.1.7'
 
 # pod 'mobile-ffmpeg-full', '4.4'
 
@@ -73,5 +73,59 @@ target '3332323' do
  
  
 
+ 
+ pod 'TangramKit'
+ 
+ # network
+ pod 'Moya', '~> 15.0'
+ 
+ # until
+ pod 'Then'
+ pod 'Toast-Swift'
+#  pod 'MarqueeLabel/Swift'
+ pod 'TXScrollLabelView'
+ pod 'AttributedString'
+ pod 'FDFullscreenPopGesture', '1.1'
+ pod 'FSPagerView'
+ pod 'JXSegmentedView'
+ pod 'MJRefresh'
+ pod 'YYWebImage'
+ pod 'SDWebImage'
+ 
+ # json
+ pod 'KakaJSON', '~> 1.1.2'
+ 
+ # crypto
+ pod 'CryptoSwift', '~> 1.4.1'
+ 
+ # RXSwift
+ pod 'RxSwift',    '~> 4.0'
+ pod 'RxCocoa',    '~> 4.0'
+ 
+ pod "PromiseKit"
+ 
+ 
+ # local storage
+ pod 'KeychainAccess'
+ 
+ pod 'LookinServer', :configurations => ['Debug']
+ pod 'ZLPhotoBrowser'
+ pod 'QuickTableViewController'
+ 
+ pod 'PureLayout'
+
+# 语音视频 https://github.com/orgs/jitsi/repositories
+ pod 'JitsiMeetSDK', '~> 4.1.0'
+ 
+#  https://swiftobc.com/repo/xiaoyouPrince-XYNav-swift-navigation-bar
+#  https://github.com/xiaoyouPrince/XYNav
+ pod 'XYNav'
+
+ 
+ 
+ 
+ 
+ 
+ 
  
 end

@@ -6,7 +6,7 @@
 //
 
 import Foundation
-
+import UIKit
 import CoreGraphics
 extension UInt64 {
     var stringValue: String {
@@ -34,27 +34,27 @@ extension Int {
 }
 
 extension Float {
-    var half: Float {
-        return self / 2.0
-    }
-    
-    var double: Float {
-        return self * 2.0
-    }
-    
-    var stringValue: String {
-        return String(self)
-    }
+//    var half: Float {
+//        return self / 2.0
+//    }
+//
+//    var double: Float {
+//        return self * 2.0
+//    }
+//
+//    var stringValue: String {
+//        return String(self)
+//    }
 }
 
 extension CGFloat {
-    var half: CGFloat {
-        return self / 2.0
-    }
-    
-    var double: CGFloat {
-        return self * 2.0
-    }
+//    var half: CGFloat {
+//        return self / 2.0
+//    }
+//
+//    var double: CGFloat {
+//        return self * 2.0
+//    }
     
     var oddString : String{
         let oddStr = "\(self)"
@@ -86,17 +86,17 @@ extension CGFloat {
 }
 
 extension Double {
-    var half: Double {
-        return self / 2.0
-    }
-    
-    var double: Double {
-        return self * 2.0
-    }
-    
-    var stringValue: String {
-        return String(self)
-    }
+//    var half: Double {
+//        return self / 2.0
+//    }
+//
+//    var double: Double {
+//        return self * 2.0
+//    }
+//
+//    var stringValue: String {
+//        return String(self)
+//    }
 }
 
 

@@ -6,38 +6,41 @@
 //
 
 import CoreGraphics
-import Libavformat
 import Foundation
+import Libavformat
 #if canImport(UIKit)
 import UIKit
 #else
 import AppKit
 #endif
 class SubtitleDecode: DecodeProtocol {
+    private weak var delegate: DecodeResultDelegate?
     private let reg = AssParse.patternReg()
     private var codecContext: UnsafeMutablePointer<AVCodecContext>?
     private let scale = VideoSwresample(dstFormat: AV_PIX_FMT_RGBA, forceTransfer: true)
     private var subtitle = AVSubtitle()
     private var preSubtitleFrame: SubtitleFrame?
     private let timebase: Timebase
-    required init(assetTrack: TrackProtocol, options: KSOptions) {
+    required init(assetTrack: TrackProtocol, options: KSOptions, delegate: DecodeResultDelegate) {
+        self.delegate = delegate
         timebase = assetTrack.timebase
+        assetTrack.setIsEnabled(!assetTrack.isImageSubtitle)
         do {
-            codecContext = try assetTrack.stream.pointee.codecpar.ceateContext(options: options)
+            codecContext = try assetTrack.stream.pointee.codecpar.pointee.ceateContext(options: options)
         } catch {
             KSLog(error as CustomStringConvertible)
         }
     }
 
-    func decode() {
+    func decode() {}
 
-    }
-
-    func doDecode(packet: UnsafeMutablePointer<AVPacket>) throws -> [MEFrame] {
-        guard let codecContext = codecContext else { return [] }
+    func doDecode(packet: UnsafeMutablePointer<AVPacket>) throws {
+        guard let codecContext = codecContext else {
+            delegate?.decodeResult(frame: nil)
+            return
+        }
         var pktSize = packet.pointee.size
         var error: NSError?
-        var array = [MEFrame]()
         while pktSize > 0 {
             var gotsubtitle = Int32(0)
             let len = avcodec_decode_subtitle2(codecContext, &subtitle, &gotsubtitle, packet)
@@ -65,23 +68,21 @@ class SubtitleDecode: DecodeProtocol {
                 preSubtitleFrame.part.text.append(attributedString)
             } else {
                 preSubtitleFrame = frame
-                array.append(frame)
+                delegate?.decodeResult(frame: frame)
             }
             if len == 0 {
                 break
             }
             pktSize -= len
         }
-        return array
     }
 
-    func doFlushCodec() {
-    }
+    func doFlushCodec() {}
 
     func shutdown() {
         scale.shutdown()
         avsubtitle_free(&subtitle)
-        if let codecContext = self.codecContext {
+        if let codecContext = codecContext {
             avcodec_close(codecContext)
             avcodec_free_context(&self.codecContext)
         }
@@ -102,7 +103,7 @@ class SubtitleDecode: DecodeProtocol {
                     attributedString.append(group.text)
                 }
             } else if rect.type == SUBTITLE_BITMAP {
-                image = scale.transfer(format: AV_PIX_FMT_PAL8, width: rect.w, height: rect.h, data: Array(tuple: rect.data), linesize: Array(tuple: rect.linesize).map {Int($0)})
+                image = scale.transfer(format: AV_PIX_FMT_PAL8, width: rect.w, height: rect.h, data: Array(tuple: rect.data), linesize: Array(tuple: rect.linesize).map { Int($0) })
             }
         }
         return (attributedString, image.map { UIImage(cgImage: $0) })

@@ -50,7 +50,7 @@ public class KSPlayerResource: Hashable {
         self.cover = cover
         self.subtitle = subtitle
         self.definitions = definitions
-        self.nowPlayingInfo = KSNowPlayableMetadata(title: name)
+        nowPlayingInfo = KSNowPlayableMetadata(title: name)
     }
 
     public func hash(into hasher: inout Hasher) {
@@ -116,7 +116,8 @@ public struct KSNowPlayableMetadata {
         return nowPlayingInfo
     }
 
-    init(mediaType: MPNowPlayingInfoMediaType? = nil, isLiveStream: Bool? = nil, title: String, artist: String? = nil, artwork: MPMediaItemArtwork? = nil, albumArtist: String? = nil, albumTitle: String? = nil) {
+    init(mediaType: MPNowPlayingInfoMediaType? = nil, isLiveStream: Bool? = nil, title: String, artist: String? = nil,
+         artwork: MPMediaItemArtwork? = nil, albumArtist: String? = nil, albumTitle: String? = nil) {
         self.mediaType = mediaType
         self.isLiveStream = isLiveStream
         self.title = title
@@ -133,6 +134,6 @@ public struct KSNowPlayableMetadata {
         self.artist = artist
         self.albumArtist = albumArtist
         self.albumTitle = albumTitle
-        self.artwork = MPMediaItemArtwork(boundsSize: image.size) { _ in image }
+        artwork = MPMediaItemArtwork(boundsSize: image.size) { _ in image }
     }
 }

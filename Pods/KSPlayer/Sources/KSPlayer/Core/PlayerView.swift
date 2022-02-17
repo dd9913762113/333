@@ -14,14 +14,17 @@ import AVFoundation
 
 public enum PlayerButtonType: Int {
     case play = 101
-    case pause = 102
-    case back = 103
-    case srt = 104
-    case landscape = 105
-    case replay = 106
-    case lock = 107
-    case rate = 108
-    case definition = 109
+    case pause
+    case back
+    case srt
+    case landscape
+    case replay
+    case lock
+    case rate
+    case definition
+    case pictureInPicture
+    case audioSwitch
+    case videoSwitch
 }
 
 public protocol PlayerControllerDelegate: AnyObject {
@@ -60,6 +63,7 @@ open class PlayerView: UIView, KSPlayerLayerDelegate, KSSliderDelegate {
         toolBar.addTarget(self, action: #selector(onButtonPressed(_:)))
     }
 
+    @available(*, unavailable)
     public required init?(coder _: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
@@ -88,6 +92,7 @@ open class PlayerView: UIView, KSPlayerLayerDelegate, KSSliderDelegate {
     }
 
     open func play() {
+        becomeFirstResponder()
         if playerLayer.state == .playedToTheEnd {
             seek(time: 0)
         } else {
@@ -112,10 +117,6 @@ open class PlayerView: UIView, KSPlayerLayerDelegate, KSSliderDelegate {
         toolBar.currentTime = 0
         totalTime = 0
         playerLayer.set(url: url, options: options)
-    }
-
-    deinit {
-        resetPlayer()
     }
 
     // MARK: - KSSliderDelegate
@@ -178,7 +179,7 @@ extension PlayerView {
 
 extension UIView {
     var viewController: UIViewController? {
-        var next = self.next
+        var next = next
         while next != nil {
             if let viewController = next as? UIViewController {
                 return viewController

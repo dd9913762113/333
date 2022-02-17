@@ -8,11 +8,13 @@
 import AudioToolbox
 import Libavcodec
 
- final class AudioHardwareDecode: DecodeProtocol {
+final class AudioHardwareDecode: DecodeProtocol {
+    private weak var delegate: DecodeResultDelegate?
     private let timebase: Timebase
     private var converter: AudioConverterRef?
     private var outAudioBufferList = AudioBufferList()
-    required init(assetTrack: TrackProtocol, options: KSOptions) {
+    required init(assetTrack: TrackProtocol, options _: KSOptions, delegate: DecodeResultDelegate) {
+        self.delegate = delegate
         let codecpar = assetTrack.stream.pointee.codecpar.pointee
         timebase = assetTrack.timebase
         var inputFormat = codecpar.inputFormat
@@ -32,15 +34,14 @@ import Libavcodec
         AudioConverterNew(&inputFormat, &outputFormat, &converter)
     }
 
-    func decode() {
+    func decode() {}
 
-    }
-
-    func doDecode(packet: UnsafeMutablePointer<AVPacket>) throws -> [MEFrame] {
+    func doDecode(packet: UnsafeMutablePointer<AVPacket>) throws {
         guard let converter = converter else {
-            return []
+            delegate?.decodeResult(frame: nil)
+            return
         }
-        let inputDataProc: AudioConverterComplexInputDataProc = { (_, ioPacketCount, audioBufferList, packetDesc, userData) -> OSStatus in
+        let inputDataProc: AudioConverterComplexInputDataProc = { _, ioPacketCount, audioBufferList, packetDesc, userData -> OSStatus in
             guard let packet = UnsafePointer<AVPacket>(OpaquePointer(userData)), let data = packet.pointee.data else {
                 ioPacketCount.pointee = 0
                 return 1
@@ -56,7 +57,7 @@ import Libavcodec
                 description.mVariableFramesInPacket = 0
                 description.mDataByteSize = audioBufferList.pointee.mBuffers.mDataByteSize
                 withUnsafeMutablePointer(to: &description) {
-                     packetDesc.pointee = $0
+                    packetDesc.pointee = $0
                 }
             }
             return noErr
@@ -72,20 +73,22 @@ import Libavcodec
             }
             frame.duration = packet.pointee.duration
             frame.size = Int64(packet.pointee.size)
-            return [frame]
+            delegate?.decodeResult(frame: frame)
+            return
+        } else {
+            delegate?.decodeResult(frame: nil)
         }
-        return []
     }
-    func doFlushCodec() {
 
-    }
+    func doFlushCodec() {}
+
     func shutdown() {
         if let converter = converter {
             AudioConverterDispose(converter)
         }
         converter = nil
     }
- }
+}
 
 extension AVCodecID {
     var mFormatID: UInt32 {

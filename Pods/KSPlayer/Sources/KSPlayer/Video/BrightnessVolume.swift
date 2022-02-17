@@ -5,7 +5,6 @@
 //  Created by kintan on 2017/11/3.
 //
 #if canImport(UIKit)
-
 import UIKit
 
 open class BrightnessVolume {
@@ -42,7 +41,7 @@ open class BrightnessVolume {
     private func appearView() {
         if progressView.alpha == 0.0 {
             progressView.alpha = 1.0
-            DispatchQueue.main.asyncAfter(deadline: DispatchTime.now() + 3) { [weak self] () -> Void in
+            DispatchQueue.main.asyncAfter(deadline: DispatchTime.now() + 3) { [weak self] () in
                 self?.disAppearView()
             }
         }
@@ -50,7 +49,7 @@ open class BrightnessVolume {
 
     private func disAppearView() {
         if progressView.alpha == 1.0 {
-            UIView.animate(withDuration: 0.8) { [weak self] () -> Void in
+            UIView.animate(withDuration: 0.8) { [weak self] () in
                 self?.progressView.alpha = 0.0
             }
         }
@@ -98,7 +97,7 @@ private final class SystemView: UIVisualEffectView {
             stackView.addArrangedSubview(tipView)
             tipView.translatesAutoresizingMaskIntoConstraints = false
             NSLayoutConstraint.activate([
-                tipView.heightAnchor.constraint(equalTo: stackView.heightAnchor)
+                tipView.heightAnchor.constraint(equalTo: stackView.heightAnchor),
             ])
         }
         translatesAutoresizingMaskIntoConstraints = false
@@ -115,14 +114,14 @@ private final class SystemView: UIVisualEffectView {
             titleLabel.widthAnchor.constraint(equalTo: widthAnchor),
             titleLabel.centerXAnchor.constraint(equalTo: centerXAnchor),
             titleLabel.heightAnchor.constraint(equalToConstant: 30),
-            longView.leftAnchor.constraint(equalTo: leftAnchor, constant: 13),
-            longView.rightAnchor.constraint(equalTo: rightAnchor, constant: -13),
+            longView.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 13),
+            longView.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -13),
             longView.heightAnchor.constraint(equalToConstant: 7),
             longView.bottomAnchor.constraint(equalTo: bottomAnchor, constant: -16),
-            stackView.leftAnchor.constraint(equalTo: longView.leftAnchor, constant: 1),
-            stackView.rightAnchor.constraint(equalTo: longView.rightAnchor, constant: -1),
+            stackView.leadingAnchor.constraint(equalTo: longView.leadingAnchor, constant: 1),
+            stackView.trailingAnchor.constraint(equalTo: longView.trailingAnchor, constant: -1),
             stackView.topAnchor.constraint(equalTo: longView.topAnchor, constant: 1),
-            stackView.bottomAnchor.constraint(equalTo: longView.bottomAnchor, constant: -1)
+            stackView.bottomAnchor.constraint(equalTo: longView.bottomAnchor, constant: -1),
         ])
     }
 }
@@ -156,7 +155,7 @@ extension SystemView: BrightnessVolumeViewProtocol {
                 centerXAnchor.constraint(equalTo: view.centerXAnchor),
                 centerYAnchor.constraint(equalTo: view.centerYAnchor),
                 heightAnchor.constraint(equalToConstant: 155),
-                widthAnchor.constraint(equalToConstant: 155)
+                widthAnchor.constraint(equalToConstant: 155),
             ])
         }
     }
@@ -184,12 +183,13 @@ private final class ProgressView: UIView {
             progressView.heightAnchor.constraint(equalToConstant: 2),
             progressView.centerXAnchor.constraint(equalTo: centerXAnchor),
             progressView.topAnchor.constraint(equalTo: topAnchor, constant: 57),
-            imageView.leftAnchor.constraint(equalTo: leftAnchor),
-            imageView.rightAnchor.constraint(equalTo: rightAnchor),
-            imageView.bottomAnchor.constraint(equalTo: bottomAnchor)
+            imageView.leadingAnchor.constraint(equalTo: leadingAnchor),
+            imageView.trailingAnchor.constraint(equalTo: trailingAnchor),
+            imageView.bottomAnchor.constraint(equalTo: bottomAnchor),
         ])
     }
 
+    @available(*, unavailable)
     required init?(coder _: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
@@ -211,10 +211,10 @@ extension ProgressView: BrightnessVolumeViewProtocol {
             view.addSubview(self)
             translatesAutoresizingMaskIntoConstraints = false
             NSLayoutConstraint.activate([
-                rightAnchor.constraint(equalTo: view.safeRightAnchor, constant: -10),
+                trailingAnchor.constraint(equalTo: view.safeTrailingAnchor, constant: -10),
                 centerYAnchor.constraint(equalTo: view.centerYAnchor),
                 heightAnchor.constraint(equalToConstant: 150),
-                widthAnchor.constraint(equalToConstant: 24)
+                widthAnchor.constraint(equalToConstant: 24),
             ])
         }
     }

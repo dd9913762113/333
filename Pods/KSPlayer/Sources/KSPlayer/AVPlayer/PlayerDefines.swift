@@ -6,6 +6,7 @@
 //
 
 import AVFoundation
+import AVKit
 import CoreMedia
 #if canImport(UIKit)
 import UIKit
@@ -40,6 +41,10 @@ public protocol MediaPlayerProtocol: MediaPlayback {
     var playbackVolume: Float { get set }
     var contentMode: UIViewContentMode { get set }
     var subtitleDataSouce: SubtitleDataSouce? { get }
+    @available(tvOS 14.0, macOS 10.15, *)
+    var pipController: AVPictureInPictureController? { get }
+    @available(macOS 12.0, iOS 15.0, tvOS 15.0, *)
+    var playbackCoordinator: AVPlaybackCoordinator { get }
     init(url: URL, options: KSOptions)
     func replace(url: URL, options: KSOptions)
     func play()
@@ -50,9 +55,36 @@ public protocol MediaPlayerProtocol: MediaPlayback {
     func tracks(mediaType: AVFoundation.AVMediaType) -> [MediaPlayerTrack]
     func select(track: MediaPlayerTrack)
 }
-extension MediaPlayerProtocol {
-    public var nominalFrameRate: Float {
+
+public extension MediaPlayerProtocol {
+    var nominalFrameRate: Float {
         tracks(mediaType: .video).first { $0.isEnabled }?.nominalFrameRate ?? 0
+    }
+
+    func updateConstraint() {
+        guard let superview = view.superview, naturalSize != .zero else {
+            return
+        }
+        view.widthConstraint.flatMap { view.removeConstraint($0) }
+        view.heightConstraint.flatMap { view.removeConstraint($0) }
+        view.centerXConstraint.flatMap { view.removeConstraint($0) }
+        view.centerYConstraint.flatMap { view.removeConstraint($0) }
+        view.translatesAutoresizingMaskIntoConstraints = false
+        NSLayoutConstraint.activate([
+            view.centerXAnchor.constraint(equalTo: superview.centerXAnchor),
+            view.centerYAnchor.constraint(equalTo: superview.centerYAnchor),
+        ])
+        if naturalSize.isHorizonal {
+            NSLayoutConstraint.activate([
+                view.widthAnchor.constraint(equalTo: superview.widthAnchor),
+                view.heightAnchor.constraint(equalTo: view.widthAnchor, multiplier: naturalSize.height / naturalSize.width),
+            ])
+        } else {
+            NSLayoutConstraint.activate([
+                view.heightAnchor.constraint(equalTo: superview.heightAnchor),
+                view.widthAnchor.constraint(equalTo: view.heightAnchor, multiplier: naturalSize.width / naturalSize.height),
+            ])
+        }
     }
 }
 
@@ -81,14 +113,14 @@ public protocol MediaPlayerTrack {
     var yCbCrMatrix: String? { get }
 }
 
-extension FourCharCode {
-    public var string: String {
+public extension FourCharCode {
+    var string: String {
         let cString: [CChar] = [
             CChar(self >> 24 & 0xFF),
             CChar(self >> 16 & 0xFF),
             CChar(self >> 8 & 0xFF),
             CChar(self & 0xFF),
-            0
+            0,
         ]
         return String(cString: cString)
     }
@@ -103,11 +135,7 @@ extension MediaPlayerProtocol {
         if category == .playback || category == .playAndRecord {
             return
         }
-        if #available(iOS 11.0, tvOS 11.0, *) {
-            try? AVAudioSession.sharedInstance().setCategory(.playback, mode: .default, policy: .longFormAudio)
-        } else {
-            try? AVAudioSession.sharedInstance().setCategory(.playback, mode: .default)
-        }
+        try? AVAudioSession.sharedInstance().setCategory(.playback, mode: .default, policy: .longFormAudio)
         try? AVAudioSession.sharedInstance().setActive(true)
         #endif
     }
@@ -179,8 +207,9 @@ open class KSOptions {
     public var subtitleDelay = 0.0 // s
     public var videoDisable = false
     public var audioDisable = false
+    public var audioFilters: String?
+    public var videoFilters: String?
     public var subtitleDisable = false
-    public var asynchronousDecompression = false
     public var videoAdaptable = true
     public var syncDecodeAudio = false
     public var syncDecodeVideo = false
@@ -196,11 +225,6 @@ open class KSOptions {
     public internal(set) var readVideoTime = 0.0
     public internal(set) var decodeAudioTime = 0.0
     public internal(set) var decodeVideoTime = 0.0
-
-    // 加个节流器，防止频繁的更新加载状态
-    private var throttle = mach_absolute_time()
-    private let concurrentQueue = DispatchQueue(label: "throttle", attributes: .concurrent)
-    private let throttleDiff: UInt64
     public init() {
         formatContextOptions["auto_convert"] = 0
         formatContextOptions["fps_probe_size"] = 3
@@ -212,10 +236,6 @@ open class KSOptions {
         formatContextOptions["user_agent"] = "ksplayer"
         decoderOptions["threads"] = "auto"
         decoderOptions["refcounted_frames"] = "1"
-        var timebaseInfo = mach_timebase_info_data_t()
-        mach_timebase_info(&timebaseInfo)
-        // 间隔0.1s
-        throttleDiff = UInt64(100_000_000 * timebaseInfo.denom / timebaseInfo.numer)
     }
 
     public func setCookie(_ cookies: [HTTPCookie]) {
@@ -233,22 +253,16 @@ open class KSOptions {
 
     // 缓冲算法函数
     open func playable(capacitys: [CapacityProtocol], isFirst: Bool, isSeek: Bool) -> LoadingState? {
-        guard isFirst || isSeek || !isThrottle() else {
-            return nil
-        }
-        concurrentQueue.sync(flags: .barrier) {
-            self.throttle = mach_absolute_time()
-        }
-        let packetCount = capacitys.map { $0.packetCount }.min() ?? 0
-        let frameCount = capacitys.map { $0.frameCount }.min() ?? 0
-        let isEndOfFile = capacitys.allSatisfy { $0.isEndOfFile }
+        let packetCount = capacitys.map(\.packetCount).min() ?? 0
+        let frameCount = capacitys.map(\.frameCount).min() ?? 0
+        let isEndOfFile = capacitys.allSatisfy(\.isEndOfFile)
         let loadedTime = capacitys.map { TimeInterval($0.packetCount + $0.frameCount) / TimeInterval($0.fps) }.min() ?? 0
         let progress = loadedTime * 100.0 / preferredForwardBufferDuration
         let isPlayable = capacitys.allSatisfy { capacity in
             if capacity.isEndOfFile && capacity.packetCount == 0 {
                 return true
             }
-            guard capacity.frameCount >= capacity.frameMaxCount >> 1 else {
+            guard capacity.frameCount >= capacity.frameMaxCount >> 2 else {
                 return false
             }
             if (syncDecodeVideo && capacity.mediaType == .video) || (syncDecodeAudio && capacity.mediaType == .audio) {
@@ -269,14 +283,6 @@ open class KSOptions {
         return LoadingState(loadedTime: loadedTime, progress: progress, packetCount: packetCount,
                             frameCount: frameCount, isEndOfFile: isEndOfFile, isPlayable: isPlayable,
                             isFirst: isFirst, isSeek: isSeek)
-    }
-
-    private func isThrottle() -> Bool {
-        var isThrottle = false
-        concurrentQueue.sync {
-            isThrottle = mach_absolute_time() - self.throttle < throttleDiff
-        }
-        return isThrottle
     }
 
     open func adaptable(state: VideoAdaptationState) -> (Int64, Int64)? {
@@ -313,24 +319,30 @@ open class KSOptions {
         nil
     }
 
-    open func videoFrameMaxCount(fps: Float) -> Int {
-        return 8
+    open func videoFrameMaxCount(fps _: Float) -> Int {
+        8
     }
 
-    open func audioFrameMaxCount(fps: Float) -> Int {
-        return 16
+    open func audioFrameMaxCount(fps _: Float, channels: Int) -> Int {
+        (16 * max(channels, 1)) >> 1
     }
 
-    open func customizeDar(sar: CGSize, par: CGSize) -> CGSize? {
-        return nil
+    /// customize dar
+    /// - Parameters:
+    ///   - sar: SAR(Sample Aspect Ratio)
+    ///   - dar: PAR(Pixel Aspect Ratio)
+    /// - Returns: DAR(Display Aspect Ratio)
+    open func customizeDar(sar _: CGSize, par _: CGSize) -> CGSize? {
+        nil
     }
 
     private class func deviceCpuCount() -> Int {
-        var ncpu: UInt = UInt(0)
+        var ncpu = UInt(0)
         var len: size_t = MemoryLayout.size(ofValue: ncpu)
         sysctlbyname("hw.ncpu", &ncpu, &len, nil, 0)
         return Int(ncpu)
     }
+
     open func isUseDisplayLayer() -> Bool {
         display == .plane
     }
@@ -357,7 +369,7 @@ public struct LoadingState {
     public let isSeek: Bool
 }
 
-public struct KSPlayerManager {
+public enum KSPlayerManager {
     /// 日志输出方式
     public static var logFunctionPoint: (String) -> Void = {
         print($0)

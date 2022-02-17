@@ -36,7 +36,6 @@ final class MEPlayerItem {
     private(set) var assetTracks = [TrackProtocol]()
     private var videoAdaptation: VideoAdaptationState?
     private(set) var subtitleTracks = [FFPlayerItemTrack<SubtitleFrame>]()
-    var isBackground = false
     var currentPlaybackTime = TimeInterval(0)
     private var startTime = TimeInterval(0)
     private(set) var rotation = 0.0
@@ -55,12 +54,21 @@ final class MEPlayerItem {
             switch state {
             case .opened:
                 delegate?.sourceDidOpened()
+            case .reading:
+                timer.fireDate = Date.distantPast
+            case .closed:
+                timer.fireDate = Date.distantFuture
             case .failed:
                 delegate?.sourceDidFailed(error: error)
-            default:
+                timer.fireDate = Date.distantFuture
+            case .idle, .opening, .seeking, .paused, .finished:
                 break
             }
         }
+    }
+
+    private lazy var timer: Timer = Timer.scheduledTimer(withTimeInterval: 0.1, repeats: true) { [weak self] _ in
+        self?.codecDidChangeCapacity()
     }
 
     weak var delegate: MEPlayerDelegate?
@@ -68,6 +76,7 @@ final class MEPlayerItem {
     init(url: URL, options: KSOptions) {
         self.url = url
         self.options = options
+        timer.fireDate = Date.distantFuture
         avformat_network_init()
         av_log_set_callback { _, level, format, args in
             guard let format = format, level <= KSPlayerManager.logLevel.rawValue else {
@@ -189,7 +198,7 @@ extension MEPlayerItem {
         var videoIndex: Int32 = -1
         if !options.videoDisable {
             let videos = assetTracks.filter { $0.mediaType == .video }
-            let bitRates = videos.map { $0.bitRate }
+            let bitRates = videos.map(\.bitRate)
             let wantedStreamNb: Int32
             if videos.count > 0, let index = options.wantedVideo(bitRates: bitRates) {
                 wantedStreamNb = videos[index].streamIndex
@@ -231,8 +240,7 @@ extension MEPlayerItem {
         }
         if !options.subtitleDisable {
             subtitleTracks = assetTracks.filter { $0.mediaType == .subtitle }.map {
-                return FFPlayerItemTrack<
-                    SubtitleFrame>(assetTrack: $0, options: options)
+                FFPlayerItemTrack<SubtitleFrame>(assetTrack: $0, options: options)
             }
             allTracks.append(contentsOf: subtitleTracks)
         }
@@ -263,6 +271,7 @@ extension MEPlayerItem {
                 condition.wait()
             }
             if state == .seeking {
+                allTracks.forEach { $0.seek(time: currentPlaybackTime) }
                 let timeStamp = Int64(currentPlaybackTime * TimeInterval(AV_TIME_BASE))
                 // can not seek to key frame
 //                let result = avformat_seek_file(formatCtx, -1, timeStamp - 2, timeStamp, timeStamp + 2, AVSEEK_FLAG_BACKWARD)
@@ -270,8 +279,8 @@ extension MEPlayerItem {
                 if state == .closed {
                     break
                 }
-                allTracks.forEach { $0.seek(time: currentPlaybackTime) }
                 isSeek = true
+                allTracks.forEach { $0.seek(time: currentPlaybackTime) }
                 seekingCompletionHandler?(result >= 0)
                 seekingCompletionHandler = nil
                 state = .reading
@@ -405,7 +414,6 @@ extension MEPlayerItem: MediaPlayback {
             seekingCompletionHandler = handler
             state = .seeking
             condition.broadcast()
-            allTracks.forEach { $0.seek(time: currentPlaybackTime) }
         } else if state == .finished {
             currentPlaybackTime = time
             seekingCompletionHandler = handler
@@ -417,7 +425,7 @@ extension MEPlayerItem: MediaPlayback {
 }
 
 extension MEPlayerItem: CodecCapacityDelegate {
-    func codecDidChangeCapacity(track: PlayerItemTrackProtocol) {
+    func codecDidChangeCapacity() {
         guard let loadingState = options.playable(capacitys: videoAudioTracks, isFirst: isFirst, isSeek: isSeek) else {
             return
         }
@@ -426,14 +434,14 @@ extension MEPlayerItem: CodecCapacityDelegate {
             isFirst = false
             isSeek = false
             if loadingState.loadedTime > options.maxBufferDuration {
-                adaptable(track: track, loadingState: loadingState)
+                adaptableVideo(loadingState: loadingState)
                 pause()
             } else if loadingState.loadedTime < options.maxBufferDuration / 2 {
                 resume()
             }
         } else {
             resume()
-            adaptable(track: track, loadingState: loadingState)
+            adaptableVideo(loadingState: loadingState)
         }
     }
 
@@ -443,19 +451,22 @@ extension MEPlayerItem: CodecCapacityDelegate {
         }
         let allSatisfy = videoAudioTracks.allSatisfy { $0.isEndOfFile && $0.frameCount == 0 && $0.packetCount == 0 }
         delegate?.sourceDidFinished(type: track.mediaType, allSatisfy: allSatisfy)
-        if allSatisfy, options.isLoopPlay {
-            isAudioStalled = audioTrack == nil
-            audioTrack?.isLoopModel = false
-            videoTrack?.isLoopModel = false
-            if state == .finished {
-                state = .reading
-                read()
+        if allSatisfy {
+            timer.fireDate = Date.distantFuture
+            if options.isLoopPlay {
+                isAudioStalled = audioTrack == nil
+                audioTrack?.isLoopModel = false
+                videoTrack?.isLoopModel = false
+                if state == .finished {
+                    state = .reading
+                    read()
+                }
             }
         }
     }
 
-    private func adaptable(track: PlayerItemTrackProtocol, loadingState: LoadingState) {
-        guard var videoAdaptation = videoAdaptation, track.mediaType == .video, !loadingState.isEndOfFile else {
+    private func adaptableVideo(loadingState: LoadingState) {
+        guard var videoAdaptation = videoAdaptation, let track = videoTrack, !loadingState.isEndOfFile, !loadingState.isSeek, state != .seeking else {
             return
         }
         videoAdaptation.loadedCount = track.packetCount + track.frameCount
@@ -496,9 +507,8 @@ extension MEPlayerItem: OutputRenderSourceDelegate {
     }
 
     func getOutputRender(type: AVFoundation.AVMediaType) -> MEFrame? {
-        var predicate: ((MEFrame) -> Bool)?
         if type == .video {
-            predicate = { [weak self] (frame) -> Bool in
+            let predicate: (MEFrame) -> Bool = { [weak self] frame -> Bool in
                 guard let self = self else { return true }
                 var desire = self.currentPlaybackTime + self.options.audioDelay
                 if self.isAudioStalled {
@@ -512,9 +522,6 @@ extension MEPlayerItem: OutputRenderSourceDelegate {
             }
             return frame
         } else {
-            if isBackground, videoTrack != nil {
-                _ = getOutputRender(type: .video)
-            }
             return audioTrack?.getOutputRender(where: nil)
         }
     }

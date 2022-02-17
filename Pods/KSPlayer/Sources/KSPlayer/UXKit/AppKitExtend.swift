@@ -32,6 +32,7 @@ public typealias UITableViewDelegate = NSTableViewDelegate
 public typealias UITableViewDataSource = NSTableViewDataSource
 public typealias UITouch = NSTouch
 public typealias UIEvent = NSEvent
+public typealias UIButton = KSButton
 
 extension NSScreen {
     var scale: CGFloat {
@@ -158,8 +159,8 @@ extension NSView {
     }
 }
 
-extension NSImage {
-    public convenience init(cgImage: CGImage) {
+public extension NSImage {
+    convenience init(cgImage: CGImage) {
         self.init(cgImage: cgImage, size: NSSize.zero)
     }
 }
@@ -190,8 +191,8 @@ extension NSButton {
     }
 }
 
-extension NSControl {
-    public var textAlignment: NSTextAlignment {
+public extension NSControl {
+    var textAlignment: NSTextAlignment {
         get {
             alignment
         }
@@ -200,7 +201,7 @@ extension NSControl {
         }
     }
 
-    public var text: String {
+    var text: String {
         get {
             stringValue
         }
@@ -209,7 +210,7 @@ extension NSControl {
         }
     }
 
-    public var attributedText: NSAttributedString? {
+    var attributedText: NSAttributedString? {
         get {
             attributedStringValue
         }
@@ -218,7 +219,7 @@ extension NSControl {
         }
     }
 
-    public var numberOfLines: Int {
+    var numberOfLines: Int {
         get {
             usesSingleLineMode ? 1 : 0
         }
@@ -228,8 +229,8 @@ extension NSControl {
     }
 }
 
-extension NSTextContainer {
-    public var numberOfLines: Int {
+public extension NSTextContainer {
+    var numberOfLines: Int {
         get {
             maximumNumberOfLines
         }
@@ -239,8 +240,8 @@ extension NSTextContainer {
     }
 }
 
-extension NSResponder {
-    public var next: NSResponder? {
+public extension NSResponder {
+    var next: NSResponder? {
         nextResponder
     }
 }
@@ -248,7 +249,7 @@ extension NSResponder {
 extension NSSlider {
     open var minimumTrackTintColor: UIColor? {
         get {
-            return trackFillColor
+            trackFillColor
         }
         set {
             trackFillColor = newValue
@@ -319,9 +320,9 @@ extension NSGestureRecognizer {
     }
 }
 
-extension UIApplication {
+public extension UIApplication {
     private static var assertionID = IOPMAssertionID()
-    public static var isIdleTimerDisabled = false {
+    static var isIdleTimerDisabled = false {
         didSet {
             if isIdleTimerDisabled != oldValue {
                 if isIdleTimerDisabled {
@@ -336,7 +337,7 @@ extension UIApplication {
         }
     }
 
-    public var isIdleTimerDisabled: Bool {
+    var isIdleTimerDisabled: Bool {
         get {
             UIApplication.isIdleTimerDisabled
         }
@@ -375,19 +376,21 @@ extension UIApplication {
     case bottomRight
 }
 
-public struct State: OptionSet {
-    public var rawValue: UInt
-    public init(rawValue: UInt) { self.rawValue = rawValue }
-    public static var normal = State(rawValue: 1 << 0)
-    public static var highlighted = State(rawValue: 1 << 1)
-    public static var disabled = State(rawValue: 1 << 2)
-    public static var selected = State(rawValue: 1 << 3)
-    public static var focused = State(rawValue: 1 << 4)
-    public static var application = State(rawValue: 1 << 5)
-    public static var reserved = State(rawValue: 1 << 6)
+public extension UIControl {
+    struct State: OptionSet {
+        public var rawValue: UInt
+        public init(rawValue: UInt) { self.rawValue = rawValue }
+        public static var normal = State(rawValue: 1 << 0)
+        public static var highlighted = State(rawValue: 1 << 1)
+        public static var disabled = State(rawValue: 1 << 2)
+        public static var selected = State(rawValue: 1 << 3)
+        public static var focused = State(rawValue: 1 << 4)
+        public static var application = State(rawValue: 1 << 5)
+        public static var reserved = State(rawValue: 1 << 6)
+    }
 }
 
-extension State: Hashable {}
+extension UIControl.State: Hashable {}
 public class UILabel: NSTextField {
     override init(frame frameRect: CGRect) {
         super.init(frame: frameRect)
@@ -401,14 +404,15 @@ public class UILabel: NSTextField {
         textColor = NSColor.white
     }
 
+    @available(*, unavailable)
     required init?(coder _: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
 }
 
-public class UIButton: NSButton {
-    private var images = [State: UIImage]()
-    private var titles = [State: String]()
+public class KSButton: NSButton {
+    private var images = [UIControl.State: UIImage]()
+    private var titles = [UIControl.State: String]()
     private var titleColors = [State: UIColor]()
     private var targetActions = [ControlEvents: (AnyObject?, Selector)]()
 
@@ -417,6 +421,7 @@ public class UIButton: NSButton {
         isBordered = false
     }
 
+    @available(*, unavailable)
     required init?(coder _: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
@@ -433,28 +438,28 @@ public class UIButton: NSButton {
         }
     }
 
-    open func setImage(_ image: UIImage?, for state: State) {
+    open func setImage(_ image: UIImage?, for state: UIControl.State) {
         images[state] = image
         if state == .normal, isEnabled, !isSelected {
             self.image = image
         }
     }
 
-    open func setTitle(_ title: String, for state: State) {
+    open func setTitle(_ title: String, for state: UIControl.State) {
         titles[state] = title
         if state == .normal, isEnabled, !isSelected {
             self.title = title
         }
     }
 
-    open func setTitleColor(_ titleColor: UIColor?, for state: State) {
+    open func setTitleColor(_ titleColor: UIColor?, for state: UIControl.State) {
         titleColors[state] = titleColor
         if state == .normal, isEnabled, !isSelected {
 //            self.titleColor = titleColor
         }
     }
 
-    private func update(state: State) {
+    private func update(state: UIControl.State) {
         if let stateImage = images[state] {
             image = stateImage
         }
@@ -521,6 +526,7 @@ public class KSSlider: NSSlider {
         action = #selector(progressSliderTouchEnded(_:))
     }
 
+    @available(*, unavailable)
     required init?(coder _: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
@@ -539,7 +545,6 @@ class CADisplayLink: NSObject {
     private var selector: Selector
     private var runloop: RunLoop?
     private var mode = RunLoop.Mode.default
-    public var frameInterval = 1
     public var timestamp: TimeInterval {
         var timeStamp = CVTimeStamp()
         if CVDisplayLinkGetCurrentTime(displayLink!, &timeStamp) == kCVReturnSuccess, (timeStamp.flags & CVTimeStampFlags.hostTimeValid.rawValue) != 0 {
@@ -593,10 +598,6 @@ class CADisplayLink: NSObject {
         isPaused = true
         runloop = nil
     }
-
-    deinit {
-        invalidate()
-    }
 }
 
 extension UIView {
@@ -615,7 +616,6 @@ extension UIView {
 open class UIAlertController: UIViewController {
     public enum Style: Int {
         case actionSheet
-
         case alert
     }
 
@@ -629,9 +629,7 @@ open class UIAlertController: UIViewController {
 open class UIAlertAction: NSObject {
     public enum Style: Int {
         case `default`
-
         case cancel
-
         case destructive
     }
 
