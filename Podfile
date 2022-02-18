@@ -126,7 +126,7 @@ target '3332323' do
  pod 'EFQRCode', '~> 6.2.0'
  pod 'EFFoundation'
  pod 'EFColorPicker'
- 
- 
+## 输入框跟随键盘弹起 https://github.com/1amageek/Toolbar
+# pod 'Toolbar'
  
 end

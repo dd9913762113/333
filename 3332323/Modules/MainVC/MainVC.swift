@@ -52,11 +52,11 @@ class MainVC: UIViewController,  UITableViewDelegate, UITableViewDataSource {
         self.array = ["DownLoad", "collectionview", "TVListVC",
                       "天女散花", "各种权限", "图片选择器",
                       "图文发布", "申请主播","JitsiMeet 音视频在线会议",
-                      "EFQRCode 二维码"]
+                      "EFQRCode 二维码","各大APP新闻页面\"样式\""]
         self.arrayVC = [DownLoadTabbar(), MediaCollectionView(), TVListVC(),
                         PreviewController(), SPPermissionsVC(), WXZLPhoto(),
                         PublishPostVC(),MineApplyAnchorVC(),JitsiMeetVC(),
-                        EFQRCodeVC()]
+                        EFQRCodeVC(),TheNewsViewController()]
         tableView.rowHeight = 50
         tableView.register(TableViewCell.self, forCellReuseIdentifier: "Cell")
         tableView.reloadData()
