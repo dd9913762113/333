@@ -6,6 +6,7 @@
 //
 
 import UIKit
+import PushKit
 import SwiftSignalKit
 import SwiftMediator
 import SwiftSignalKit
@@ -39,6 +40,9 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         guard let launchOptions = launchOptions else { return false }
         JitsiMeet.sharedInstance().application(application, didFinishLaunchingWithOptions: launchOptions)
         
+        
+        self.voipRegistration()
+
         return true
     }
     
@@ -51,7 +55,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     }
 
 
-
+   
 }
 
 

@@ -27,6 +27,7 @@ class JitsiMeetVC: SportBaseVC {
         roomName.font = UIFont.pingFangRegular(16)
         roomName.placeholder =  "请输入房间名称"
         roomName.textColor = UIColor.lightGray
+        roomName.textAlignment = .center
         return roomName
     }()
     
