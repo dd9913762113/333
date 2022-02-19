@@ -9,16 +9,16 @@ use_frameworks!
 target '3332323' do
 
 # pod 'LookinServer'
- pod 'Texture'
+ pod 'Texture' ,'~> 3.1.0'
 # pod 'SwiftSignalKit',:git => 'https://github.com/dd9913762113/SwiftSignalKit', :branch => 'master'
 #pod 'SwiftSignalKit'
- pod 'SnapKit'
- pod 'Alamofire'
- pod 'Kingfisher'
+ pod 'SnapKit'  ,'~> 5.0.1'
+ pod 'Alamofire' ,'~> 5.5.0'
+ pod 'Kingfisher' ,'~> 7.1.2'
 # pod 'OpenSSL-Universal'
 # pod "OpenSSL-Apple"
- pod 'PhoneNumberKit'
- pod 'SwiftyJSON'
+ pod 'PhoneNumberKit','~> 3.3.3'
+ pod 'SwiftyJSON' ,'~> 5.0.1'
 
 # 微信图片框架
 # pod 'ZLPhotoBrowser' , '4.1.7'
@@ -26,7 +26,7 @@ target '3332323' do
 # pod 'mobile-ffmpeg-full', '4.4'
 
 # 下载框架
- pod 'Tiercel'
+ pod 'Tiercel','~> 3.2.5'
  pod 'KeychainAccess'
  
 # 播放视频的时候 带上缓存
