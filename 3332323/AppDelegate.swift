@@ -7,9 +7,7 @@
 
 import UIKit
 import PushKit
-import SwiftSignalKit
 import SwiftMediator
-import SwiftSignalKit
 import JitsiMeetSDK
 import XYNav
 

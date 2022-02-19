@@ -11,7 +11,7 @@ target '3332323' do
 # pod 'LookinServer'
  pod 'Texture'
 # pod 'SwiftSignalKit',:git => 'https://github.com/dd9913762113/SwiftSignalKit', :branch => 'master'
-pod 'SwiftSignalKit'
+#pod 'SwiftSignalKit'
  pod 'SnapKit'
  pod 'Alamofire'
  pod 'Kingfisher'

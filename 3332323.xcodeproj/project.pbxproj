@@ -37,6 +37,32 @@
 		6319E32D27C09233003497E0 /* vip8@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = 6319E31027C09233003497E0 /* vip8@3x.png */; };
 		6319E32E27C09233003497E0 /* vip4@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = 6319E31127C09233003497E0 /* vip4@3x.png */; };
 		6319E32F27C09233003497E0 /* login_bg.mp4 in Resources */ = {isa = PBXBuildFile; fileRef = 6319E31327C09233003497E0 /* login_bg.mp4 */; };
+		6319E35627C0D7F4003497E0 /* Subscriber.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6319E33B27C0D7F4003497E0 /* Subscriber.swift */; };
+		6319E35727C0D7F4003497E0 /* ThreadPool.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6319E33C27C0D7F4003497E0 /* ThreadPool.swift */; };
+		6319E35827C0D7F4003497E0 /* Signal_Catch.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6319E33D27C0D7F4003497E0 /* Signal_Catch.swift */; };
+		6319E35927C0D7F4003497E0 /* Signal_Materialize.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6319E33E27C0D7F4003497E0 /* Signal_Materialize.swift */; };
+		6319E35A27C0D7F4003497E0 /* Signal_Reduce.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6319E33F27C0D7F4003497E0 /* Signal_Reduce.swift */; };
+		6319E35B27C0D7F4003497E0 /* Signal_Merge.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6319E34027C0D7F4003497E0 /* Signal_Merge.swift */; };
+		6319E35C27C0D7F4003497E0 /* Signal_Mapping.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6319E34127C0D7F4003497E0 /* Signal_Mapping.swift */; };
+		6319E35D27C0D7F4003497E0 /* Lock.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6319E34227C0D7F4003497E0 /* Lock.swift */; };
+		6319E35E27C0D7F4003497E0 /* Timer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6319E34327C0D7F4003497E0 /* Timer.swift */; };
+		6319E35F27C0D7F4003497E0 /* Signal_Dispatch.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6319E34427C0D7F4003497E0 /* Signal_Dispatch.swift */; };
+		6319E36027C0D7F4003497E0 /* QueueLocalObject.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6319E34527C0D7F4003497E0 /* QueueLocalObject.swift */; };
+		6319E36127C0D7F4003497E0 /* Disposable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6319E34627C0D7F4003497E0 /* Disposable.swift */; };
+		6319E36227C0D7F4003497E0 /* Multicast.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6319E34727C0D7F4003497E0 /* Multicast.swift */; };
+		6319E36327C0D7F4003497E0 /* Bag.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6319E34827C0D7F4003497E0 /* Bag.swift */; };
+		6319E36427C0D7F4003497E0 /* Signal_Single.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6319E34927C0D7F4003497E0 /* Signal_Single.swift */; };
+		6319E36527C0D7F4003497E0 /* Signal_Take.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6319E34A27C0D7F4003497E0 /* Signal_Take.swift */; };
+		6319E36627C0D7F4003497E0 /* Signal_SideEffects.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6319E34B27C0D7F4003497E0 /* Signal_SideEffects.swift */; };
+		6319E36727C0D7F4003497E0 /* Promise.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6319E34C27C0D7F4003497E0 /* Promise.swift */; };
+		6319E36827C0D7F4003497E0 /* Queue.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6319E34D27C0D7F4003497E0 /* Queue.swift */; };
+		6319E36927C0D7F4003497E0 /* Atomic.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6319E34E27C0D7F4003497E0 /* Atomic.swift */; };
+		6319E36A27C0D7F4003497E0 /* ValuePipe.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6319E34F27C0D7F4003497E0 /* ValuePipe.swift */; };
+		6319E36B27C0D7F4003497E0 /* Signal_Loop.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6319E35027C0D7F4003497E0 /* Signal_Loop.swift */; };
+		6319E36C27C0D7F4003497E0 /* Signal.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6319E35127C0D7F4003497E0 /* Signal.swift */; };
+		6319E36D27C0D7F4003497E0 /* Signal_Combine.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6319E35327C0D7F4003497E0 /* Signal_Combine.swift */; };
+		6319E36E27C0D7F4003497E0 /* Signal_Timing.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6319E35427C0D7F4003497E0 /* Signal_Timing.swift */; };
+		6319E36F27C0D7F4003497E0 /* Signal_Meta.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6319E35527C0D7F4003497E0 /* Signal_Meta.swift */; };
 		6328303226B1060F0041F5BF /* MetalKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 6328303126B1060F0041F5BF /* MetalKit.framework */; };
 		6328303526B125210041F5BF /* TVListVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6328303426B125210041F5BF /* TVListVC.swift */; };
 		6328303E26B127100041F5BF /* cn.m3u in Resources */ = {isa = PBXBuildFile; fileRef = 6328303D26B127100041F5BF /* cn.m3u */; };
@@ -249,6 +275,32 @@
 		6319E31027C09233003497E0 /* vip8@3x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "vip8@3x.png"; sourceTree = "<group>"; };
 		6319E31127C09233003497E0 /* vip4@3x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "vip4@3x.png"; sourceTree = "<group>"; };
 		6319E31327C09233003497E0 /* login_bg.mp4 */ = {isa = PBXFileReference; lastKnownFileType = file; path = login_bg.mp4; sourceTree = "<group>"; };
+		6319E33B27C0D7F4003497E0 /* Subscriber.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Subscriber.swift; sourceTree = "<group>"; };
+		6319E33C27C0D7F4003497E0 /* ThreadPool.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ThreadPool.swift; sourceTree = "<group>"; };
+		6319E33D27C0D7F4003497E0 /* Signal_Catch.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Signal_Catch.swift; sourceTree = "<group>"; };
+		6319E33E27C0D7F4003497E0 /* Signal_Materialize.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Signal_Materialize.swift; sourceTree = "<group>"; };
+		6319E33F27C0D7F4003497E0 /* Signal_Reduce.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Signal_Reduce.swift; sourceTree = "<group>"; };
+		6319E34027C0D7F4003497E0 /* Signal_Merge.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Signal_Merge.swift; sourceTree = "<group>"; };
+		6319E34127C0D7F4003497E0 /* Signal_Mapping.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Signal_Mapping.swift; sourceTree = "<group>"; };
+		6319E34227C0D7F4003497E0 /* Lock.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Lock.swift; sourceTree = "<group>"; };
+		6319E34327C0D7F4003497E0 /* Timer.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Timer.swift; sourceTree = "<group>"; };
+		6319E34427C0D7F4003497E0 /* Signal_Dispatch.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Signal_Dispatch.swift; sourceTree = "<group>"; };
+		6319E34527C0D7F4003497E0 /* QueueLocalObject.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = QueueLocalObject.swift; sourceTree = "<group>"; };
+		6319E34627C0D7F4003497E0 /* Disposable.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Disposable.swift; sourceTree = "<group>"; };
+		6319E34727C0D7F4003497E0 /* Multicast.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Multicast.swift; sourceTree = "<group>"; };
+		6319E34827C0D7F4003497E0 /* Bag.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Bag.swift; sourceTree = "<group>"; };
+		6319E34927C0D7F4003497E0 /* Signal_Single.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Signal_Single.swift; sourceTree = "<group>"; };
+		6319E34A27C0D7F4003497E0 /* Signal_Take.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Signal_Take.swift; sourceTree = "<group>"; };
+		6319E34B27C0D7F4003497E0 /* Signal_SideEffects.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Signal_SideEffects.swift; sourceTree = "<group>"; };
+		6319E34C27C0D7F4003497E0 /* Promise.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Promise.swift; sourceTree = "<group>"; };
+		6319E34D27C0D7F4003497E0 /* Queue.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Queue.swift; sourceTree = "<group>"; };
+		6319E34E27C0D7F4003497E0 /* Atomic.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Atomic.swift; sourceTree = "<group>"; };
+		6319E34F27C0D7F4003497E0 /* ValuePipe.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ValuePipe.swift; sourceTree = "<group>"; };
+		6319E35027C0D7F4003497E0 /* Signal_Loop.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Signal_Loop.swift; sourceTree = "<group>"; };
+		6319E35127C0D7F4003497E0 /* Signal.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Signal.swift; sourceTree = "<group>"; };
+		6319E35327C0D7F4003497E0 /* Signal_Combine.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Signal_Combine.swift; sourceTree = "<group>"; };
+		6319E35427C0D7F4003497E0 /* Signal_Timing.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Signal_Timing.swift; sourceTree = "<group>"; };
+		6319E35527C0D7F4003497E0 /* Signal_Meta.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Signal_Meta.swift; sourceTree = "<group>"; };
 		6328303126B1060F0041F5BF /* MetalKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = MetalKit.framework; path = System/Library/Frameworks/MetalKit.framework; sourceTree = SDKROOT; };
 		6328303426B125210041F5BF /* TVListVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TVListVC.swift; sourceTree = "<group>"; };
 		6328303D26B127100041F5BF /* cn.m3u */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = cn.m3u; sourceTree = "<group>"; };
@@ -513,6 +565,39 @@
 				6319E31327C09233003497E0 /* login_bg.mp4 */,
 			);
 			path = videos;
+			sourceTree = "<group>";
+		};
+		6319E33A27C0D7F4003497E0 /* SwiftSignalKit */ = {
+			isa = PBXGroup;
+			children = (
+				6319E33B27C0D7F4003497E0 /* Subscriber.swift */,
+				6319E33C27C0D7F4003497E0 /* ThreadPool.swift */,
+				6319E33D27C0D7F4003497E0 /* Signal_Catch.swift */,
+				6319E33E27C0D7F4003497E0 /* Signal_Materialize.swift */,
+				6319E33F27C0D7F4003497E0 /* Signal_Reduce.swift */,
+				6319E34027C0D7F4003497E0 /* Signal_Merge.swift */,
+				6319E34127C0D7F4003497E0 /* Signal_Mapping.swift */,
+				6319E34227C0D7F4003497E0 /* Lock.swift */,
+				6319E34327C0D7F4003497E0 /* Timer.swift */,
+				6319E34427C0D7F4003497E0 /* Signal_Dispatch.swift */,
+				6319E34527C0D7F4003497E0 /* QueueLocalObject.swift */,
+				6319E34627C0D7F4003497E0 /* Disposable.swift */,
+				6319E34727C0D7F4003497E0 /* Multicast.swift */,
+				6319E34827C0D7F4003497E0 /* Bag.swift */,
+				6319E34927C0D7F4003497E0 /* Signal_Single.swift */,
+				6319E34A27C0D7F4003497E0 /* Signal_Take.swift */,
+				6319E34B27C0D7F4003497E0 /* Signal_SideEffects.swift */,
+				6319E34C27C0D7F4003497E0 /* Promise.swift */,
+				6319E34D27C0D7F4003497E0 /* Queue.swift */,
+				6319E34E27C0D7F4003497E0 /* Atomic.swift */,
+				6319E34F27C0D7F4003497E0 /* ValuePipe.swift */,
+				6319E35027C0D7F4003497E0 /* Signal_Loop.swift */,
+				6319E35127C0D7F4003497E0 /* Signal.swift */,
+				6319E35327C0D7F4003497E0 /* Signal_Combine.swift */,
+				6319E35427C0D7F4003497E0 /* Signal_Timing.swift */,
+				6319E35527C0D7F4003497E0 /* Signal_Meta.swift */,
+			);
+			path = SwiftSignalKit;
 			sourceTree = "<group>";
 		};
 		6328303326B124FF0041F5BF /* TVListPlayer */ = {
@@ -974,6 +1059,7 @@
 		63A48B8227A00C2500022B9F /* Extensions */ = {
 			isa = PBXGroup;
 			children = (
+				6319E33A27C0D7F4003497E0 /* SwiftSignalKit */,
 				63A48B9D27A00F0900022B9F /* Util.h */,
 				63A48B9E27A00F0900022B9F /* Util.m */,
 				63A48B8327A00C2500022B9F /* UIKit */,
@@ -1382,18 +1468,23 @@
 			buildActionMask = 2147483647;
 			files = (
 				63608E5027BF343E00760485 /* WashingtonPostCell.swift in Sources */,
+				6319E36127C0D7F4003497E0 /* Disposable.swift in Sources */,
 				63A48B9027A00C2500022B9F /* UIColor+Extension.swift in Sources */,
 				63608E4127BF343E00760485 /* FacebookNewsHandler.swift in Sources */,
 				63D6155926AC27A400CDBA38 /* BaseTableVC.swift in Sources */,
 				63608E3727BF343E00760485 /* FlipboardHandler.swift in Sources */,
+				6319E36027C0D7F4003497E0 /* QueueLocalObject.swift in Sources */,
 				63D6156A26AD0CC400CDBA38 /* mediaResModel.swift in Sources */,
 				63608E3427BF343E00760485 /* TheNewsSettings.swift in Sources */,
 				63608E5B27BF343E00760485 /* ApolloHandler.swift in Sources */,
 				63608E4E27BF343E00760485 /* CashAppHandler.swift in Sources */,
+				6319E35F27C0D7F4003497E0 /* Signal_Dispatch.swift in Sources */,
 				63608D7627BE586C00760485 /* CGFloat+Example.swift in Sources */,
 				63B9A0CC26B52D6E004AC889 /* UIView+Xib.swift in Sources */,
 				63A48B9427A00C2500022B9F /* Int+Extension.swift in Sources */,
 				63D6156626AD0CC400CDBA38 /* mediaCateModel.swift in Sources */,
+				6319E36C27C0D7F4003497E0 /* Signal.swift in Sources */,
+				6319E36E27C0D7F4003497E0 /* Signal_Timing.swift in Sources */,
 				63608E4927BF343E00760485 /* AppleNewsHandler.swift in Sources */,
 				63B9A0CA26B52D46004AC889 /* Math+Extension.swift in Sources */,
 				63B9A0AB26B4F6B9004AC889 /* WXZLPhoto.swift in Sources */,
@@ -1402,13 +1493,17 @@
 				63B9A0B826B4F74C004AC889 /* PhotoConfigureViewController.swift in Sources */,
 				63A7739D26A6B5C7000DE05B /* MainVC.swift in Sources */,
 				63608E6227BF343E00760485 /* InstagramCell.swift in Sources */,
+				6319E36327C0D7F4003497E0 /* Bag.swift in Sources */,
 				63608E5327BF343E00760485 /* NYTCell.swift in Sources */,
 				63A1E69827BE2AF700A7C766 /* XYContentNavController.swift in Sources */,
 				63608E4227BF343E00760485 /* FastNewsHandler.swift in Sources */,
 				63608E4B27BF343E00760485 /* AppleNewsCellStacked.swift in Sources */,
 				63608E4A27BF343E00760485 /* AppleNewsCell.swift in Sources */,
 				63608E5727BF343E00760485 /* CNNHandler.swift in Sources */,
+				6319E35627C0D7F4003497E0 /* Subscriber.swift in Sources */,
 				63A1E68D27BE13A900A7C766 /* JitsiMeetVC.swift in Sources */,
+				6319E35727C0D7F4003497E0 /* ThreadPool.swift in Sources */,
+				6319E36A27C0D7F4003497E0 /* ValuePipe.swift in Sources */,
 				63A48B9327A00C2500022B9F /* UIFont+Extension.swift in Sources */,
 				63D616C626AD644A00CDBA38 /* DownLoadTabbar.swift in Sources */,
 				63608D7327BE586C00760485 /* StorageUserDefaults.swift in Sources */,
@@ -1417,6 +1512,7 @@
 				63608E6027BF343E00760485 /* RedditCell.swift in Sources */,
 				63608E3227BF343E00760485 /* TheNewsApiModel.swift in Sources */,
 				63608E4027BF343E00760485 /* FacebookNewsCell.swift in Sources */,
+				6319E36527C0D7F4003497E0 /* Signal_Take.swift in Sources */,
 				63A48B9227A00C2500022B9F /* UIImage+Extension.swift in Sources */,
 				63B9A0BE26B518D3004AC889 /* PublishPostScrollView.swift in Sources */,
 				63608E3527BF343E00760485 /* TheNewsViewController.swift in Sources */,
@@ -1433,6 +1529,7 @@
 				63B9A0C826B52CD8004AC889 /* String+Encryption.swift in Sources */,
 				63B9A0B726B4F74C004AC889 /* ImageCell.swift in Sources */,
 				63A48B8127A00A6D00022B9F /* SportBaseNavController.swift in Sources */,
+				6319E35C27C0D7F4003497E0 /* Signal_Mapping.swift in Sources */,
 				63A1E69927BE2AF700A7C766 /* XYContentController.swift in Sources */,
 				63D6156726AD0CC400CDBA38 /* MediaCollectionView.swift in Sources */,
 				63A48B9527A00C2500022B9F /* Collection+Extension.swift in Sources */,
@@ -1444,11 +1541,15 @@
 				63608D6D27BE580C00760485 /* EFQRCodeVC.swift in Sources */,
 				63608E4727BF343E00760485 /* UIKitHandler.swift in Sources */,
 				63B9A0D026B52EB2004AC889 /* PublishPostTopicCell.swift in Sources */,
+				6319E35D27C0D7F4003497E0 /* Lock.swift in Sources */,
+				6319E36B27C0D7F4003497E0 /* Signal_Loop.swift in Sources */,
 				63608E3C27BF343E00760485 /* TwitterHandler.swift in Sources */,
 				63B9A0C626B52C84004AC889 /* UIButton+Extension.swift in Sources */,
 				63608E5127BF343E00760485 /* WashingtonPostHandler.swift in Sources */,
 				63608E4D27BF343E00760485 /* CashAppCell.swift in Sources */,
 				63608E4327BF343E00760485 /* FastNewsCell.swift in Sources */,
+				6319E36727C0D7F4003497E0 /* Promise.swift in Sources */,
+				6319E36F27C0D7F4003497E0 /* Signal_Meta.swift in Sources */,
 				63D6155526AC220C00CDBA38 /* AppDelegate+Download.swift in Sources */,
 				63608E6827BF343E00760485 /* TheNewsExtension.swift in Sources */,
 				63A48B9F27A00F0900022B9F /* Util.m in Sources */,
@@ -1457,6 +1558,7 @@
 				63608E3F27BF343E00760485 /* WSJHandler.swift in Sources */,
 				63B9A0BA26B4F74C004AC889 /* WeChatMomentDemoViewController.swift in Sources */,
 				63608E6327BF343E00760485 /* InstagramHandler.swift in Sources */,
+				6319E36D27C0D7F4003497E0 /* Signal_Combine.swift in Sources */,
 				63608E4827BF343E00760485 /* UIKitCell.swift in Sources */,
 				63608E3327BF343E00760485 /* TheNewsApi.swift in Sources */,
 				6359945A27AE675B00CF4A93 /* MineApplyAnchorModel.swift in Sources */,
@@ -1473,15 +1575,20 @@
 				63608E3B27BF343E00760485 /* NBCNewsCellLarge.swift in Sources */,
 				63608E6427BF343E00760485 /* AxiosCell.swift in Sources */,
 				63608E6A27BF343E00760485 /* TheNewsImageDownloader.swift in Sources */,
+				6319E35E27C0D7F4003497E0 /* Timer.swift in Sources */,
+				6319E35A27C0D7F4003497E0 /* Signal_Reduce.swift in Sources */,
 				63B9A0C126B52B3B004AC889 /* PublishPostInputView.swift in Sources */,
 				63608E5927BF343E00760485 /* FacebookHandler.swift in Sources */,
 				63A1E69A27BE2AF700A7C766 /* XYNavigationController.swift in Sources */,
+				6319E36227C0D7F4003497E0 /* Multicast.swift in Sources */,
 				63608E3827BF343E00760485 /* FlipboardCell.swift in Sources */,
 				63608E5627BF343E00760485 /* NewsCollectionHandler.swift in Sources */,
 				63608DE227BF32A200760485 /* FollowVC.swift in Sources */,
 				6328308026B2B0B10041F5BF /* PreviewController.swift in Sources */,
 				63D6156826AD0CC400CDBA38 /* CommunityModel.swift in Sources */,
 				63D6155726AC253800CDBA38 /* DownLoadVC.swift in Sources */,
+				6319E35927C0D7F4003497E0 /* Signal_Materialize.swift in Sources */,
+				6319E36627C0D7F4003497E0 /* Signal_SideEffects.swift in Sources */,
 				63608D7527BE586C00760485 /* GeneratorController.swift in Sources */,
 				63608E4527BF343E00760485 /* BBCHandler.swift in Sources */,
 				63A48B7427A007F300022B9F /* MineVC.swift in Sources */,
@@ -1491,12 +1598,14 @@
 				63608E5F27BF343E00760485 /* RobinhoodCellLarge.swift in Sources */,
 				63608E7A27BFAD8000760485 /* AppDelegate+VoIP.swift in Sources */,
 				63608E5527BF343E00760485 /* LilNewsCell.swift in Sources */,
+				6319E36427C0D7F4003497E0 /* Signal_Single.swift in Sources */,
 				63608E4627BF343E00760485 /* BBCCell.swift in Sources */,
 				63608E5827BF343E00760485 /* CNNCell.swift in Sources */,
 				63A48B9B27A00E6600022B9F /* BaseWebController.swift in Sources */,
 				63A48B6A27A006B300022B9F /* BaseTabbarController.swift in Sources */,
 				63D6155B26AC284500CDBA38 /* DownloadTaskCell.swift in Sources */,
 				63B9A0B426B4F74C004AC889 /* PhotoConfigureCNViewController.swift in Sources */,
+				6319E35B27C0D7F4003497E0 /* Signal_Merge.swift in Sources */,
 				63608E6C27BF34DB00760485 /* Global.swift in Sources */,
 				63608E5D27BF343E00760485 /* RobinhoodHandler.swift in Sources */,
 				63B9A0B926B4F74C004AC889 /* ImageStickerContainerView.swift in Sources */,
@@ -1504,14 +1613,17 @@
 				6328303526B125210041F5BF /* TVListVC.swift in Sources */,
 				63A48B9927A00C2500022B9F /* Protocols.swift in Sources */,
 				63B9A0BC26B517E0004AC889 /* PublishPostVC.swift in Sources */,
+				6319E36927C0D7F4003497E0 /* Atomic.swift in Sources */,
 				63608E4C27BF343E00760485 /* AppleNewsCellLarge.swift in Sources */,
 				63D616C826AD662300CDBA38 /* DownLoadListVC.swift in Sources */,
 				63608E5E27BF343E00760485 /* RobinhoodCell.swift in Sources */,
 				63A48B9127A00C2500022B9F /* UIView+Extension.swift in Sources */,
 				63608E6527BF343E00760485 /* AxiosHandler.swift in Sources */,
+				6319E36827C0D7F4003497E0 /* Queue.swift in Sources */,
 				63608E4F27BF343E00760485 /* NewsCell.swift in Sources */,
 				63608E5427BF343E00760485 /* LilNewsHandler.swift in Sources */,
 				63B9A0B526B4F74C004AC889 /* LanguagePickerView.swift in Sources */,
+				6319E35827C0D7F4003497E0 /* Signal_Catch.swift in Sources */,
 				63608E5227BF343E00760485 /* NYTHandler.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -1661,7 +1773,6 @@
 					"\"${PODS_CONFIGURATION_BUILD_DIR}/PINCache\"",
 					"\"${PODS_CONFIGURATION_BUILD_DIR}/PINOperation\"",
 					"\"${PODS_CONFIGURATION_BUILD_DIR}/PINRemoteImage\"",
-					"\"${PODS_CONFIGURATION_BUILD_DIR}/SwiftSignalKit\"",
 					"\"${PODS_CONFIGURATION_BUILD_DIR}/Texture\"",
 				);
 				HEADER_SEARCH_PATHS = (
@@ -1674,7 +1785,6 @@
 					"\"${PODS_CONFIGURATION_BUILD_DIR}/PINOperation/PINOperation.framework/Headers\"",
 					"\"${PODS_CONFIGURATION_BUILD_DIR}/PINRemoteImage/PINRemoteImage.framework/Headers\"",
 					"\"${PODS_CONFIGURATION_BUILD_DIR}/PhoneNumberKit/PhoneNumberKit.framework/Headers\"",
-					"\"${PODS_CONFIGURATION_BUILD_DIR}/SwiftSignalKit/SwiftSignalKit.framework/Headers\"",
 					"\"${PODS_CONFIGURATION_BUILD_DIR}/SwiftyJSON/SwiftyJSON.framework/Headers\"",
 					"\"${PODS_CONFIGURATION_BUILD_DIR}/Texture/AsyncDisplayKit.framework/Headers\"",
 				);
@@ -1713,7 +1823,6 @@
 					"\"${PODS_CONFIGURATION_BUILD_DIR}/PINCache\"",
 					"\"${PODS_CONFIGURATION_BUILD_DIR}/PINOperation\"",
 					"\"${PODS_CONFIGURATION_BUILD_DIR}/PINRemoteImage\"",
-					"\"${PODS_CONFIGURATION_BUILD_DIR}/SwiftSignalKit\"",
 					"\"${PODS_CONFIGURATION_BUILD_DIR}/Texture\"",
 				);
 				HEADER_SEARCH_PATHS = (
@@ -1726,7 +1835,6 @@
 					"\"${PODS_CONFIGURATION_BUILD_DIR}/PINOperation/PINOperation.framework/Headers\"",
 					"\"${PODS_CONFIGURATION_BUILD_DIR}/PINRemoteImage/PINRemoteImage.framework/Headers\"",
 					"\"${PODS_CONFIGURATION_BUILD_DIR}/PhoneNumberKit/PhoneNumberKit.framework/Headers\"",
-					"\"${PODS_CONFIGURATION_BUILD_DIR}/SwiftSignalKit/SwiftSignalKit.framework/Headers\"",
 					"\"${PODS_CONFIGURATION_BUILD_DIR}/SwiftyJSON/SwiftyJSON.framework/Headers\"",
 					"\"${PODS_CONFIGURATION_BUILD_DIR}/Texture/AsyncDisplayKit.framework/Headers\"",
 				);
