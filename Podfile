@@ -109,7 +109,7 @@ target '3332323' do
  pod 'KeychainAccess'
  
  pod 'LookinServer', :configurations => ['Debug']
- pod 'ZLPhotoBrowser'
+ pod 'ZLPhotoBrowser', '~> 4.1.7'
  pod 'QuickTableViewController'
  
  pod 'PureLayout'
@@ -128,5 +128,45 @@ target '3332323' do
  pod 'EFColorPicker'
 ## 输入框跟随键盘弹起 https://github.com/1amageek/Toolbar
 # pod 'Toolbar'
+
+
+
+#动画效果  适用于各个地方 如：tabbar切换点击时动态响应
+# pod 'lottie-ios'
+ 
+#时间线表格cell
+# pod 'TimelineTableViewCell'
+ 
+# 折叠式cell 效果炫酷
+# pod 'FoldingCell'
+ 
+# 左右可滑动cell 类似小飞机那种
+# pod 'SwipeCellKit'
+ 
+# DZNEmptyDataSet [UI, 空table view解决方案]
+# **PDTSimpleCalendar **[UI, 可放入日历组件]
+# MagicalRecord [Core Data帮手实现活动记录模式]
+# Chameleon [UI, 颜色框架]
+# Alamofire [Swift网络]
+# **TextFieldEffects **[UI, 自定义外观text fields]
+# GPUImage [快速图像处理]
+# iRate [获得用户评价]
+# GameCenterManager [轻松管理Game Center]
+# PKRevealController [UI, 滑动边栏]
+# SlackTextViewController [UI, 高度自定义text field]
+# RETableViewManager [用代码动态创建table view]
+# PermissionScope [UI, 巧妙的提前问用户要系统许可]
+# SVProgressHUD [UI, 自定义等待菊花]
+# FontAwesomeKit [轻松地添加酷字体到你的app中]
+# SnapKit [用代码轻松auto layout]
+# MGSwipeTableCell [UI, 可滑动的table view cells]
+# Quick [Swift 单元测试框架]
+# IAPHelper [app内购封装帮手]
+# SwiftyJSON [Swift JSON库]
+# Spring [动画框架]
+# FontBlaster [轻松在app中加载自定义字体]
+# TAPromotee [在你的app中交叉提示，置入界面]
+# Concorde [下载和解码进度化JPEGs]
+# RxSwift[RxSwift 函数响应式编程,很牛逼，慢慢看] 使用介绍
  
 end
