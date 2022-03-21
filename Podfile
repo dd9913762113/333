@@ -109,7 +109,7 @@ target '3332323' do
  pod 'KeychainAccess'
  
  pod 'LookinServer', :configurations => ['Debug']
- pod 'ZLPhotoBrowser', '~> 4.1.7'
+ pod 'ZLPhotoBrowser', '~> 4.2.2'
  pod 'QuickTableViewController'
  
  pod 'PureLayout'
@@ -129,7 +129,7 @@ target '3332323' do
 ## 输入框跟随键盘弹起 https://github.com/1amageek/Toolbar
 # pod 'Toolbar'
 
-
+  pod 'Protobuf' , '~> 3.19.4'
 
 #动画效果  适用于各个地方 如：tabbar切换点击时动态响应
 # pod 'lottie-ios'
@@ -168,5 +168,24 @@ target '3332323' do
 # TAPromotee [在你的app中交叉提示，置入界面]
 # Concorde [下载和解码进度化JPEGs]
 # RxSwift[RxSwift 函数响应式编程,很牛逼，慢慢看] 使用介绍
+ 
+ 
+ 
+# 如果使用基础版 SDK，请您按照如下方式设置 Podfile 文件：
+ pod 'TXIMSDK_iOS'
+# 如果使用增强版 SDK，请您按照如下方式设置 Podfile 文件：
+# pod 'TXIMSDK_Plus_iOS'
+# 如果使用增强版 bitcode 版本 SDK，请您按照如下方式设置 Podfile 文件：
+# pod 'TXIMSDK_Plus_iOS_Bitcode'
+# 如果使用增强版 xcframework 版本 SDK，请您按照如下方式设置 Podfile 文件：
+# pod 'TXIMSDK_Plus_iOS_Bitcode_XCFramework'
+
+
+
+#  https://github.com/andrealufino/Luminous 设备各种信息
+ pod 'Luminous'
+
+
+ 
  
 end

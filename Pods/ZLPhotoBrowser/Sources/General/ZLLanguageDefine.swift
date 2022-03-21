@@ -39,6 +39,9 @@ import Foundation
     case korean
     case malay
     case italian
+    case indonesian
+    case portuguese
+    case spanish
 }
 
 public struct ZLLocalLanguageKey: Hashable {
@@ -87,12 +90,18 @@ public struct ZLLocalLanguageKey: Hashable {
     /// (请在iPhone的\"设置-隐私-相机\"选项中，允许%@访问你的相机)
     public static let noCameraAuthority = ZLLocalLanguageKey(rawValue: "noCameraAuthority")
     
-    /// Please allow %@ to access your device's microphone in \"Settings\"->\"Privacy\"->\"Microphone\"
-    /// (请在iPhone的\"设置-隐私-麦克风\"选项中，允许%@访问你的麦克风)
+    /// Unable to record audio. Go to \"Settings\" > \"%@\" and enable microphone access.
+    /// (无法录制声音，前往\"设置 > %@\"中打开麦克风权限)
     public static let noMicrophoneAuthority = ZLLocalLanguageKey(rawValue: "noMicrophoneAuthority")
     
     /// Camera is unavailable (相机不可用)
     public static let cameraUnavailable = ZLLocalLanguageKey(rawValue: "cameraUnavailable")
+    
+    /// Keep Recording (继续拍摄)
+    public static let keepRecording = ZLLocalLanguageKey(rawValue: "keepRecording")
+    
+    /// Go to Settings (前往设置)
+    public static let gotoSettings = ZLLocalLanguageKey(rawValue: "gotoSettings")
     
     /// Photos (照片)
     public static let photo = ZLLocalLanguageKey(rawValue: "photo")
@@ -111,6 +120,15 @@ public struct ZLLocalLanguageKey: Hashable {
     
     /// Undo (还原)
     public static let revert = ZLLocalLanguageKey(rawValue: "revert")
+    
+    /// Brightness (亮度)
+    public static let brightness = ZLLocalLanguageKey(rawValue: "brightness")
+    
+    /// Contrast (对比度)
+    public static let contrast = ZLLocalLanguageKey(rawValue: "contrast")
+    
+    /// Saturation (饱和度)
+    public static let saturation = ZLLocalLanguageKey(rawValue: "saturation")
     
     /// Preview (预览)
     public static let preview = ZLLocalLanguageKey(rawValue: "preview")

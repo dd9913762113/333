@@ -35,7 +35,7 @@ class MineApplyAnchorModel: NSObject {
     
     override init() {
         super.init()
-        guard let data = dataFromFile("MineApplyAnchorData"), let profile = Profile(data: data) else {
+        guard let data = dataFromFile("MineApplyAnchorData"), let profileData = ProfileData(data: data) else {
             return
         }
         
@@ -57,7 +57,7 @@ class MineApplyAnchorModel: NSObject {
 }
 
 
-class Profile {
+private class ProfileData {
     
     init?(data: Data) {
         do {

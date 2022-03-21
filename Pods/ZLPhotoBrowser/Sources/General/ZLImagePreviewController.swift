@@ -76,9 +76,11 @@ public class ZLImagePreviewController: UIViewController {
     
     var hideNavView = false
     
+    var orientation: UIInterfaceOrientation = .unknown
+    
     @objc public var doneBlock: ( ([Any]) -> Void )?
     
-    var orientation: UIInterfaceOrientation = .unknown
+    @objc public var videoHttpHeader: [String: Any]?
     
     public override var prefersStatusBarHidden: Bool {
         return !ZLPhotoConfiguration.default().showStatusBarInPreviewInterface
@@ -94,7 +96,14 @@ public class ZLImagePreviewController: UIViewController {
     ///   - index: Index for first display.
     ///   - urlType: Tell me the url is image or video.
     ///   - urlImageLoader: Called when cell will display, cell will layout after callback when image load finish. The first block is progress callback, second is load finish callback.
-    @objc public init(datas: [Any], index: Int = 0, showSelectBtn: Bool = true, showBottomView: Bool = true, urlType: ( (URL) -> ZLURLType )? = nil, urlImageLoader: ( (URL, UIImageView, @escaping ( (CGFloat) -> Void ),  @escaping ( () -> Void )) -> Void )? = nil) {
+    @objc public init(
+        datas: [Any],
+        index: Int = 0,
+        showSelectBtn: Bool = true,
+        showBottomView: Bool = true,
+        urlType: ( (URL) -> ZLURLType )? = nil,
+        urlImageLoader: ( (URL, UIImageView, @escaping ( (CGFloat) -> Void ),  @escaping ( () -> Void )) -> Void )? = nil
+    ) {
         let filterDatas = datas.filter { (obj) -> Bool in
             return obj is PHAsset || obj is UIImage || obj is URL
         }
@@ -466,11 +475,11 @@ extension ZLImagePreviewController: UICollectionViewDataSource, UICollectionView
                 cell.image = nil
                 
                 self.urlImageLoader?(url, cell.preview.imageView, { [weak cell] (progress) in
-                    DispatchQueue.main.async {
+                    ZLMainAsync {
                         cell?.progress = progress
                     }
                 }, { [weak cell] in
-                    DispatchQueue.main.async {
+                    ZLMainAsync {
                         cell?.preview.resetSubViewSize()
                     }
                 })
@@ -479,7 +488,7 @@ extension ZLImagePreviewController: UICollectionViewDataSource, UICollectionView
             } else {
                 let cell = collectionView.dequeueReusableCell(withReuseIdentifier: ZLNetVideoPreviewCell.zl_identifier(), for: indexPath) as! ZLNetVideoPreviewCell
                 
-                cell.videoUrl = url
+                cell.configureCell(videoUrl: url, httpHeader: self.videoHttpHeader)
                 
                 baseCell = cell
             }
@@ -530,7 +539,7 @@ extension ZLImagePreviewController: UICollectionViewDataSource, UICollectionView
         let cancel = UIAlertAction(title: localLanguageTextValue(.cancel), style: .cancel, handler: nil)
         alert.addAction(save)
         alert.addAction(cancel)
-        self.showDetailViewController(alert, sender: nil)
+        showAlertController(alert)
     }
     
 }

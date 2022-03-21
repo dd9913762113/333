@@ -58,5 +58,6 @@ public final class  R {
     public final class Key {
         private init(){}
         public static let KHistory = "KHistory"
+        public static let KUserInfor = "KUserInfor"
     }
 }

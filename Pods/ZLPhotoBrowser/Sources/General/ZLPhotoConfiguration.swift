@@ -31,6 +31,11 @@ public typealias Second = Int
 
 public class ZLPhotoConfiguration: NSObject {
 
+    @objc public enum CancelButtonStyle: Int {
+        case text
+        case image
+    }
+    
     private static var single = ZLPhotoConfiguration()
     
     @objc public class func `default`() -> ZLPhotoConfiguration {
@@ -46,17 +51,20 @@ public class ZLPhotoConfiguration: NSObject {
     
     @objc public var statusBarStyle: UIStatusBarStyle = .lightContent
     
+    /// text: Cancel.  image: 'x'. Default to text.
+    @objc public var navCancelButtonStyle: ZLPhotoConfiguration.CancelButtonStyle = .text
+    
     /// Photo sorting method, the preview interface is not affected by this parameter. Defaults to true.
     @objc public var sortAscending = true
     
     private var pri_maxSelectCount = 9
     /// Anything superior than 1 will enable the multiple selection feature. Defaults to 9.
     @objc public var maxSelectCount: Int {
-        set {
-            pri_maxSelectCount = max(1, newValue)
-        }
         get {
             return pri_maxSelectCount
+        }
+        set {
+            pri_maxSelectCount = max(1, newValue)
         }
     }
     
@@ -64,9 +72,6 @@ public class ZLPhotoConfiguration: NSObject {
     /// A count for video max selection. Defaults to 0.
     /// - warning: Only valid in mix selection mode. (i.e. allowMixSelect = true)
     @objc public var maxVideoSelectCount: Int {
-        set {
-            pri_maxVideoSelectCount = newValue
-        }
         get {
             if pri_maxVideoSelectCount <= 0 {
                 return maxSelectCount
@@ -74,17 +79,20 @@ public class ZLPhotoConfiguration: NSObject {
                 return max(minVideoSelectCount, min(pri_maxVideoSelectCount, maxSelectCount))
             }
         }
+        set {
+            pri_maxVideoSelectCount = newValue
+        }
     }
     
     private var pri_minVideoSelectCount = 0
     /// A count for video min selection. Defaults to 0.
     /// - warning: Only valid in mix selection mode. (i.e. allowMixSelect = true)
     @objc public var minVideoSelectCount: Int {
-        set {
-            pri_minVideoSelectCount = newValue
-        }
         get {
             return min(maxSelectCount, max(pri_minVideoSelectCount, 0))
+        }
+        set {
+            pri_minVideoSelectCount = newValue
         }
     }
     
@@ -114,18 +122,34 @@ public class ZLPhotoConfiguration: NSObject {
     /// Allow take photos in the album. Defaults to true.
     /// - warning: If allowTakePhoto and allowRecordVideo are both false, it will not be displayed.
     @objc public var allowTakePhotoInLibrary: Bool {
-        set {
-            pri_allowTakePhotoInLibrary = newValue
-        }
         get {
             return pri_allowTakePhotoInLibrary && (allowTakePhoto || allowRecordVideo)
         }
+        set {
+            pri_allowTakePhotoInLibrary = newValue
+        }
     }
     
-    @objc public var allowEditImage = true
+    var pri_allowEditImage = true
+    @objc public var allowEditImage: Bool {
+        get {
+            return pri_allowEditImage && shouldAnialysisAsset
+        }
+        set {
+            pri_allowEditImage = newValue
+        }
+    }
     
     /// - warning: The video can only be edited when no photos are selected, or only one video is selected, and the selection callback is executed immediately after editing is completed.
-    @objc public var allowEditVideo = false
+    var pri_allowEditVideo = false
+    @objc public var allowEditVideo: Bool {
+        get {
+            return pri_allowEditVideo && shouldAnialysisAsset
+        }
+        set {
+            pri_allowEditVideo = newValue
+        }
+    }
     
     /// Control whether to display the selection button animation when selecting. Defaults to true.
     @objc public var animateSelectBtnWhenSelect = true
@@ -180,11 +204,11 @@ public class ZLPhotoConfiguration: NSObject {
     /// iPad landscape mode: columnCount += 4.
     /// ```
     @objc public var columnCount: Int {
-        set {
-            pri_columnCount = min(6, max(newValue, 2))
-        }
         get {
             return pri_columnCount
+        }
+        set {
+            pri_columnCount = min(6, max(newValue, 2))
         }
     }
     
@@ -197,89 +221,80 @@ public class ZLPhotoConfiguration: NSObject {
     /// Allow to choose the minimum duration of the video. Defaults to 0.
     @objc public var minSelectVideoDuration: Second = 0
     
-    private var pri_editImageTools: [ZLEditImageViewController.EditImageTool] = [.draw, .clip, .imageSticker, .textSticker, .mosaic, .filter]
-    /// Edit image tools. (Default order is draw, clip, imageSticker, textSticker, mosaic, filtter)
-    /// Because Objective-C Array can't contain Enum styles, so this property is invalid in Objective-C.
-    /// - warning: If you want to use the image sticker feature, you must provide a view that implements ZLImageStickerContainerDelegate.
-    public var editImageTools: [ZLEditImageViewController.EditImageTool] {
-        set {
-            pri_editImageTools = newValue
-        }
+    /// Image editor configuration.
+    @objc public var editImageConfiguration = ZLEditImageConfiguration()
+    
+    @available(*, deprecated, message: "Use editImageConfiguration, this property will be removed")
+    public var editImageTools: [ZLEditImageConfiguration.EditTool] {
         get {
-            if pri_editImageTools.isEmpty {
-                return [.draw, .clip, .imageSticker, .textSticker, .mosaic, .filter]
-            } else {
-                return pri_editImageTools
-            }
+            return editImageConfiguration.tools
+        }
+        set {
+            editImageConfiguration.tools = newValue
         }
     }
     
-    private var pri_editImageDrawColors: [UIColor] = [.white, .black, zlRGB(241, 79, 79), zlRGB(243, 170, 78), zlRGB(80, 169, 56), zlRGB(30, 183, 243), zlRGB(139, 105, 234)]
-    /// Draw colors for image editor.
+    @available(*, deprecated, message: "Use editImageConfiguration, this property will be removed")
     @objc public var editImageDrawColors: [UIColor] {
-        set {
-            pri_editImageDrawColors = newValue
-        }
         get {
-            if pri_editImageDrawColors.isEmpty {
-                return [.white, .black, zlRGB(241, 79, 79), zlRGB(243, 170, 78), zlRGB(80, 169, 56), zlRGB(30, 183, 243), zlRGB(139, 105, 234)]
-            } else {
-                return pri_editImageDrawColors
-            }
+            return editImageConfiguration.drawColors
+        }
+        set {
+            editImageConfiguration.drawColors = newValue
         }
     }
     
-    /// The default draw color. If this color not in editImageDrawColors, will pick the first color in editImageDrawColors as the default.
-    @objc public var editImageDefaultDrawColor = zlRGB(241, 79, 79)
+    @available(*, deprecated, message: "Use editImageConfiguration, this property will be removed")
+    @objc public var editImageDefaultDrawColor: UIColor {
+        get {
+            return editImageConfiguration.defaultDrawColor
+        }
+        set {
+            editImageConfiguration.defaultDrawColor = newValue
+        }
+    }
     
-    private var pri_editImageClipRatios: [ZLImageClipRatio] = [.custom]
-    /// Edit ratios for image editor.
+    @available(*, deprecated, message: "Use editImageConfiguration, this property will be removed")
     @objc public var editImageClipRatios: [ZLImageClipRatio] {
-        set {
-            pri_editImageClipRatios = newValue
-        }
         get {
-            if pri_editImageClipRatios.isEmpty {
-                return [.custom]
-            } else {
-                return pri_editImageClipRatios
-            }
+            return editImageConfiguration.clipRatios
+        }
+        set {
+            editImageConfiguration.clipRatios = newValue
         }
     }
     
-    private var pri_textStickerTextColors: [UIColor] = [.white, .black, zlRGB(241, 79, 79), zlRGB(243, 170, 78), zlRGB(80, 169, 56), zlRGB(30, 183, 243), zlRGB(139, 105, 234)]
-    /// Text sticker colors for image editor.
+    @available(*, deprecated, message: "Use editImageConfiguration, this property will be removed")
     @objc public var textStickerTextColors: [UIColor] {
-        set {
-            pri_textStickerTextColors = newValue
-        }
         get {
-            if pri_textStickerTextColors.isEmpty {
-                return [.white, .black, zlRGB(241, 79, 79), zlRGB(243, 170, 78), zlRGB(80, 169, 56), zlRGB(30, 183, 243), zlRGB(139, 105, 234)]
-            } else {
-                return pri_textStickerTextColors
-            }
+            return editImageConfiguration.textStickerTextColors
+        }
+        set {
+            editImageConfiguration.textStickerTextColors = newValue
         }
     }
     
-    /// The default text sticker color. If this color not in textStickerTextColors, will pick the first color in textStickerTextColors as the default.
-    @objc public var textStickerDefaultTextColor = UIColor.white
+    @available(*, deprecated, message: "Use editImageConfiguration, this property will be removed")
+    @objc public var textStickerDefaultTextColor: UIColor {
+        get {
+            return editImageConfiguration.textStickerDefaultTextColor
+        }
+        set {
+            editImageConfiguration.textStickerDefaultTextColor = newValue
+        }
+    }
     
-    private var pri_filters: [ZLFilter] = ZLFilter.all
-    /// Filters for image editor.
+    @available(*, deprecated, message: "Use editImageConfiguration, this property will be removed")
     @objc public var filters: [ZLFilter] {
-        set {
-            pri_filters = newValue
-        }
         get {
-            if pri_filters.isEmpty {
-                return ZLFilter.all
-            } else {
-                return pri_filters
-            }
+            return editImageConfiguration.filters
+        }
+        set {
+            editImageConfiguration.filters = newValue
         }
     }
     
+    @available(*, deprecated, message: "Use editImageConfiguration, this property will be removed")
     @objc public var imageStickerContainerView: (UIView & ZLImageStickerContainerDelegate)? = nil
     
     /// Show the image captured by the camera is displayed on the camera button inside the album. Defaults to false.
@@ -308,7 +323,25 @@ public class ZLPhotoConfiguration: NSObject {
     /// ["zl_btn_selected", "zl_btn_unselected"].
     @objc public var customImageNames: [String] = [] {
         didSet {
-            ZLCustomImageDeploy.deploy = self.customImageNames
+            ZLCustomImageDeploy.imageNames = customImageNames
+        }
+    }
+    
+    /// Developers can customize images, but the name of the custom image resource must be consistent with the image name in the replaced bundle.
+    /// - example: Developers need to replace the selected and unselected image resources, and the array that needs to be passed in is
+    /// ["zl_btn_selected": selectedImage, "zl_btn_unselected": unselectedImage].
+    public var customImageForKey: [String: UIImage?] = [:] {
+        didSet {
+            customImageForKey.forEach { ZLCustomImageDeploy.imageForKey[$0.key] = $0.value }
+        }
+    }
+    
+    /// Developers can customize images, but the name of the custom image resource must be consistent with the image name in the replaced bundle.
+    /// - example: Developers need to replace the selected and unselected image resources, and the array that needs to be passed in is
+    /// ["zl_btn_selected": selectedImage, "zl_btn_unselected": unselectedImage].
+    @objc public var customImageForKey_objc: [String: UIImage] = [:] {
+        didSet {
+            ZLCustomImageDeploy.imageForKey = customImageForKey_objc
         }
     }
     
@@ -358,44 +391,44 @@ public class ZLPhotoConfiguration: NSObject {
     private var pri_allowTakePhoto = true
     /// Allow taking photos in the camera (Need allowSelectImage to be true). Defaults to true.
     @objc public var allowTakePhoto: Bool {
-        set {
-            pri_allowTakePhoto = newValue
-        }
         get {
             return pri_allowTakePhoto && allowSelectImage
+        }
+        set {
+            pri_allowTakePhoto = newValue
         }
     }
     
     private var pri_allowRecordVideo = true
     /// Allow recording in the camera (Need allowSelectVideo to be true). Defaults to true.
     @objc public var allowRecordVideo: Bool {
-        set {
-            pri_allowRecordVideo = newValue
-        }
         get {
             return pri_allowRecordVideo && allowSelectVideo
+        }
+        set {
+            pri_allowRecordVideo = newValue
         }
     }
     
     private var pri_minRecordDuration: Second = 0
     /// Minimum recording duration. Defaults to 0.
     @objc public var minRecordDuration: Second {
-        set {
-            pri_minRecordDuration = max(0, newValue)
-        }
         get {
             return pri_minRecordDuration
+        }
+        set {
+            pri_minRecordDuration = max(0, newValue)
         }
     }
     
     private var pri_maxRecordDuration: Second = 10
     /// Maximum recording duration. Defaults to 10, minimum is 1.
     @objc public var maxRecordDuration: Second {
-        set {
-            pri_maxRecordDuration = max(1, newValue)
-        }
         get {
             return pri_maxRecordDuration
+        }
+        set {
+            pri_maxRecordDuration = max(1, newValue)
         }
     }
     
@@ -404,22 +437,6 @@ public class ZLPhotoConfiguration: NSObject {
     
     /// Hud style. Defaults to lightBlur.
     @objc public var hudStyle: ZLProgressHUD.HUDStyle = .lightBlur
-    
-    /// Navigation bar blur effect.
-    @available(*, deprecated, message: "Use navViewBlurEffectOfAlbumList, this property will be removed")
-    @objc public var navViewBlurEffect: UIBlurEffect? {
-        didSet {
-            self.navViewBlurEffectOfAlbumList = self.navViewBlurEffect
-        }
-    }
-    
-    /// Bottom too bar blur effect.
-    @available(*, deprecated, message: "Use bottomViewBlurEffectOfAlbumList, this property will be removed")
-    @objc public var bottomToolViewBlurEffect: UIBlurEffect? {
-        didSet {
-            self.bottomViewBlurEffectOfAlbumList = self.bottomToolViewBlurEffect
-        }
-    }
     
     /// The blur effect of the navigation bar in the album list
     @objc public var navViewBlurEffectOfAlbumList: UIBlurEffect? = UIBlurEffect(style: .dark)
@@ -478,143 +495,6 @@ public class ZLPhotoConfiguration: NSObject {
     case externalAlbumList
     
 }
-
-
-public class ZLCameraConfiguration: NSObject {
-    
-    @objc public enum CaptureSessionPreset: Int {
-        
-        var avSessionPreset: AVCaptureSession.Preset {
-            switch self {
-            case .cif352x288:
-                return .cif352x288
-            case .vga640x480:
-                return .vga640x480
-            case .hd1280x720:
-                return .hd1280x720
-            case .hd1920x1080:
-                return .hd1920x1080
-            case .hd4K3840x2160:
-                return .hd4K3840x2160
-            }
-        }
-        
-        case cif352x288
-        case vga640x480
-        case hd1280x720
-        case hd1920x1080
-        case hd4K3840x2160
-    }
-    
-    @objc public enum FocusMode: Int  {
-        
-        var avFocusMode: AVCaptureDevice.FocusMode {
-            switch self {
-            case .autoFocus:
-                return .autoFocus
-            case .continuousAutoFocus:
-                return .continuousAutoFocus
-            }
-        }
-        
-        case autoFocus
-        case continuousAutoFocus
-    }
-    
-    @objc public enum ExposureMode: Int  {
-        
-        var avFocusMode: AVCaptureDevice.ExposureMode {
-            switch self {
-            case .autoExpose:
-                return .autoExpose
-            case .continuousAutoExposure:
-                return .continuousAutoExposure
-            }
-        }
-        
-        case autoExpose
-        case continuousAutoExposure
-    }
-    
-    @objc public enum FlashMode: Int  {
-        
-        var avFlashMode: AVCaptureDevice.FlashMode {
-            switch self {
-            case .auto:
-                return .auto
-            case .on:
-                return .on
-            case .off:
-                return .off
-            }
-        }
-        
-        // 转系统相机
-        var imagePickerFlashMode: UIImagePickerController.CameraFlashMode {
-            switch self {
-            case .auto:
-                return .auto
-            case .on:
-                return .on
-            case .off:
-                return .off
-            }
-        }
-        
-        case auto
-        case on
-        case off
-    }
-    
-    @objc public enum VideoExportType: Int {
-        
-        var format: String {
-            switch self {
-            case .mov:
-                return "mov"
-            case .mp4:
-                return "mp4"
-            }
-        }
-        
-        var avFileType: AVFileType {
-            switch self {
-            case .mov:
-                return .mov
-            case .mp4:
-                return .mp4
-            }
-        }
-        
-        case mov
-        case mp4
-    }
-    
-    /// Video resolution. Defaults to hd1280x720.
-    @objc public var sessionPreset: ZLCameraConfiguration.CaptureSessionPreset
-    /// Camera focus mode. Defaults to continuousAutoFocus
-    @objc public var focusMode: ZLCameraConfiguration.FocusMode
-    /// Camera exposure mode. Defaults to continuousAutoExposure
-    @objc public var exposureMode: ZLCameraConfiguration.ExposureMode
-    /// Camera flahs mode. Default is off. Defaults to off.
-    @objc public var flashMode: ZLCameraConfiguration.FlashMode
-    /// Video export format for recording video and editing video. Defaults to mov.
-    @objc public var videoExportType: ZLCameraConfiguration.VideoExportType
-    
-    @objc public init(sessionPreset: ZLCameraConfiguration.CaptureSessionPreset = .hd1280x720,
-         focusMode: ZLCameraConfiguration.FocusMode = .continuousAutoFocus,
-         exposureMode: ZLCameraConfiguration.ExposureMode = .continuousAutoExposure,
-         flashMode: ZLCameraConfiguration.FlashMode = .off,
-         videoExportType: ZLCameraConfiguration.VideoExportType = .mov) {
-        self.sessionPreset = sessionPreset
-        self.focusMode = focusMode
-        self.exposureMode = exposureMode
-        self.flashMode = flashMode
-        self.videoExportType = videoExportType
-        super.init()
-    }
-}
-
 
 /// Color deploy
 public class ZLPhotoThemeColorDeploy: NSObject {
@@ -716,8 +596,13 @@ public class ZLPhotoThemeColorDeploy: NSObject {
     /// The background color of camera cell inside album.
     @objc public var cameraCellBgColor = UIColor(white: 0.3, alpha: 1)
     
+    /// The normal color of adjust slider.
+    @objc public var adjustSliderNormalColor = UIColor.white
+    
+    /// The tint color of adjust slider.
+    @objc public var adjustSliderTintColor = zlRGB(80, 169, 56)
+    
 }
-
 
 /// Font deply
 public struct ZLCustomFontDeploy {
@@ -725,7 +610,6 @@ public struct ZLCustomFontDeploy {
     static var fontName: String? = nil
     
 }
-
 
 /// Language deploy
 struct ZLCustomLanguageDeploy {
@@ -736,21 +620,11 @@ struct ZLCustomLanguageDeploy {
     
 }
 
-
 /// Image source deploy
 struct ZLCustomImageDeploy {
     
-    static var deploy: [String] = []
+    static var imageNames: [String] = []
     
-}
-
-
-@objc public protocol ZLImageStickerContainerDelegate where Self: UIView {
-    
-    @objc var selectImageBlock: ( (UIImage) -> Void )? { get set }
-    
-    @objc var hideBlock: ( () -> Void )? { get set }
-    
-    @objc func show(in view: UIView)
+    static var imageForKey: [String: UIImage] = [:]
     
 }

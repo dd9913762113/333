@@ -36,6 +36,12 @@ extension ZLLanguageType {
             return "Bahasa Melayu (Malay)"
         case .italian:
             return "Italiano (Italian)"
+        case .indonesian:
+            return "Bahasa Indonesia (Indonesian)"
+        case .portuguese:
+            return "Português (Portuguese)"
+        case .spanish:
+            return "Español (Spanish)"
         }
     }
     

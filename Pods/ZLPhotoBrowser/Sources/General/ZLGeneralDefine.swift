@@ -53,8 +53,11 @@ func zlRGB(_ red: CGFloat, _ green: CGFloat, _ blue: CGFloat) -> UIColor {
 }
 
 func getImage(_ named: String) -> UIImage? {
-    if ZLCustomImageDeploy.deploy.contains(named) {
-        return UIImage(named: named)
+    if ZLCustomImageDeploy.imageNames.contains(named), let image = UIImage(named: named) {
+        return image
+    }
+    if let image = ZLCustomImageDeploy.imageForKey[named] {
+        return image
     }
     return UIImage(named: named, in: Bundle.zlPhotoBrowserBundle, compatibleWith: nil)
 }
@@ -147,7 +150,7 @@ func showAlertView(_ message: String, _ sender: UIViewController?) {
     if deviceIsiPad() {
         alert.popoverPresentationController?.sourceView = sender?.view
     }
-    (sender ?? UIApplication.shared.keyWindow?.rootViewController)?.showDetailViewController(alert, sender: nil)
+    (sender ?? UIApplication.shared.keyWindow?.rootViewController)?.showAlertController(alert)
 }
 
 func canAddModel(_ model: ZLPhotoModel, currentSelectCount: Int, sender: UIViewController?, showAlert: Bool = true) -> Bool {
@@ -186,6 +189,18 @@ func canAddModel(_ model: ZLPhotoModel, currentSelectCount: Int, sender: UIViewC
     return true
 }
 
-func zl_debugPrint(_ message: Any) {
-//    debugPrint(message)
+func ZLMainAsync(after: TimeInterval = 0, handler: @escaping (() -> Void)) {
+    if after > 0 {
+        DispatchQueue.main.asyncAfter(deadline: .now() + after) {
+            handler()
+        }
+    } else {
+        DispatchQueue.main.async {
+            handler()
+        }
+    }
+}
+
+func zl_debugPrint(_ message: Any...) {
+//    message.forEach { debugPrint($0) }
 }

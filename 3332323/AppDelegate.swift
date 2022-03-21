@@ -25,8 +25,6 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
 
         let window = UIWindow(frame: UIScreen.main.bounds)
-//        window.rootViewController = UINavigationController(rootViewController: BaseTabbarController())
-//        window.rootViewController = XYNavigationController(rootViewController: BaseTabbarController())
         window.rootViewController = BaseTabbarController()
         window.backgroundColor = .white
         window.makeKeyAndVisible()
@@ -97,3 +95,13 @@ private enum DownloadFileError {
 //    }
 //}
 
+/**
+ 
+ https://github.com/dd9913762113/sources/blob/main/s/images/87040bb.png?raw=true
+ 
+ https://github.com/dd9913762113/sources/blob/main/s/images/ss/IMG_0003.JPG?raw=true
+
+ 
+ 
+ 
+ */

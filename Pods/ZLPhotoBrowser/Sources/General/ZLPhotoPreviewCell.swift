@@ -685,12 +685,6 @@ class ZLNetVideoPreviewCell: ZLPreviewBaseCell {
         return false
     }
     
-    var videoUrl: URL! {
-        didSet {
-            self.configureCell()
-        }
-    }
-    
     deinit {
         zl_debugPrint("v deinit")
     }
@@ -720,12 +714,16 @@ class ZLNetVideoPreviewCell: ZLPreviewBaseCell {
         NotificationCenter.default.addObserver(self, selector: #selector(appWillResignActive), name: UIApplication.willResignActiveNotification, object: nil)
     }
     
-    func configureCell() {
+    func configureCell(videoUrl: URL, httpHeader: [String: Any]?) {
         self.player = nil
         self.playerLayer?.removeFromSuperlayer()
         self.playerLayer = nil
         
-        self.player = AVPlayer(playerItem: AVPlayerItem(url: self.videoUrl))
+        var options: [String : Any] = [:]
+        options["AVURLAssetHTTPHeaderFieldsKey"] = httpHeader
+        let asset = AVURLAsset(url: videoUrl, options: options)
+        let item = AVPlayerItem(asset: asset)
+        self.player = AVPlayer(playerItem: item)
         self.playerLayer = AVPlayerLayer(player: self.player)
         self.playerLayer?.frame = self.bounds
         self.layer.insertSublayer(self.playerLayer!, at: 0)
@@ -1066,7 +1064,7 @@ class ZLPreviewView: UIView {
             }
         }
         
-        DispatchQueue.main.asyncAfter(deadline: .now() + 0.01) {
+        ZLMainAsync(after: 0.01) {
             self.scrollView.contentSize = contenSize
             self.imageView.frame = self.containerView.bounds
             self.scrollView.contentOffset = .zero

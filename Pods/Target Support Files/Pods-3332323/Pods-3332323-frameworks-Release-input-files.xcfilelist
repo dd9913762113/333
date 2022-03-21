@@ -2,6 +2,7 @@ ${PODS_ROOT}/Target Support Files/Pods-3332323/Pods-3332323-frameworks.sh
 ${BUILT_PRODUCTS_DIR}/Alamofire/Alamofire.framework
 ${BUILT_PRODUCTS_DIR}/AttributedString/AttributedString.framework
 ${BUILT_PRODUCTS_DIR}/CryptoSwift/CryptoSwift.framework
+${BUILT_PRODUCTS_DIR}/Deviice/Deviice.framework
 ${BUILT_PRODUCTS_DIR}/EFColorPicker/EFColorPicker.framework
 ${BUILT_PRODUCTS_DIR}/EFFoundation/EFFoundation.framework
 ${BUILT_PRODUCTS_DIR}/EFQRCode/EFQRCode.framework
@@ -11,6 +12,7 @@ ${BUILT_PRODUCTS_DIR}/JXSegmentedView/JXSegmentedView.framework
 ${BUILT_PRODUCTS_DIR}/KakaJSON/KakaJSON.framework
 ${BUILT_PRODUCTS_DIR}/KeychainAccess/KeychainAccess.framework
 ${BUILT_PRODUCTS_DIR}/Kingfisher/Kingfisher.framework
+${BUILT_PRODUCTS_DIR}/Luminous/Luminous.framework
 ${BUILT_PRODUCTS_DIR}/MJRefresh/MJRefresh.framework
 ${BUILT_PRODUCTS_DIR}/Moya/Moya.framework
 ${BUILT_PRODUCTS_DIR}/PINCache/PINCache.framework
@@ -18,6 +20,7 @@ ${BUILT_PRODUCTS_DIR}/PINOperation/PINOperation.framework
 ${BUILT_PRODUCTS_DIR}/PINRemoteImage/PINRemoteImage.framework
 ${BUILT_PRODUCTS_DIR}/PhoneNumberKit/PhoneNumberKit.framework
 ${BUILT_PRODUCTS_DIR}/PromiseKit/PromiseKit.framework
+${BUILT_PRODUCTS_DIR}/Protobuf/Protobuf.framework
 ${BUILT_PRODUCTS_DIR}/PureLayout/PureLayout.framework
 ${BUILT_PRODUCTS_DIR}/QuickTableViewController/QuickTableViewController.framework
 ${BUILT_PRODUCTS_DIR}/RxCocoa/RxCocoa.framework
@@ -34,6 +37,7 @@ ${BUILT_PRODUCTS_DIR}/SwiftMediator/SwiftMediator.framework
 ${BUILT_PRODUCTS_DIR}/SwiftPageView/SwiftPageView.framework
 ${BUILT_PRODUCTS_DIR}/Swift_Log/Swift_Log.framework
 ${BUILT_PRODUCTS_DIR}/SwiftyJSON/SwiftyJSON.framework
+${PODS_ROOT}/TXIMSDK_iOS/ImSDK.framework
 ${BUILT_PRODUCTS_DIR}/TXScrollLabelView/TXScrollLabelView.framework
 ${BUILT_PRODUCTS_DIR}/TangramKit/TangramKit.framework
 ${BUILT_PRODUCTS_DIR}/Texture/AsyncDisplayKit.framework

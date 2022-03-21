@@ -28,7 +28,7 @@ import UIKit
 import AVFoundation
 import CoreMotion
 
-public class ZLCustomCamera: UIViewController, CAAnimationDelegate {
+open class ZLCustomCamera: UIViewController, CAAnimationDelegate {
 
     struct Layout {
         
@@ -48,31 +48,35 @@ public class ZLCustomCamera: UIViewController, CAAnimationDelegate {
     
     @objc public var cancelBlock: ( () -> Void )?
     
-    var tipsLabel: UILabel!
+    public lazy var tipsLabel = UILabel()
+    
+    public lazy var bottomView = UIView()
+    
+    public lazy var largeCircleView: UIVisualEffectView = {
+        if #available(iOS 13.0, *) {
+            return UIVisualEffectView(effect: UIBlurEffect(style: .systemThinMaterialLight))
+        } else {
+            return UIVisualEffectView(effect: UIBlurEffect(style: .light))
+        }
+    }()
+    
+    public lazy var smallCircleView = UIView()
+    
+    public lazy var animateLayer = CAShapeLayer()
+    
+    public lazy var retakeBtn = UIButton(type: .custom)
+    
+    public lazy var doneBtn = UIButton(type: .custom)
+    
+    public lazy var dismissBtn = UIButton(type: .custom)
+    
+    public lazy var switchCameraBtn = UIButton(type: .custom)
+    
+    public lazy var focusCursorView = UIImageView(image: getImage("zl_focus"))
+    
+    public lazy var takedImageView = UIImageView()
     
     var hideTipsTimer: Timer?
-    
-    var bottomView: UIView!
-    
-    var largeCircleView: UIVisualEffectView!
-    
-    var smallCircleView: UIView!
-    
-    var animateLayer: CAShapeLayer!
-    
-    var retakeBtn: UIButton!
-    
-    var editBtn: UIButton!
-    
-    var doneBtn: UIButton!
-    
-    var dismissBtn: UIButton!
-    
-    var switchCameraBtn: UIButton!
-    
-    var focusCursorView: UIImageView!
-    
-    var takedImageView: UIImageView!
     
     var takedImage: UIImage?
     
@@ -81,6 +85,8 @@ public class ZLCustomCamera: UIViewController, CAAnimationDelegate {
     var motionManager: CMMotionManager?
     
     var orientation: AVCaptureVideoOrientation = .portrait
+    
+    let sessionQueue = DispatchQueue(label: "com.zl.camera.sessionQueue")
     
     let session = AVCaptureSession()
     
@@ -108,6 +114,8 @@ public class ZLCustomCamera: UIViewController, CAAnimationDelegate {
     
     var recordUrls: [URL] = []
     
+    var microPhontIsAvailable = true
+    
     // 仅支持竖屏
     public override var supportedInterfaceOrientations: UIInterfaceOrientationMask {
         return .portrait
@@ -120,9 +128,6 @@ public class ZLCustomCamera: UIViewController, CAAnimationDelegate {
     deinit {
         zl_debugPrint("ZLCustomCamera deinit")
         self.cleanTimer()
-        if self.session.isRunning {
-            self.session.stopRunning()
-        }
         try? AVAudioSession.sharedInstance().setActive(false, options: .notifyOthersOnDeactivation)
     }
     
@@ -131,45 +136,62 @@ public class ZLCustomCamera: UIViewController, CAAnimationDelegate {
         self.modalPresentationStyle = .fullScreen
     }
     
-    required init?(coder: NSCoder) {
+    public required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
     
-    public override func viewDidLoad() {
+    open override func viewDidLoad() {
         super.viewDidLoad()
         
         self.setupUI()
         if !UIImagePickerController.isSourceTypeAvailable(.camera) {
             return
         }
-        self.setupCamera()
+        
         self.observerDeviceMotion()
-        self.addNotification()
         
         AVCaptureDevice.requestAccess(for: .video) { (videoGranted) in
-            if videoGranted {
-                if ZLPhotoConfiguration.default().allowRecordVideo {
-                    AVCaptureDevice.requestAccess(for: .audio) { (audioGranted) in
-                        if !audioGranted {
-                            DispatchQueue.main.asyncAfter(deadline: .now() + 1) {
-                                self.showAlertAndDismissAfterDoneAction(message: String(format: localLanguageTextValue(.noMicrophoneAuthority), getAppName()), type: .microphone)
-                            }
-                        }
+            guard videoGranted else {
+                ZLMainAsync(after: 1) {
+                    self.showAlertAndDismissAfterDoneAction(message: String(format: localLanguageTextValue(.noCameraAuthority), getAppName()), type: .camera)
+                }
+                return
+            }
+            guard ZLPhotoConfiguration.default().allowRecordVideo else {
+                self.addNotification()
+                return
+            }
+            
+            AVCaptureDevice.requestAccess(for: .audio) { (audioGranted) in
+                self.addNotification()
+                if !audioGranted {
+                    ZLMainAsync(after: 1) {
+                        self.showNoMicrophoneAuthorityAlert()
                     }
                 }
-            } else {
-                DispatchQueue.main.asyncAfter(deadline: .now() + 1, execute: {
-                    self.showAlertAndDismissAfterDoneAction(message: String(format: localLanguageTextValue(.noCameraAuthority), getAppName()), type: .camera)
-                })
             }
         }
+        
         if ZLPhotoConfiguration.default().allowRecordVideo {
-            try? AVAudioSession.sharedInstance().setCategory(.playAndRecord)
-            try? AVAudioSession.sharedInstance().setActive(true, options: .notifyOthersOnDeactivation)
+            do {
+                try AVAudioSession.sharedInstance().setCategory(.playAndRecord, mode: .videoRecording, options: .mixWithOthers)
+                try AVAudioSession.sharedInstance().setActive(true, options: .notifyOthersOnDeactivation)
+            } catch {
+                let err = error as NSError
+                if err.code == AVAudioSession.ErrorCode.insufficientPriority.rawValue ||
+                    err.code == AVAudioSession.ErrorCode.isBusy.rawValue {
+                    self.microPhontIsAvailable = false
+                }
+            }
+        }
+        
+        self.setupCamera()
+        self.sessionQueue.async {
+            self.session.startRunning()
         }
     }
     
-    public override func viewDidAppear(_ animated: Bool) {
+    open override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
         if !UIImagePickerController.isSourceTypeAvailable(.camera) {
             showAlertAndDismissAfterDoneAction(message: localLanguageTextValue(.cameraUnavailable), type: .camera)
@@ -181,26 +203,31 @@ public class ZLCustomCamera: UIViewController, CAAnimationDelegate {
             #endif
         } else if self.cameraConfigureFinish, self.viewDidAppearCount == 0 {
             self.showTipsLabel(animate: true)
-            DispatchQueue.main.async {
-                self.session.startRunning()
-            }
+            let animation = CABasicAnimation(keyPath: "opacity")
+            animation.toValue = 1
+            animation.duration = 0.15
+            animation.fillMode = .forwards
+            animation.isRemovedOnCompletion = false
+            self.previewLayer?.add(animation, forKey: nil)
             self.setFocusCusor(point: self.view.center)
         }
         self.viewDidAppearCount += 1
     }
     
-    public override func viewWillDisappear(_ animated: Bool) {
+    open override func viewWillDisappear(_ animated: Bool) {
         super.viewWillDisappear(animated)
         self.motionManager?.stopDeviceMotionUpdates()
         self.motionManager = nil
     }
     
-    public override func viewDidDisappear(_ animated: Bool) {
+    open override func viewDidDisappear(_ animated: Bool) {
         super.viewDidDisappear(animated)
-        self.session.stopRunning()
+        if self.session.isRunning {
+            self.session.stopRunning()
+        }
     }
     
-    public override func viewDidLayoutSubviews() {
+    open override func viewDidLayoutSubviews() {
         super.viewDidLayoutSubviews()
         guard !self.layoutOK else { return }
         self.layoutOK = true
@@ -222,38 +249,36 @@ public class ZLCustomCamera: UIViewController, CAAnimationDelegate {
         
         self.dismissBtn.frame = CGRect(x: 60, y: (ZLCustomCamera.Layout.bottomViewH-25)/2, width: 25, height: 25)
         
-        self.tipsLabel.frame = CGRect(x: 0, y: self.bottomView.frame.minY-20, width: self.view.bounds.width, height: 20)
+        let tipsTextHeight = (self.tipsLabel.text ?? " ").boundingRect(font: getFont(14), limitSize: CGSize(width: self.view.bounds.width - 20, height: .greatestFiniteMagnitude)).height
+        self.tipsLabel.frame = CGRect(x: 10, y: self.bottomView.frame.minY - tipsTextHeight, width: self.view.bounds.width - 20, height: tipsTextHeight)
         
         self.retakeBtn.frame = CGRect(x: 30, y: insets.top+10, width: 28, height: 28)
         self.switchCameraBtn.frame = CGRect(x: self.view.bounds.width-30-28, y: insets.top+10, width: 28, height: 28)
         
-        let editBtnW = localLanguageTextValue(.edit).boundingRect(font: ZLLayout.bottomToolTitleFont, limitSize: CGSize(width: CGFloat.greatestFiniteMagnitude, height: 40)).width
-        self.editBtn.frame = CGRect(x: 20, y: self.view.bounds.height - insets.bottom - ZLLayout.bottomToolBtnH - 40, width: editBtnW, height: ZLLayout.bottomToolBtnH)
-        
         let doneBtnW = localLanguageTextValue(.done).boundingRect(font: ZLLayout.bottomToolTitleFont, limitSize: CGSize(width: CGFloat.greatestFiniteMagnitude, height: 40)).width + 20
-        self.doneBtn.frame = CGRect(x: self.view.bounds.width - doneBtnW - 20, y: self.view.bounds.height - insets.bottom - ZLLayout.bottomToolBtnH - 40, width: doneBtnW, height: ZLLayout.bottomToolBtnH)
+        let doneBtnY = self.view.bounds.height - 57 - insets.bottom
+        self.doneBtn.frame = CGRect(x: self.view.bounds.width - doneBtnW - 20, y: doneBtnY, width: doneBtnW, height: ZLLayout.bottomToolBtnH)
     }
     
     func setupUI() {
         self.view.backgroundColor = .black
         
-        self.takedImageView = UIImageView()
         self.takedImageView.backgroundColor = .black
         self.takedImageView.isHidden = true
         self.takedImageView.contentMode = .scaleAspectFit
         self.view.addSubview(self.takedImageView)
         
-        self.focusCursorView = UIImageView(image: getImage("zl_focus"))
         self.focusCursorView.contentMode = .scaleAspectFit
         self.focusCursorView.clipsToBounds = true
         self.focusCursorView.frame = CGRect(x: 0, y: 0, width: 70, height: 70)
         self.focusCursorView.alpha = 0
         self.view.addSubview(self.focusCursorView)
         
-        self.tipsLabel = UILabel()
         self.tipsLabel.font = getFont(14)
         self.tipsLabel.textColor = .white
         self.tipsLabel.textAlignment = .center
+        self.tipsLabel.numberOfLines = 2
+        self.tipsLabel.lineBreakMode = .byWordWrapping
         self.tipsLabel.alpha = 0
         if ZLPhotoConfiguration.default().allowTakePhoto, ZLPhotoConfiguration.default().allowRecordVideo {
             self.tipsLabel.text = localLanguageTextValue(.customCameraTips)
@@ -264,33 +289,24 @@ public class ZLCustomCamera: UIViewController, CAAnimationDelegate {
         }
         
         self.view.addSubview(self.tipsLabel)
-        
-        self.bottomView = UIView()
         self.view.addSubview(self.bottomView)
         
-        self.dismissBtn = UIButton(type: .custom)
         self.dismissBtn.setImage(getImage("zl_arrow_down"), for: .normal)
         self.dismissBtn.addTarget(self, action: #selector(dismissBtnClick), for: .touchUpInside)
         self.dismissBtn.adjustsImageWhenHighlighted = false
         self.dismissBtn.zl_enlargeValidTouchArea(inset: 30)
         self.bottomView.addSubview(self.dismissBtn)
-        if #available(iOS 13.0, *) {
-            self.largeCircleView = UIVisualEffectView(effect: UIBlurEffect(style: .systemThinMaterialLight))
-        } else {
-            self.largeCircleView = UIVisualEffectView(effect: UIBlurEffect(style: .light))
-        }
+        
         self.largeCircleView.layer.masksToBounds = true
         self.largeCircleView.layer.cornerRadius = ZLCustomCamera.Layout.largeCircleRadius / 2
         self.bottomView.addSubview(self.largeCircleView)
         
-        self.smallCircleView = UIView()
         self.smallCircleView.layer.masksToBounds = true
         self.smallCircleView.layer.cornerRadius = ZLCustomCamera.Layout.smallCircleRadius / 2
         self.smallCircleView.isUserInteractionEnabled = false
         self.smallCircleView.backgroundColor = .white
         self.bottomView.addSubview(self.smallCircleView)
         
-        self.animateLayer = CAShapeLayer()
         let animateLayerRadius = ZLCustomCamera.Layout.largeCircleRadius
         let path = UIBezierPath(roundedRect: CGRect(x: 0, y: 0, width: animateLayerRadius, height: animateLayerRadius), cornerRadius: animateLayerRadius/2)
         self.animateLayer.path = path.cgPath
@@ -311,7 +327,6 @@ public class ZLCustomCamera: UIViewController, CAAnimationDelegate {
             takePictureTap?.require(toFail: recordLongPress)
         }
         
-        self.retakeBtn = UIButton(type: .custom)
         self.retakeBtn.setImage(getImage("zl_retake"), for: .normal)
         self.retakeBtn.addTarget(self, action: #selector(retakeBtnClick), for: .touchUpInside)
         self.retakeBtn.isHidden = true
@@ -320,7 +335,6 @@ public class ZLCustomCamera: UIViewController, CAAnimationDelegate {
         self.view.addSubview(self.retakeBtn)
         
         let cameraCount = AVCaptureDevice.DiscoverySession(deviceTypes: [.builtInWideAngleCamera], mediaType: .video, position: .unspecified).devices.count
-        self.switchCameraBtn = UIButton(type: .custom)
         self.switchCameraBtn.setImage(getImage("zl_toggle_camera"), for: .normal)
         self.switchCameraBtn.addTarget(self, action: #selector(switchCameraBtnClick), for: .touchUpInside)
         self.switchCameraBtn.adjustsImageWhenHighlighted = false
@@ -328,19 +342,6 @@ public class ZLCustomCamera: UIViewController, CAAnimationDelegate {
         self.switchCameraBtn.isHidden = cameraCount <= 1
         self.view.addSubview(self.switchCameraBtn)
         
-        self.editBtn = UIButton(type: .custom)
-        self.editBtn.titleLabel?.font = ZLLayout.bottomToolTitleFont
-        self.editBtn.setTitle(localLanguageTextValue(.edit), for: .normal)
-        self.editBtn.setTitleColor(.bottomToolViewBtnNormalTitleColor, for: .normal)
-        self.editBtn.addTarget(self, action: #selector(editBtnClick), for: .touchUpInside)
-        self.editBtn.isHidden = true
-        // 字体周围添加一点阴影
-        self.editBtn.titleLabel?.layer.shadowColor = UIColor.black.withAlphaComponent(0.3).cgColor
-        self.editBtn.titleLabel?.layer.shadowOffset = .zero
-        self.editBtn.titleLabel?.layer.shadowOpacity = 1;
-        self.view.addSubview(self.editBtn)
-        
-        self.doneBtn = UIButton(type: .custom)
         self.doneBtn.titleLabel?.font = ZLLayout.bottomToolTitleFont
         self.doneBtn.setTitle(localLanguageTextValue(.done), for: .normal)
         self.doneBtn.setTitleColor(.bottomToolViewBtnNormalTitleColor, for: .normal)
@@ -367,7 +368,7 @@ public class ZLCustomCamera: UIViewController, CAAnimationDelegate {
             self.recordVideoPlayerLayer?.isHidden = true
             self.view.layer.insertSublayer(self.recordVideoPlayerLayer!, at: 0)
             
-            NotificationCenter.default.addObserver(self, selector: #selector(recordVideoPlayFinished), name: Notification.Name.AVPlayerItemDidPlayToEndTime, object: nil)
+            NotificationCenter.default.addObserver(self, selector: #selector(recordVideoPlayFinished), name: .AVPlayerItemDidPlayToEndTime, object: nil)
         }
         
         let pinchGes = UIPinchGestureRecognizer(target: self, action: #selector(pinchToAdjustCameraFocus(_:)))
@@ -376,7 +377,7 @@ public class ZLCustomCamera: UIViewController, CAAnimationDelegate {
     
     func observerDeviceMotion() {
         if !Thread.isMainThread {
-            DispatchQueue.main.async {
+            ZLMainAsync {
                 self.observerDeviceMotion()
             }
             return
@@ -416,18 +417,14 @@ public class ZLCustomCamera: UIViewController, CAAnimationDelegate {
     
     func setupCamera() {
         guard let backCamera = self.getCamera(position: .back) else { return }
-        
         guard let input = try? AVCaptureDeviceInput(device: backCamera) else { return }
+        
+        self.session.beginConfiguration()
+        
         // 相机画面输入流
         self.videoInput = input
         // 照片输出流
         self.imageOutput = AVCapturePhotoOutput()
-        
-        // 音频输入流
-        var audioInput: AVCaptureDeviceInput?
-        if ZLPhotoConfiguration.default().allowRecordVideo, let microphone = self.getMicrophone() {
-            audioInput = try? AVCaptureDeviceInput(device: microphone)
-        }
         
         let preset = ZLPhotoConfiguration.default().cameraConfiguration.sessionPreset.avSessionPreset
         if self.session.canSetSessionPreset(preset) {
@@ -440,13 +437,13 @@ public class ZLCustomCamera: UIViewController, CAAnimationDelegate {
         // 解决视频录制超过10s没有声音的bug
         self.movieFileOutput.movieFragmentInterval = .invalid
         
-        // 将视频及音频输入流添加到session
+        // 添加视频输入
         if let vi = self.videoInput, self.session.canAddInput(vi) {
             self.session.addInput(vi)
         }
-        if let ai = audioInput, self.session.canAddInput(ai) {
-            self.session.addInput(ai)
-        }
+        // 添加音频输入
+        self.addAudioInput()
+        
         // 将输出流添加到session
         if self.session.canAddOutput(self.imageOutput) {
             self.session.addOutput(self.imageOutput)
@@ -454,9 +451,12 @@ public class ZLCustomCamera: UIViewController, CAAnimationDelegate {
         if self.session.canAddOutput(self.movieFileOutput) {
             self.session.addOutput(self.movieFileOutput)
         }
+        
+        self.session.commitConfiguration()
         // 预览layer
         self.previewLayer = AVCaptureVideoPreviewLayer(session: self.session)
         self.previewLayer?.videoGravity = .resizeAspect
+        self.previewLayer?.opacity = 0
         self.view.layer.masksToBounds = true
         self.view.layer.insertSublayer(self.previewLayer!, at: 0)
         
@@ -477,12 +477,68 @@ public class ZLCustomCamera: UIViewController, CAAnimationDelegate {
         return AVCaptureDevice.DiscoverySession(deviceTypes: [.builtInMicrophone], mediaType: .audio, position: .unspecified).devices.first
     }
     
+    func addAudioInput() {
+        guard ZLPhotoConfiguration.default().allowRecordVideo else { return }
+        // 音频输入流
+        var audioInput: AVCaptureDeviceInput?
+        if let microphone = self.getMicrophone() {
+            audioInput = try? AVCaptureDeviceInput(device: microphone)
+        }
+        guard self.microPhontIsAvailable, let ai = audioInput else { return }
+        self.removeAudioInput()
+        
+        if self.session.isRunning {
+            self.session.beginConfiguration()
+        }
+        if self.session.canAddInput(ai) {
+            self.session.addInput(ai)
+        }
+        if self.session.isRunning {
+            self.session.commitConfiguration()
+        }
+    }
+    
+    func removeAudioInput() {
+        var audioInput: AVCaptureInput?
+        for input in self.session.inputs {
+            if (input as? AVCaptureDeviceInput)?.device.deviceType == .builtInMicrophone {
+                audioInput = input
+            }
+        }
+        guard let ai = audioInput else { return }
+        
+        if self.session.isRunning {
+            self.session.beginConfiguration()
+        }
+        self.session.removeInput(ai)
+        if self.session.isRunning {
+            self.session.commitConfiguration()
+        }
+    }
+    
     func addNotification() {
         NotificationCenter.default.addObserver(self, selector: #selector(appWillResignActive), name: UIApplication.willResignActiveNotification, object: nil)
         
         if ZLPhotoConfiguration.default().allowRecordVideo {
             NotificationCenter.default.addObserver(self, selector: #selector(appDidBecomeActive), name: UIApplication.didBecomeActiveNotification, object: nil)
+            NotificationCenter.default.addObserver(self, selector: #selector(handleAudioSessionInterruption), name: AVAudioSession.interruptionNotification, object: nil)
         }
+    }
+    
+    func showNoMicrophoneAuthorityAlert() {
+        let alert = UIAlertController(title: nil, message: String(format: localLanguageTextValue(.noMicrophoneAuthority), getAppName()), preferredStyle: .alert)
+        let continueAction = UIAlertAction(title: localLanguageTextValue(.keepRecording), style: .default, handler: nil)
+        let gotoSettingsAction = UIAlertAction(title: localLanguageTextValue(.gotoSettings), style: .default) { (_) in
+            guard let url = URL(string: UIApplication.openSettingsURLString) else {
+                return
+            }
+            if UIApplication.shared.canOpenURL(url) {
+                UIApplication.shared.open(url, options: [:], completionHandler: nil)
+            }
+        }
+        alert.addAction(continueAction)
+        alert.addAction(gotoSettingsAction)
+        showAlertController(alert)
     }
     
     func showAlertAndDismissAfterDoneAction(message: String, type: ZLNoAuthorityType?) {
@@ -495,7 +551,7 @@ public class ZLCustomCamera: UIViewController, CAAnimationDelegate {
             }
         }
         alert.addAction(action)
-        self.showDetailViewController(alert, sender: nil)
+        showAlertController(alert)
     }
     
     func showTipsLabel(animate: Bool) {
@@ -548,6 +604,21 @@ public class ZLCustomCamera: UIViewController, CAAnimationDelegate {
     
     @objc func appDidBecomeActive() {
         if self.videoUrl != nil, let player = self.recordVideoPlayerLayer?.player {
+            player.play()
+        }
+    }
+    
+    @objc func handleAudioSessionInterruption(_ notify: Notification) {
+        guard self.recordVideoPlayerLayer?.isHidden == false, let player = self.recordVideoPlayerLayer?.player else {
+            return
+        }
+        guard player.rate == 0 else {
+            return
+        }
+        
+        let type = notify.userInfo?[AVAudioSessionInterruptionTypeKey] as? UInt
+        let option = notify.userInfo?[AVAudioSessionInterruptionOptionKey] as? UInt
+        if type == AVAudioSession.InterruptionType.ended.rawValue, option == AVAudioSession.InterruptionOptions.shouldResume.rawValue {
             player.play()
         }
     }
@@ -615,13 +686,16 @@ public class ZLCustomCamera: UIViewController, CAAnimationDelegate {
         }
     }
     
-    @objc func editBtnClick() {
-        guard let image = self.takedImage else {
+    @objc func editImage() {
+        guard ZLPhotoConfiguration.default().allowEditImage, let image = self.takedImage else {
             return
         }
-        ZLEditImageViewController.showEditImageVC(parentVC: self, image: image) { [weak self] (ei, _) in
-            self?.takedImage = ei
-            self?.takedImageView.image = ei
+        ZLEditImageViewController.showEditImageVC(parentVC: self, image: image) { [weak self] in
+            self?.retakeBtnClick()
+        } completion: { [weak self] (editImage, _) in
+            self?.takedImage = editImage
+            self?.takedImageView.image = editImage
+            self?.doneBtnClick()
         }
     }
     
@@ -813,6 +887,7 @@ public class ZLCustomCamera: UIViewController, CAAnimationDelegate {
         guard self.movieFileOutput.isRecording else {
             return
         }
+        try? AVAudioSession.sharedInstance().setCategory(.playback)
         self.movieFileOutput.stopRecording()
         self.stopRecordAnimation()
     }
@@ -850,7 +925,6 @@ public class ZLCustomCamera: UIViewController, CAAnimationDelegate {
             self.dismissBtn.isHidden = false
             self.switchCameraBtn.isHidden = false
             self.retakeBtn.isHidden = true
-            self.editBtn.isHidden = true
             self.doneBtn.isHidden = true
             self.takedImageView.isHidden = true
             self.takedImage = nil
@@ -860,9 +934,6 @@ public class ZLCustomCamera: UIViewController, CAAnimationDelegate {
             self.dismissBtn.isHidden = true
             self.switchCameraBtn.isHidden = true
             self.retakeBtn.isHidden = false
-            if ZLPhotoConfiguration.default().allowEditImage {
-                self.editBtn.isHidden = self.takedImage == nil
-            }
             self.doneBtn.isHidden = false
         }
     }
@@ -885,20 +956,32 @@ public class ZLCustomCamera: UIViewController, CAAnimationDelegate {
 
 extension ZLCustomCamera: AVCapturePhotoCaptureDelegate {
     
-    public func photoOutput(_ output: AVCapturePhotoOutput, didFinishProcessingPhoto photoSampleBuffer: CMSampleBuffer?, previewPhoto previewPhotoSampleBuffer: CMSampleBuffer?, resolvedSettings: AVCaptureResolvedPhotoSettings, bracketSettings: AVCaptureBracketedStillImageSettings?, error: Error?) {
-        if photoSampleBuffer == nil || error != nil {
-            zl_debugPrint("拍照失败 \(error?.localizedDescription ?? "")")
-            return
+    public func photoOutput(_ output: AVCapturePhotoOutput, willCapturePhotoFor resolvedSettings: AVCaptureResolvedPhotoSettings) {
+        DispatchQueue.main.async {
+            self.previewLayer?.opacity = 0
+            UIView.animate(withDuration: 0.25) {
+                self.previewLayer?.opacity = 1
+            }
         }
-        
-        if let data = AVCapturePhotoOutput.jpegPhotoDataRepresentation(forJPEGSampleBuffer: photoSampleBuffer!, previewPhotoSampleBuffer: previewPhotoSampleBuffer) {
-            self.session.stopRunning()
-            self.takedImage = UIImage(data: data)?.fixOrientation()
-            self.takedImageView.image = self.takedImage
-            self.takedImageView.isHidden = false
-            self.resetSubViewStatus()
-        } else {
-            zl_debugPrint("拍照失败，data为空")
+    }
+    
+    public func photoOutput(_ output: AVCapturePhotoOutput, didFinishProcessingPhoto photoSampleBuffer: CMSampleBuffer?, previewPhoto previewPhotoSampleBuffer: CMSampleBuffer?, resolvedSettings: AVCaptureResolvedPhotoSettings, bracketSettings: AVCaptureBracketedStillImageSettings?, error: Error?) {
+        ZLMainAsync {
+            if photoSampleBuffer == nil || error != nil {
+                zl_debugPrint("拍照失败 \(error?.localizedDescription ?? "")")
+                return
+            }
+            
+            if let data = AVCapturePhotoOutput.jpegPhotoDataRepresentation(forJPEGSampleBuffer: photoSampleBuffer!, previewPhotoSampleBuffer: previewPhotoSampleBuffer) {
+                self.session.stopRunning()
+                self.takedImage = UIImage(data: data)?.fixOrientation()
+                self.takedImageView.image = self.takedImage
+                self.takedImageView.isHidden = false
+                self.resetSubViewStatus()
+                self.editImage()
+            } else {
+                zl_debugPrint("拍照失败，data为空")
+            }
         }
     }
     
@@ -911,7 +994,7 @@ extension ZLCustomCamera: AVCaptureFileOutputRecordingDelegate {
         if self.restartRecordAfterSwitchCamera {
             self.restartRecordAfterSwitchCamera = false
             // 稍微加一个延时，否则切换摄像头后拍摄时间会略小于设置的最大值
-            DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
+            ZLMainAsync(after: 0.1) {
                 let pauseTime = self.animateLayer.timeOffset
                 self.animateLayer.speed = 1
                 self.animateLayer.timeOffset = 0
@@ -920,58 +1003,62 @@ extension ZLCustomCamera: AVCaptureFileOutputRecordingDelegate {
                 self.animateLayer.beginTime = timeSincePause
             }
         } else {
-            self.startRecordAnimation()
+            ZLMainAsync {
+                self.startRecordAnimation()
+            }
         }
     }
     
     public func fileOutput(_ output: AVCaptureFileOutput, didFinishRecordingTo outputFileURL: URL, from connections: [AVCaptureConnection], error: Error?) {
-        if self.restartRecordAfterSwitchCamera {
+        ZLMainAsync {
+            if self.restartRecordAfterSwitchCamera {
+                self.recordUrls.append(outputFileURL)
+                self.startRecord()
+                return
+            }
             self.recordUrls.append(outputFileURL)
-            self.startRecord()
-            return
-        }
-        self.recordUrls.append(outputFileURL)
-        
-        var duration: Double = 0
-        if self.recordUrls.count == 1 {
-            duration = output.recordedDuration.seconds
-        } else {
-            for url in self.recordUrls {
-                let temp = AVAsset(url: url)
-                duration += temp.duration.seconds
-            }
-        }
-        
-        // 重置焦距
-        self.setVideoZoomFactor(1)
-        if duration < Double(ZLPhotoConfiguration.default().minRecordDuration) {
-            showAlertView(String(format: localLanguageTextValue(.minRecordTimeTips), ZLPhotoConfiguration.default().minRecordDuration), self)
-            self.resetSubViewStatus()
-            self.recordUrls.forEach { try? FileManager.default.removeItem(at: $0) }
-            self.recordUrls.removeAll()
-            return
-        }
-        
-        // 拼接视频
-        self.session.stopRunning()
-        self.resetSubViewStatus()
-        if self.recordUrls.count > 1 {
-            ZLVideoManager.mergeVideos(fileUrls: self.recordUrls) { [weak self] (url, error) in
-                if let url = url, error == nil {
-                    self?.videoUrl = url
-                    self?.playRecordVideo(fileUrl: url)
-                } else if let error = error {
-                    self?.videoUrl = nil
-                    showAlertView(error.localizedDescription, self)
+            
+            var duration: Double = 0
+            if self.recordUrls.count == 1 {
+                duration = output.recordedDuration.seconds
+            } else {
+                for url in self.recordUrls {
+                    let temp = AVAsset(url: url)
+                    duration += temp.duration.seconds
                 }
-
-                self?.recordUrls.forEach { try? FileManager.default.removeItem(at: $0) }
-                self?.recordUrls.removeAll()
             }
-        } else {
-            self.videoUrl = outputFileURL
-            self.playRecordVideo(fileUrl: outputFileURL)
-            self.recordUrls.removeAll()
+            
+            // 重置焦距
+            self.setVideoZoomFactor(1)
+            if duration < Double(ZLPhotoConfiguration.default().minRecordDuration) {
+                showAlertView(String(format: localLanguageTextValue(.minRecordTimeTips), ZLPhotoConfiguration.default().minRecordDuration), self)
+                self.resetSubViewStatus()
+                self.recordUrls.forEach { try? FileManager.default.removeItem(at: $0) }
+                self.recordUrls.removeAll()
+                return
+            }
+            
+            // 拼接视频
+            self.session.stopRunning()
+            self.resetSubViewStatus()
+            if self.recordUrls.count > 1 {
+                ZLVideoManager.mergeVideos(fileUrls: self.recordUrls) { [weak self] (url, error) in
+                    if let url = url, error == nil {
+                        self?.videoUrl = url
+                        self?.playRecordVideo(fileUrl: url)
+                    } else if let error = error {
+                        self?.videoUrl = nil
+                        showAlertView(error.localizedDescription, self)
+                    }
+
+                    self?.recordUrls.forEach { try? FileManager.default.removeItem(at: $0) }
+                    self?.recordUrls.removeAll()
+                }
+            } else {
+                self.videoUrl = outputFileURL
+                self.playRecordVideo(fileUrl: outputFileURL)
+                self.recordUrls.removeAll()
+            }
         }
     }
     

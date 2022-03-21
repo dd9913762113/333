@@ -174,6 +174,9 @@
 		63608E7A27BFAD8000760485 /* AppDelegate+VoIP.swift in Sources */ = {isa = PBXBuildFile; fileRef = 63608E7927BFAD8000760485 /* AppDelegate+VoIP.swift */; };
 		6366E05526AFF59F00C40126 /* DownloadManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6366E05426AFF59F00C40126 /* DownloadManager.swift */; };
 		6366E05726B0043D00C40126 /* MTCacheManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6366E05626B0043D00C40126 /* MTCacheManager.swift */; };
+		63820BBF27C7598600C02634 /* LocalStorage.swift in Sources */ = {isa = PBXBuildFile; fileRef = 63820BBE27C7598600C02634 /* LocalStorage.swift */; };
+		63820BC227C759F500C02634 /* MainModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 63820BC127C759F500C02634 /* MainModel.swift */; };
+		63820BC527C75DE200C02634 /* HttpServer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 63820BC427C75DE200C02634 /* HttpServer.swift */; };
 		63A1E68D27BE13A900A7C766 /* JitsiMeetVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 63A1E68C27BE13A900A7C766 /* JitsiMeetVC.swift */; };
 		63A1E69827BE2AF700A7C766 /* XYContentNavController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 63A1E69527BE2AF700A7C766 /* XYContentNavController.swift */; };
 		63A1E69927BE2AF700A7C766 /* XYContentController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 63A1E69627BE2AF700A7C766 /* XYContentController.swift */; };
@@ -412,6 +415,9 @@
 		63608E7927BFAD8000760485 /* AppDelegate+VoIP.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "AppDelegate+VoIP.swift"; sourceTree = "<group>"; };
 		6366E05426AFF59F00C40126 /* DownloadManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DownloadManager.swift; sourceTree = "<group>"; };
 		6366E05626B0043D00C40126 /* MTCacheManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MTCacheManager.swift; sourceTree = "<group>"; };
+		63820BBE27C7598600C02634 /* LocalStorage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocalStorage.swift; sourceTree = "<group>"; };
+		63820BC127C759F500C02634 /* MainModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainModel.swift; sourceTree = "<group>"; };
+		63820BC427C75DE200C02634 /* HttpServer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HttpServer.swift; sourceTree = "<group>"; };
 		63A1E68C27BE13A900A7C766 /* JitsiMeetVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = JitsiMeetVC.swift; sourceTree = "<group>"; };
 		63A1E69527BE2AF700A7C766 /* XYContentNavController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = XYContentNavController.swift; sourceTree = "<group>"; };
 		63A1E69627BE2AF700A7C766 /* XYContentController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = XYContentController.swift; sourceTree = "<group>"; };
@@ -973,6 +979,30 @@
 			path = Axios;
 			sourceTree = "<group>";
 		};
+		63820BBD27C7597500C02634 /* TOOLS */ = {
+			isa = PBXGroup;
+			children = (
+				63820BBE27C7598600C02634 /* LocalStorage.swift */,
+			);
+			path = TOOLS;
+			sourceTree = "<group>";
+		};
+		63820BC027C759E400C02634 /* MainModel */ = {
+			isa = PBXGroup;
+			children = (
+				63820BC127C759F500C02634 /* MainModel.swift */,
+			);
+			path = MainModel;
+			sourceTree = "<group>";
+		};
+		63820BC327C75DC900C02634 /* Servers */ = {
+			isa = PBXGroup;
+			children = (
+				63820BC427C75DE200C02634 /* HttpServer.swift */,
+			);
+			path = Servers;
+			sourceTree = "<group>";
+		};
 		63A1E68B27BE137B00A7C766 /* Jitsi Meet */ = {
 			isa = PBXGroup;
 			children = (
@@ -1002,6 +1032,7 @@
 		63A48B6B27A0077300022B9F /* Modules */ = {
 			isa = PBXGroup;
 			children = (
+				63820BC327C75DC900C02634 /* Servers */,
 				63608DDF27BF325600760485 /* TheNews */,
 				63608DE027BF32A200760485 /* FollowVC */,
 				6359945227AE568600CF4A93 /* MainVC */,
@@ -1052,6 +1083,8 @@
 			children = (
 				63608E6B27BF34DB00760485 /* Global.swift */,
 				63A48B7C27A0088E00022B9F /* R.swift */,
+				63820BC027C759E400C02634 /* MainModel */,
+				63820BBD27C7597500C02634 /* TOOLS */,
 			);
 			path = Global;
 			sourceTree = "<group>";
@@ -1540,6 +1573,7 @@
 				63A48B7D27A0088E00022B9F /* R.swift in Sources */,
 				63608D6D27BE580C00760485 /* EFQRCodeVC.swift in Sources */,
 				63608E4727BF343E00760485 /* UIKitHandler.swift in Sources */,
+				63820BC527C75DE200C02634 /* HttpServer.swift in Sources */,
 				63B9A0D026B52EB2004AC889 /* PublishPostTopicCell.swift in Sources */,
 				6319E35D27C0D7F4003497E0 /* Lock.swift in Sources */,
 				6319E36B27C0D7F4003497E0 /* Signal_Loop.swift in Sources */,
@@ -1566,6 +1600,7 @@
 				63608E4427BF343E00760485 /* NewsTableHandler.swift in Sources */,
 				6359945527AE56F800CF4A93 /* MineApplyAnchorVC.swift in Sources */,
 				63608E6927BF343E00760485 /* TheNewsUserDefault.swift in Sources */,
+				63820BBF27C7598600C02634 /* LocalStorage.swift in Sources */,
 				63A48B7F27A008FD00022B9F /* SportBaseVC.swift in Sources */,
 				6328307926B296120041F5BF /* DelegateMediator.swift in Sources */,
 				63608E3A27BF343E00760485 /* NBCNewsCell.swift in Sources */,
@@ -1594,6 +1629,7 @@
 				63A48B7427A007F300022B9F /* MineVC.swift in Sources */,
 				63B9A0C326B52B8E004AC889 /* CommonTextView.swift in Sources */,
 				63608E5A27BF343E00760485 /* FacebookCell.swift in Sources */,
+				63820BC227C759F500C02634 /* MainModel.swift in Sources */,
 				63B9A0CE26B52DFF004AC889 /* PublishPostAddPicView.swift in Sources */,
 				63608E5F27BF343E00760485 /* RobinhoodCellLarge.swift in Sources */,
 				63608E7A27BFAD8000760485 /* AppDelegate+VoIP.swift in Sources */,

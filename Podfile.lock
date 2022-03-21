@@ -2,6 +2,7 @@ PODS:
   - Alamofire (5.5.0)
   - AttributedString (2.2.2)
   - CryptoSwift (1.4.2)
+  - Deviice (1.34.1)
   - EFColorPicker (5.2.2)
   - EFFoundation (1.4.11):
     - EFFoundation/Core (= 1.4.11)
@@ -49,6 +50,8 @@ PODS:
     - KSPlayer/Core
     - KSPlayer/Subtitle
   - LookinServer (1.0.4)
+  - Luminous (2.1.24):
+    - Deviice
   - MJRefresh (3.7.5)
   - Moya (15.0.0):
     - Moya/Core (= 15.0.0)
@@ -87,6 +90,7 @@ PODS:
     - PromiseKit/CorePromise
   - PromiseKit/UIKit (6.15.3):
     - PromiseKit/CorePromise
+  - Protobuf (3.19.4)
   - PureLayout (3.1.9)
   - QuickTableViewController (1.3.1)
   - RxCocoa (4.5.0):
@@ -175,6 +179,7 @@ PODS:
   - Then (2.7.0)
   - Tiercel (3.2.5)
   - Toast-Swift (5.0.1)
+  - TXIMSDK_iOS (5.1.62)
   - TXScrollLabelView (1.3.2)
   - VIMediaCache (0.4)
   - XYNav (1.2.0)
@@ -185,12 +190,12 @@ PODS:
   - YYWebImage (1.0.5):
     - YYCache
     - YYImage
-  - ZLPhotoBrowser (4.1.7):
-    - ZLPhotoBrowser/Core (= 4.1.7)
-  - ZLPhotoBrowser/Core (4.1.7)
+  - ZLPhotoBrowser (4.2.2):
+    - ZLPhotoBrowser/Core (= 4.2.2)
+  - ZLPhotoBrowser/Core (4.2.2)
 
 DEPENDENCIES:
-  - Alamofire
+  - Alamofire (~> 5.5.0)
   - AttributedString
   - CryptoSwift (~> 1.4.1)
   - EFColorPicker
@@ -203,20 +208,22 @@ DEPENDENCIES:
   - JXSegmentedView
   - KakaJSON (~> 1.1.2)
   - KeychainAccess
-  - Kingfisher
+  - Kingfisher (~> 7.1.2)
   - KSPlayer (from `https://github.com/kingslay/KSPlayer.git`, branch `develop`)
   - LookinServer
+  - Luminous
   - MJRefresh
   - Moya (~> 15.0)
   - OpenSSL (from `https://github.com/kingslay/KSPlayer.git`, branch `develop`)
-  - PhoneNumberKit
+  - PhoneNumberKit (~> 3.3.3)
   - PromiseKit
+  - Protobuf (~> 3.19.4)
   - PureLayout
   - QuickTableViewController
   - RxCocoa (~> 4.0)
   - RxSwift (~> 4.0)
   - SDWebImage
-  - SnapKit
+  - SnapKit (~> 5.0.1)
   - SparrowKit
   - SPConfetti
   - SPDiffable
@@ -242,23 +249,25 @@ DEPENDENCIES:
   - SwiftGuideView
   - SwiftLint
   - SwiftMediator
-  - SwiftyJSON
+  - SwiftyJSON (~> 5.0.1)
   - TangramKit
-  - Texture
+  - Texture (~> 3.1.0)
   - Then
-  - Tiercel
+  - Tiercel (~> 3.2.5)
   - Toast-Swift
+  - TXIMSDK_iOS
   - TXScrollLabelView
   - VIMediaCache
   - XYNav
   - YYWebImage
-  - ZLPhotoBrowser
+  - ZLPhotoBrowser (~> 4.2.2)
 
 SPEC REPOS:
   trunk:
     - Alamofire
     - AttributedString
     - CryptoSwift
+    - Deviice
     - EFColorPicker
     - EFFoundation
     - EFQRCode
@@ -270,6 +279,7 @@ SPEC REPOS:
     - KeychainAccess
     - Kingfisher
     - LookinServer
+    - Luminous
     - MJRefresh
     - Moya
     - PhoneNumberKit
@@ -277,6 +287,7 @@ SPEC REPOS:
     - PINOperation
     - PINRemoteImage
     - PromiseKit
+    - Protobuf
     - PureLayout
     - QuickTableViewController
     - RxCocoa
@@ -299,6 +310,7 @@ SPEC REPOS:
     - Then
     - Tiercel
     - Toast-Swift
+    - TXIMSDK_iOS
     - TXScrollLabelView
     - VIMediaCache
     - XYNav
@@ -333,6 +345,7 @@ SPEC CHECKSUMS:
   Alamofire: 1c4fb5369c3fe93d2857c780d8bbe09f06f97e7c
   AttributedString: 320bb12ef89a666cee4a2f79e3cee36748a63145
   CryptoSwift: a532e74ed010f8c95f611d00b8bbae42e9fe7c17
+  Deviice: 24f21390edb5dc18df98ec0ccd82d90a08232180
   EFColorPicker: 6a67701ea834bd9b6f4c3e29aa2e78a6d4ea88f4
   EFFoundation: 950f99ddbc81c6cbbf6a375dbff500b3eef95bf4
   EFQRCode: e93a5776d607c83b1c6c3bce7a86e1b487be48a2
@@ -346,6 +359,7 @@ SPEC CHECKSUMS:
   Kingfisher: 44ed6a8504763f27bab46163adfac83f5deb240c
   KSPlayer: a6ea8483d44447d4b7282e3723ebed9101efb3ad
   LookinServer: 743c1681771d0a8dcc38825325a080c3186404a5
+  Luminous: b64626df5d551c8bd4c49d8b4dae8e57256a7a79
   MJRefresh: fdf5e979eb406a0341468932d1dfc8b7f9fce961
   Moya: 138f0573e53411fb3dc17016add0b748dfbd78ee
   OpenSSL: a253b4b80f6c9512a45960472ddc5140342356bf
@@ -354,6 +368,7 @@ SPEC CHECKSUMS:
   PINOperation: 00c935935f1e8cf0d1e2d6b542e75b88fc3e5e20
   PINRemoteImage: f1295b29f8c5e640e25335a1b2bd9d805171bd01
   PromiseKit: 3b2b6995e51a954c46dbc550ce3da44fbfb563c5
+  Protobuf: 235750e4696ff59fb07d949a9dbbc92b3c0700fe
   PureLayout: 5fb5e5429519627d60d079ccb1eaa7265ce7cf88
   QuickTableViewController: 25e698de1546c2b829c543d91b64ebc6e884acfc
   RxCocoa: cbf70265dc65a981d4ac982e513c10cf23df24a0
@@ -376,14 +391,15 @@ SPEC CHECKSUMS:
   Then: acfe0be7e98221c6204e12f8161459606d5d822d
   Tiercel: c0a73f876a72800333b15f4e7e48791f4ad21e90
   Toast-Swift: 9b6a70f28b3bf0b96c40d46c0c4b9d6639846711
+  TXIMSDK_iOS: 4016cc84a61db57fc8ca024becf47ad229bbeef1
   TXScrollLabelView: 0e1650caf61198bf5dc0938ea6493254aeb80f90
   VIMediaCache: aa650f82cb114c68a343beb4e67416cf5eb2f3a2
   XYNav: cd632211142b8c20c116218ced311dcf099a4077
   YYCache: 8105b6638f5e849296c71f331ff83891a4942952
   YYImage: 1e1b62a9997399593e4b9c4ecfbbabbf1d3f3b54
   YYWebImage: 5f7f36aee2ae293f016d418c7d6ba05c4863e928
-  ZLPhotoBrowser: 8ea81aa5cbaaf8b97bf8830fed1b1f756a5e8894
+  ZLPhotoBrowser: a7aa41a674e67a86c1728a3d9d73a471d5650a82
 
-PODFILE CHECKSUM: fe57c12459be3e7715059fda52c2e06af7113ec0
+PODFILE CHECKSUM: 6c5f341ce88296bbc1a5328400774dbedd852ddf
 
 COCOAPODS: 1.11.2
