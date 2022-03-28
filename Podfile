@@ -185,7 +185,8 @@ target '3332323' do
 #  https://github.com/andrealufino/Luminous 设备各种信息
  pod 'Luminous'
 
-
+# https://github.com/Yewenyu/PingManager
+# pod 'PingManager'
  
  
 end

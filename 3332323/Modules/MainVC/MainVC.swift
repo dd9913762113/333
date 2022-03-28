@@ -54,11 +54,13 @@ class MainVC: UIViewController,  UITableViewDelegate, UITableViewDataSource {
         self.array = ["DownLoad", "collectionview", "TVListVC",
                       "天女散花", "各种权限", "图片选择器",
                       "图文发布", "申请主播","JitsiMeet 音视频在线会议",
-                      "EFQRCode 二维码","各大APP新闻页面\"样式\"","视频背景，无限重播"]
+                      "EFQRCode 二维码","各大APP新闻页面\"样式\"","视频背景，无限重播",
+                      "ping 检查"]
         self.arrayVC = [DownLoadTabbar(), MediaCollectionView(), TVListVC(),
                         PreviewController(), SPPermissionsVC(), WXZLPhoto(),
                         PublishPostVC(),MineApplyAnchorVC(),JitsiMeetVC(),
-                        EFQRCodeVC(),TheNewsViewController(),DK_BackgroundVideo()]
+                        EFQRCodeVC(),TheNewsViewController(),DK_BackgroundVideo(),
+                        PINGTest()]
         tableView.rowHeight = 50
         tableView.register(TableViewCell.self, forCellReuseIdentifier: "Cell")
         tableView.reloadData()
@@ -115,6 +117,14 @@ class MainVC: UIViewController,  UITableViewDelegate, UITableViewDataSource {
       
     }
     
+    
+    func showDNSInfos ()
+    {
+//        type  A AAAA ALL CAA CNAME DNAME NAPTR NSEC3PARAM SOA TLSA
+//    https://dns.google/resolve?name=baidu.com&type=A
+//    https://dns.google/
+        
+    }
     
     
     func showDeviceInfos ()

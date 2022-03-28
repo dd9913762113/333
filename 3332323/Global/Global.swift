@@ -195,4 +195,35 @@ public func showUrl(_ urlStr: String,
     } else {
 //        showMessage("链接\(urlStr)加载失败")
     }
+    
+}
+
+
+var isFullScreen: Bool {
+    if #available(iOS 11, *) {
+        guard let w = UIApplication.shared.delegate?.window, let unwrapedWindow = w else {
+            return false
+        }
+          
+          if unwrapedWindow.safeAreaInsets.left > 0 || unwrapedWindow.safeAreaInsets.bottom > 0 {
+              print(unwrapedWindow.safeAreaInsets)
+              return true
+          }
+    }
+    return false
+}
+
+var kNavigationBarHeight: CGFloat {
+   //return UIApplication.shared.statusBarFrame.height == 44 ? 88 : 64
+   return isFullScreen ? 88 : 64
+}
+    
+var kBottomSafeHeight: CGFloat {
+   //return UIApplication.shared.statusBarFrame.height == 44 ? 34 : 0
+   return isFullScreen ? 34 : 0
+}
+
+var kNavigationstausBarHeight: CGFloat {
+   //return UIApplication.shared.statusBarFrame.height == 44 ? 88 : 64
+   return isFullScreen ? 44 : 20
 }

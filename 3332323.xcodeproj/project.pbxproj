@@ -200,6 +200,15 @@
 		63A48B9927A00C2500022B9F /* Protocols.swift in Sources */ = {isa = PBXBuildFile; fileRef = 63A48B8F27A00C2500022B9F /* Protocols.swift */; };
 		63A48B9B27A00E6600022B9F /* BaseWebController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 63A48B9A27A00E6600022B9F /* BaseWebController.swift */; };
 		63A48B9F27A00F0900022B9F /* Util.m in Sources */ = {isa = PBXBuildFile; fileRef = 63A48B9E27A00F0900022B9F /* Util.m */; };
+		63A5CAE827F15BAF00DF348A /* PINGTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = 63A5CAE727F15BAF00DF348A /* PINGTest.swift */; };
+		63A5CAF727F17E5C00DF348A /* PingResult.swift in Sources */ = {isa = PBXBuildFile; fileRef = 63A5CAF327F17E5C00DF348A /* PingResult.swift */; };
+		63A5CAF827F17E5C00DF348A /* Ping.swift in Sources */ = {isa = PBXBuildFile; fileRef = 63A5CAF427F17E5C00DF348A /* Ping.swift */; };
+		63A5CAF927F17E5C00DF348A /* ICMPHeader.swift in Sources */ = {isa = PBXBuildFile; fileRef = 63A5CAF527F17E5C00DF348A /* ICMPHeader.swift */; };
+		63A5CAFA27F17E5C00DF348A /* PingManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 63A5CAF627F17E5C00DF348A /* PingManager.swift */; };
+		63A5CB0227F188DA00DF348A /* NENSinglePinger.m in Sources */ = {isa = PBXBuildFile; fileRef = 63A5CAFC27F188DA00DF348A /* NENSinglePinger.m */; };
+		63A5CB0327F188DA00DF348A /* SimplePing.m in Sources */ = {isa = PBXBuildFile; fileRef = 63A5CAFF27F188DA00DF348A /* SimplePing.m */; };
+		63A5CB0427F188DA00DF348A /* NENPingManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 63A5CB0127F188DA00DF348A /* NENPingManager.m */; };
+		63A5CB0727F18B1B00DF348A /* DK_NENPingTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 63A5CB0627F18B1B00DF348A /* DK_NENPingTest.m */; };
 		63A6677B269861B4009235A3 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 63A6677A269861B4009235A3 /* AppDelegate.swift */; };
 		63A66784269861B5009235A3 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 63A66783269861B5009235A3 /* Assets.xcassets */; };
 		63A66787269861B5009235A3 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 63A66785269861B5009235A3 /* LaunchScreen.storyboard */; };
@@ -443,6 +452,19 @@
 		63A48B9C27A00F0800022B9F /* 3332323-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "3332323-Bridging-Header.h"; sourceTree = "<group>"; };
 		63A48B9D27A00F0900022B9F /* Util.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Util.h; sourceTree = "<group>"; };
 		63A48B9E27A00F0900022B9F /* Util.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Util.m; sourceTree = "<group>"; };
+		63A5CAE727F15BAF00DF348A /* PINGTest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PINGTest.swift; sourceTree = "<group>"; };
+		63A5CAF327F17E5C00DF348A /* PingResult.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PingResult.swift; sourceTree = "<group>"; };
+		63A5CAF427F17E5C00DF348A /* Ping.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Ping.swift; sourceTree = "<group>"; };
+		63A5CAF527F17E5C00DF348A /* ICMPHeader.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ICMPHeader.swift; sourceTree = "<group>"; };
+		63A5CAF627F17E5C00DF348A /* PingManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PingManager.swift; sourceTree = "<group>"; };
+		63A5CAFC27F188DA00DF348A /* NENSinglePinger.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NENSinglePinger.m; sourceTree = "<group>"; };
+		63A5CAFD27F188DA00DF348A /* SimplePing.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SimplePing.h; sourceTree = "<group>"; };
+		63A5CAFE27F188DA00DF348A /* NENPingManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NENPingManager.h; sourceTree = "<group>"; };
+		63A5CAFF27F188DA00DF348A /* SimplePing.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SimplePing.m; sourceTree = "<group>"; };
+		63A5CB0027F188DA00DF348A /* NENSinglePinger.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NENSinglePinger.h; sourceTree = "<group>"; };
+		63A5CB0127F188DA00DF348A /* NENPingManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NENPingManager.m; sourceTree = "<group>"; };
+		63A5CB0527F18B1B00DF348A /* DK_NENPingTest.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = DK_NENPingTest.h; sourceTree = "<group>"; };
+		63A5CB0627F18B1B00DF348A /* DK_NENPingTest.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = DK_NENPingTest.m; sourceTree = "<group>"; };
 		63A66777269861B4009235A3 /* 3332323.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = 3332323.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		63A6677A269861B4009235A3 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		63A66783269861B5009235A3 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
@@ -677,6 +699,7 @@
 			isa = PBXGroup;
 			children = (
 				63A7739C26A6B5C7000DE05B /* MainVC.swift */,
+				63A5CAE627F15B8D00DF348A /* PING */,
 				6319E2F027C0912F003497E0 /* 视频背景 */,
 				63608D6B27BE57D600760485 /* EFQRCode */,
 				63A1E68B27BE137B00A7C766 /* Jitsi Meet */,
@@ -1141,6 +1164,42 @@
 			path = MineThird;
 			sourceTree = "<group>";
 		};
+		63A5CAE627F15B8D00DF348A /* PING */ = {
+			isa = PBXGroup;
+			children = (
+				63A5CAE727F15BAF00DF348A /* PINGTest.swift */,
+				63A5CAFB27F188DA00DF348A /* NenPingManager */,
+				63A5CAF227F17E5C00DF348A /* PingManager */,
+			);
+			path = PING;
+			sourceTree = "<group>";
+		};
+		63A5CAF227F17E5C00DF348A /* PingManager */ = {
+			isa = PBXGroup;
+			children = (
+				63A5CAF327F17E5C00DF348A /* PingResult.swift */,
+				63A5CAF427F17E5C00DF348A /* Ping.swift */,
+				63A5CAF527F17E5C00DF348A /* ICMPHeader.swift */,
+				63A5CAF627F17E5C00DF348A /* PingManager.swift */,
+			);
+			path = PingManager;
+			sourceTree = "<group>";
+		};
+		63A5CAFB27F188DA00DF348A /* NenPingManager */ = {
+			isa = PBXGroup;
+			children = (
+				63A5CAFD27F188DA00DF348A /* SimplePing.h */,
+				63A5CAFF27F188DA00DF348A /* SimplePing.m */,
+				63A5CB0027F188DA00DF348A /* NENSinglePinger.h */,
+				63A5CAFC27F188DA00DF348A /* NENSinglePinger.m */,
+				63A5CAFE27F188DA00DF348A /* NENPingManager.h */,
+				63A5CB0127F188DA00DF348A /* NENPingManager.m */,
+				63A5CB0527F18B1B00DF348A /* DK_NENPingTest.h */,
+				63A5CB0627F18B1B00DF348A /* DK_NENPingTest.m */,
+			);
+			path = NenPingManager;
+			sourceTree = "<group>";
+		};
 		63A6676E269861B4009235A3 = {
 			isa = PBXGroup;
 			children = (
@@ -1520,6 +1579,7 @@
 				6319E36E27C0D7F4003497E0 /* Signal_Timing.swift in Sources */,
 				63608E4927BF343E00760485 /* AppleNewsHandler.swift in Sources */,
 				63B9A0CA26B52D46004AC889 /* Math+Extension.swift in Sources */,
+				63A5CB0727F18B1B00DF348A /* DK_NENPingTest.m in Sources */,
 				63B9A0AB26B4F6B9004AC889 /* WXZLPhoto.swift in Sources */,
 				63608E6127BF343E00760485 /* RedditHandler.swift in Sources */,
 				63A48B9727A00C2500022B9F /* String+Extension.swift in Sources */,
@@ -1527,6 +1587,7 @@
 				63A7739D26A6B5C7000DE05B /* MainVC.swift in Sources */,
 				63608E6227BF343E00760485 /* InstagramCell.swift in Sources */,
 				6319E36327C0D7F4003497E0 /* Bag.swift in Sources */,
+				63A5CAE827F15BAF00DF348A /* PINGTest.swift in Sources */,
 				63608E5327BF343E00760485 /* NYTCell.swift in Sources */,
 				63A1E69827BE2AF700A7C766 /* XYContentNavController.swift in Sources */,
 				63608E4227BF343E00760485 /* FastNewsHandler.swift in Sources */,
@@ -1583,6 +1644,7 @@
 				63608E4D27BF343E00760485 /* CashAppCell.swift in Sources */,
 				63608E4327BF343E00760485 /* FastNewsCell.swift in Sources */,
 				6319E36727C0D7F4003497E0 /* Promise.swift in Sources */,
+				63A5CB0227F188DA00DF348A /* NENSinglePinger.m in Sources */,
 				6319E36F27C0D7F4003497E0 /* Signal_Meta.swift in Sources */,
 				63D6155526AC220C00CDBA38 /* AppDelegate+Download.swift in Sources */,
 				63608E6827BF343E00760485 /* TheNewsExtension.swift in Sources */,
@@ -1610,10 +1672,14 @@
 				63608E3B27BF343E00760485 /* NBCNewsCellLarge.swift in Sources */,
 				63608E6427BF343E00760485 /* AxiosCell.swift in Sources */,
 				63608E6A27BF343E00760485 /* TheNewsImageDownloader.swift in Sources */,
+				63A5CAF827F17E5C00DF348A /* Ping.swift in Sources */,
 				6319E35E27C0D7F4003497E0 /* Timer.swift in Sources */,
 				6319E35A27C0D7F4003497E0 /* Signal_Reduce.swift in Sources */,
 				63B9A0C126B52B3B004AC889 /* PublishPostInputView.swift in Sources */,
+				63A5CAF927F17E5C00DF348A /* ICMPHeader.swift in Sources */,
 				63608E5927BF343E00760485 /* FacebookHandler.swift in Sources */,
+				63A5CAFA27F17E5C00DF348A /* PingManager.swift in Sources */,
+				63A5CB0427F188DA00DF348A /* NENPingManager.m in Sources */,
 				63A1E69A27BE2AF700A7C766 /* XYNavigationController.swift in Sources */,
 				6319E36227C0D7F4003497E0 /* Multicast.swift in Sources */,
 				63608E3827BF343E00760485 /* FlipboardCell.swift in Sources */,
@@ -1654,11 +1720,13 @@
 				63D616C826AD662300CDBA38 /* DownLoadListVC.swift in Sources */,
 				63608E5E27BF343E00760485 /* RobinhoodCell.swift in Sources */,
 				63A48B9127A00C2500022B9F /* UIView+Extension.swift in Sources */,
+				63A5CB0327F188DA00DF348A /* SimplePing.m in Sources */,
 				63608E6527BF343E00760485 /* AxiosHandler.swift in Sources */,
 				6319E36827C0D7F4003497E0 /* Queue.swift in Sources */,
 				63608E4F27BF343E00760485 /* NewsCell.swift in Sources */,
 				63608E5427BF343E00760485 /* LilNewsHandler.swift in Sources */,
 				63B9A0B526B4F74C004AC889 /* LanguagePickerView.swift in Sources */,
+				63A5CAF727F17E5C00DF348A /* PingResult.swift in Sources */,
 				6319E35827C0D7F4003497E0 /* Signal_Catch.swift in Sources */,
 				63608E5227BF343E00760485 /* NYTHandler.swift in Sources */,
 			);
