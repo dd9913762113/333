@@ -55,12 +55,12 @@ class MainVC: UIViewController,  UITableViewDelegate, UITableViewDataSource {
                       "天女散花", "各种权限", "图片选择器",
                       "图文发布", "申请主播","JitsiMeet 音视频在线会议",
                       "EFQRCode 二维码","各大APP新闻页面\"样式\"","视频背景，无限重播",
-                      "ping 检查"]
+                      "ping 检查","Traceroute路径","网络下载测速"]
         self.arrayVC = [DownLoadTabbar(), MediaCollectionView(), TVListVC(),
                         PreviewController(), SPPermissionsVC(), WXZLPhoto(),
                         PublishPostVC(),MineApplyAnchorVC(),JitsiMeetVC(),
                         EFQRCodeVC(),TheNewsViewController(),DK_BackgroundVideo(),
-                        PINGTest()]
+                        PINGTest(),DK_TracerouteVC(),NetworksSpeedViewController()]
         tableView.rowHeight = 50
         tableView.register(TableViewCell.self, forCellReuseIdentifier: "Cell")
         tableView.reloadData()

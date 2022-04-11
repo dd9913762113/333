@@ -1,9 +1,9 @@
 /*
- Copyright (C) 2016 Apple Inc. All Rights Reserved.
- See LICENSE.txt for this sample’s licensing information
- 
- Abstract:
- An object wrapper around the low-level BSD Sockets ping function.
+    Copyright (C) 2016 Apple Inc. All Rights Reserved.
+    See LICENSE.txt for this sample’s licensing information
+    
+    Abstract:
+    An object wrapper around the low-level BSD Sockets ping function.
  */
 
 @import Foundation;
@@ -70,7 +70,7 @@ typedef NS_ENUM(NSInteger, SimplePingAddressStyle) {
  *      value is nil while the object is stopped and remains nil on start until
  *      `-simplePing:didStartWithAddress:` is called.
  */
-
+ 
 @property (nonatomic, copy, readonly, nullable) NSData * hostAddress;
 
 /*! The address family for `hostAddress`, or `AF_UNSPEC` if that's nil.
@@ -132,6 +132,11 @@ typedef NS_ENUM(NSInteger, SimplePingAddressStyle) {
 
 - (void)stop;
 
+/** SimplePing 自己添加的方法 */
+- (NSString *)srcAddrInIPv4Packet:(NSData *)packet;
+- (void)setTTL:(int)ttl;
+//- (void)sendPing;
+
 @end
 
 /*! A delegate protocol for the SimplePing class.
@@ -164,7 +169,7 @@ typedef NS_ENUM(NSInteger, SimplePingAddressStyle) {
  *  \param pinger The object issuing the callback.
  *  \param error Describes the failure.
  */
-
+    
 - (void)simplePing:(SimplePing *)pinger didFailWithError:(NSError *)error;
 
 /*! A SimplePing delegate callback, called when the object has successfully sent a ping packet.

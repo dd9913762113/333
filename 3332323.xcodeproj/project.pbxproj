@@ -63,6 +63,11 @@
 		6319E36D27C0D7F4003497E0 /* Signal_Combine.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6319E35327C0D7F4003497E0 /* Signal_Combine.swift */; };
 		6319E36E27C0D7F4003497E0 /* Signal_Timing.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6319E35427C0D7F4003497E0 /* Signal_Timing.swift */; };
 		6319E36F27C0D7F4003497E0 /* Signal_Meta.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6319E35527C0D7F4003497E0 /* Signal_Meta.swift */; };
+		631FF70B280439C70010392B /* TracerouteTagsDataSources.m in Sources */ = {isa = PBXBuildFile; fileRef = 631FF705280439C70010392B /* TracerouteTagsDataSources.m */; };
+		631FF70C280439C70010392B /* NetworkTagsCollectionViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 631FF706280439C70010392B /* NetworkTagsCollectionViewCell.m */; };
+		631FF70D280439C70010392B /* DK_TracerouteVC.m in Sources */ = {isa = PBXBuildFile; fileRef = 631FF709280439C70010392B /* DK_TracerouteVC.m */; };
+		631FF7152804598D0010392B /* DownloadSpeedHandler.m in Sources */ = {isa = PBXBuildFile; fileRef = 631FF7132804598D0010392B /* DownloadSpeedHandler.m */; };
+		631FF7162804598D0010392B /* NetworksSpeedViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 631FF7142804598D0010392B /* NetworksSpeedViewController.m */; };
 		6328303226B1060F0041F5BF /* MetalKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 6328303126B1060F0041F5BF /* MetalKit.framework */; };
 		6328303526B125210041F5BF /* TVListVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6328303426B125210041F5BF /* TVListVC.swift */; };
 		6328303E26B127100041F5BF /* cn.m3u in Resources */ = {isa = PBXBuildFile; fileRef = 6328303D26B127100041F5BF /* cn.m3u */; };
@@ -313,6 +318,16 @@
 		6319E35327C0D7F4003497E0 /* Signal_Combine.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Signal_Combine.swift; sourceTree = "<group>"; };
 		6319E35427C0D7F4003497E0 /* Signal_Timing.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Signal_Timing.swift; sourceTree = "<group>"; };
 		6319E35527C0D7F4003497E0 /* Signal_Meta.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Signal_Meta.swift; sourceTree = "<group>"; };
+		631FF705280439C70010392B /* TracerouteTagsDataSources.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TracerouteTagsDataSources.m; sourceTree = "<group>"; };
+		631FF706280439C70010392B /* NetworkTagsCollectionViewCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NetworkTagsCollectionViewCell.m; sourceTree = "<group>"; };
+		631FF707280439C70010392B /* DK_TracerouteVC.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DK_TracerouteVC.h; sourceTree = "<group>"; };
+		631FF708280439C70010392B /* TracerouteTagsDataSources.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TracerouteTagsDataSources.h; sourceTree = "<group>"; };
+		631FF709280439C70010392B /* DK_TracerouteVC.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DK_TracerouteVC.m; sourceTree = "<group>"; };
+		631FF70A280439C70010392B /* NetworkTagsCollectionViewCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NetworkTagsCollectionViewCell.h; sourceTree = "<group>"; };
+		631FF7112804598D0010392B /* DownloadSpeedHandler.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DownloadSpeedHandler.h; sourceTree = "<group>"; };
+		631FF7122804598D0010392B /* NetworksSpeedViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NetworksSpeedViewController.h; sourceTree = "<group>"; };
+		631FF7132804598D0010392B /* DownloadSpeedHandler.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DownloadSpeedHandler.m; sourceTree = "<group>"; };
+		631FF7142804598D0010392B /* NetworksSpeedViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NetworksSpeedViewController.m; sourceTree = "<group>"; };
 		6328303126B1060F0041F5BF /* MetalKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = MetalKit.framework; path = System/Library/Frameworks/MetalKit.framework; sourceTree = SDKROOT; };
 		6328303426B125210041F5BF /* TVListVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TVListVC.swift; sourceTree = "<group>"; };
 		6328303D26B127100041F5BF /* cn.m3u */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = cn.m3u; sourceTree = "<group>"; };
@@ -628,6 +643,38 @@
 			path = SwiftSignalKit;
 			sourceTree = "<group>";
 		};
+		631FF6F7280436E60010392B /* Traceroute */ = {
+			isa = PBXGroup;
+			children = (
+				631FF704280439C70010392B /* DK_Traceroute */,
+			);
+			path = Traceroute;
+			sourceTree = "<group>";
+		};
+		631FF704280439C70010392B /* DK_Traceroute */ = {
+			isa = PBXGroup;
+			children = (
+				631FF707280439C70010392B /* DK_TracerouteVC.h */,
+				631FF709280439C70010392B /* DK_TracerouteVC.m */,
+				631FF708280439C70010392B /* TracerouteTagsDataSources.h */,
+				631FF705280439C70010392B /* TracerouteTagsDataSources.m */,
+				631FF70A280439C70010392B /* NetworkTagsCollectionViewCell.h */,
+				631FF706280439C70010392B /* NetworkTagsCollectionViewCell.m */,
+			);
+			path = DK_Traceroute;
+			sourceTree = "<group>";
+		};
+		631FF710280458C80010392B /* DKSpeedMeasure */ = {
+			isa = PBXGroup;
+			children = (
+				631FF7112804598D0010392B /* DownloadSpeedHandler.h */,
+				631FF7132804598D0010392B /* DownloadSpeedHandler.m */,
+				631FF7122804598D0010392B /* NetworksSpeedViewController.h */,
+				631FF7142804598D0010392B /* NetworksSpeedViewController.m */,
+			);
+			path = DKSpeedMeasure;
+			sourceTree = "<group>";
+		};
 		6328303326B124FF0041F5BF /* TVListPlayer */ = {
 			isa = PBXGroup;
 			children = (
@@ -699,6 +746,8 @@
 			isa = PBXGroup;
 			children = (
 				63A7739C26A6B5C7000DE05B /* MainVC.swift */,
+				631FF710280458C80010392B /* DKSpeedMeasure */,
+				631FF6F7280436E60010392B /* Traceroute */,
 				63A5CAE627F15B8D00DF348A /* PING */,
 				6319E2F027C0912F003497E0 /* 视频背景 */,
 				63608D6B27BE57D600760485 /* EFQRCode */,
@@ -1562,6 +1611,7 @@
 				63608E5027BF343E00760485 /* WashingtonPostCell.swift in Sources */,
 				6319E36127C0D7F4003497E0 /* Disposable.swift in Sources */,
 				63A48B9027A00C2500022B9F /* UIColor+Extension.swift in Sources */,
+				631FF70C280439C70010392B /* NetworkTagsCollectionViewCell.m in Sources */,
 				63608E4127BF343E00760485 /* FacebookNewsHandler.swift in Sources */,
 				63D6155926AC27A400CDBA38 /* BaseTableVC.swift in Sources */,
 				63608E3727BF343E00760485 /* FlipboardHandler.swift in Sources */,
@@ -1570,6 +1620,7 @@
 				63608E3427BF343E00760485 /* TheNewsSettings.swift in Sources */,
 				63608E5B27BF343E00760485 /* ApolloHandler.swift in Sources */,
 				63608E4E27BF343E00760485 /* CashAppHandler.swift in Sources */,
+				631FF7152804598D0010392B /* DownloadSpeedHandler.m in Sources */,
 				6319E35F27C0D7F4003497E0 /* Signal_Dispatch.swift in Sources */,
 				63608D7627BE586C00760485 /* CGFloat+Example.swift in Sources */,
 				63B9A0CC26B52D6E004AC889 /* UIView+Xib.swift in Sources */,
@@ -1579,6 +1630,7 @@
 				6319E36E27C0D7F4003497E0 /* Signal_Timing.swift in Sources */,
 				63608E4927BF343E00760485 /* AppleNewsHandler.swift in Sources */,
 				63B9A0CA26B52D46004AC889 /* Math+Extension.swift in Sources */,
+				631FF70D280439C70010392B /* DK_TracerouteVC.m in Sources */,
 				63A5CB0727F18B1B00DF348A /* DK_NENPingTest.m in Sources */,
 				63B9A0AB26B4F6B9004AC889 /* WXZLPhoto.swift in Sources */,
 				63608E6127BF343E00760485 /* RedditHandler.swift in Sources */,
@@ -1628,6 +1680,7 @@
 				63D6156726AD0CC400CDBA38 /* MediaCollectionView.swift in Sources */,
 				63A48B9527A00C2500022B9F /* Collection+Extension.swift in Sources */,
 				63A48B7227A007E300022B9F /* HomeVC.swift in Sources */,
+				631FF70B280439C70010392B /* TracerouteTagsDataSources.m in Sources */,
 				6328308326B2BD750041F5BF /* SPPermissionsVC.swift in Sources */,
 				63608E3627BF343E00760485 /* TheNewsViewModel.swift in Sources */,
 				63A48B9827A00C2500022B9F /* Array+Extension.swift in Sources */,
@@ -1725,6 +1778,7 @@
 				6319E36827C0D7F4003497E0 /* Queue.swift in Sources */,
 				63608E4F27BF343E00760485 /* NewsCell.swift in Sources */,
 				63608E5427BF343E00760485 /* LilNewsHandler.swift in Sources */,
+				631FF7162804598D0010392B /* NetworksSpeedViewController.m in Sources */,
 				63B9A0B526B4F74C004AC889 /* LanguagePickerView.swift in Sources */,
 				63A5CAF727F17E5C00DF348A /* PingResult.swift in Sources */,
 				6319E35827C0D7F4003497E0 /* Signal_Catch.swift in Sources */,

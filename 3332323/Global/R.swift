@@ -29,7 +29,7 @@ public final class  R {
 
         static let color_f5f7ff = UIColor(red: 245/255.0, green: 247/255.0, blue: 255/255.0, alpha: 1.0)
 
-        
+        static let color_015EAD = UIColor(red: 1/255.0, green: 94/255.0, blue: 173/255.0, alpha: 1.0)
         
         
         static let primary = UIColor(red: 61/255.0, green: 216/255.0, blue: 210/255.0, alpha: 1.0)

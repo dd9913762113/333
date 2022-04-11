@@ -6,7 +6,20 @@
 //#import "NENPingManager.h"
 #import "DK_NENPingTest.h"
 
-
 #import <PureLayout/PureLayout.h>
+
+#import "NetworkTagsCollectionViewCell.h"
+#import "TracerouteTagsDataSources.h"
+#import "SimplePing.h"
+
+
+#import "DK_TracerouteVC.h"
+#import "NetworksSpeedViewController.h"
+
+
+
+
+
+
 
 
