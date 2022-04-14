@@ -20,7 +20,7 @@
 
 @end
 
-typedef void(^CompletionHandler)(NSString *, NSArray *);
+typedef void(^CompletionHandler)(NSString * string, NSArray *array);
 
 NS_ASSUME_NONNULL_BEGIN
 

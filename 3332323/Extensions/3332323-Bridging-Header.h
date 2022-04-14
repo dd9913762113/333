@@ -15,8 +15,10 @@
 
 #import "DK_TracerouteVC.h"
 #import "NetworksSpeedViewController.h"
+#import "DKNetDiagnoServiceVC.h"
 
-
+#import "SGWiFiUploadManager.h"
+#import "DK_SGWiFiUploadVC.h"
 
 
 

@@ -50,5 +50,6 @@ ${BUILT_PRODUCTS_DIR}/YYCache/YYCache.framework
 ${BUILT_PRODUCTS_DIR}/YYImage/YYImage.framework
 ${BUILT_PRODUCTS_DIR}/YYWebImage/YYWebImage.framework
 ${BUILT_PRODUCTS_DIR}/ZLPhotoBrowser/ZLPhotoBrowser.framework
+${BUILT_PRODUCTS_DIR}/ZXRequestBlock/ZXRequestBlock.framework
 ${PODS_XCFRAMEWORKS_BUILD_DIR}/JitsiMeetSDK/JitsiMeetSDK.framework/JitsiMeetSDK
 ${PODS_XCFRAMEWORKS_BUILD_DIR}/JitsiMeetSDK/WebRTC.framework/WebRTC

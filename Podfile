@@ -70,7 +70,8 @@ target '3332323' do
 # 日志分级打印工具
  pod 'Swift_Log'
 
- 
+# https://github.com/ZipArchive/ZipArchive  压缩解压工具
+ pod 'SSZipArchive'
  
 
  
@@ -187,6 +188,14 @@ target '3332323' do
 
 # https://github.com/Yewenyu/PingManager
 # pod 'PingManager'
+ 
+# https://github.com/Frugghi/SwiftSH  https://github.com/migueldeicaza/SwiftTerm
+# pod 'SwiftSH'
+
+# 基于NSURLProtocol一句话实现iOS应用底层所有网络请求拦截(含网页ajax请求拦截【不支持WKWebView】)
+ pod 'ZXRequestBlock'
+
+ 
  
  
 end
