@@ -49,6 +49,7 @@ PODS:
   - KSPlayer/Video (1.0):
     - KSPlayer/Core
     - KSPlayer/Subtitle
+  - LFPhoneInfo (0.1.9)
   - LookinServer (1.0.4)
   - Luminous (2.1.24):
     - Deviice
@@ -138,6 +139,7 @@ PODS:
     - SPPermissions/Core
   - SPPermissions/Tracking (7.0.1):
     - SPPermissions/Core
+  - SSZipArchive (2.4.3)
   - Swift_Log (0.8.0)
   - SwiftBrick/Extensions (1.9.0):
     - SnapKit
@@ -211,6 +213,7 @@ DEPENDENCIES:
   - KeychainAccess
   - Kingfisher (~> 7.1.2)
   - KSPlayer (from `https://github.com/kingslay/KSPlayer.git`, branch `develop`)
+  - LFPhoneInfo
   - LookinServer
   - Luminous
   - MJRefresh
@@ -245,6 +248,7 @@ DEPENDENCIES:
   - SPPermissions/Siri
   - SPPermissions/SpeechRecognizer
   - SPPermissions/Tracking
+  - SSZipArchive
   - Swift_Log
   - SwiftBrick/ViewFactory
   - SwiftGuideView
@@ -280,6 +284,7 @@ SPEC REPOS:
     - KakaJSON
     - KeychainAccess
     - Kingfisher
+    - LFPhoneInfo
     - LookinServer
     - Luminous
     - MJRefresh
@@ -300,6 +305,7 @@ SPEC REPOS:
     - SPConfetti
     - SPDiffable
     - SPPermissions
+    - SSZipArchive
     - Swift_Log
     - SwiftBrick
     - SwiftGuideView
@@ -361,6 +367,7 @@ SPEC CHECKSUMS:
   KeychainAccess: c0c4f7f38f6fc7bbe58f5702e25f7bd2f65abf51
   Kingfisher: 44ed6a8504763f27bab46163adfac83f5deb240c
   KSPlayer: a6ea8483d44447d4b7282e3723ebed9101efb3ad
+  LFPhoneInfo: 0b65b3165de77e03aaa2b2731c2ef8802958ee8d
   LookinServer: 743c1681771d0a8dcc38825325a080c3186404a5
   Luminous: b64626df5d551c8bd4c49d8b4dae8e57256a7a79
   MJRefresh: fdf5e979eb406a0341468932d1dfc8b7f9fce961
@@ -382,6 +389,7 @@ SPEC CHECKSUMS:
   SPConfetti: d74dd5b433a0ca39cf567969757a0b019bfcc5aa
   SPDiffable: 22478e82f455219b4e28e2dcf750b8636d514f07
   SPPermissions: 47102275aa242f64b9020db6b5d0fa0b66732c6f
+  SSZipArchive: fe6a26b2a54d5a0890f2567b5cc6de5caa600aef
   Swift_Log: 82d84e33c65b0a1bc3bb7cf5b7ce225218fa8f1f
   SwiftBrick: 066a63fb1546745cf3e21bf896848e7e1244e746
   SwiftGuideView: 8988229927d7da71b6bb05bf7589a28eb1b94abe
@@ -404,6 +412,6 @@ SPEC CHECKSUMS:
   ZLPhotoBrowser: a7aa41a674e67a86c1728a3d9d73a471d5650a82
   ZXRequestBlock: 7d9adb43e7de17f1e4d6571c87a08a2859b253ef
 
-PODFILE CHECKSUM: e954d37946c85e8c978ce7aeaaba209d97fa0537
+PODFILE CHECKSUM: 9b0a3b15ab8947f4b42ba1008abaf0c4c0c06273
 
 COCOAPODS: 1.11.3

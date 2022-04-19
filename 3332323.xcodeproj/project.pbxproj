@@ -306,6 +306,7 @@
 		63D615DF26AD140100CDBA38 /* AudioToolbox.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 63D615DE26AD140100CDBA38 /* AudioToolbox.framework */; };
 		63D616C626AD644A00CDBA38 /* DownLoadTabbar.swift in Sources */ = {isa = PBXBuildFile; fileRef = 63D616C526AD644A00CDBA38 /* DownLoadTabbar.swift */; };
 		63D616C826AD662300CDBA38 /* DownLoadListVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 63D616C726AD662300CDBA38 /* DownLoadListVC.swift */; };
+		63DB92F5280ED72400F3D1DC /* UIViewController+DK_Extension.m in Sources */ = {isa = PBXBuildFile; fileRef = 63DB92F4280ED72400F3D1DC /* UIViewController+DK_Extension.m */; };
 		DE7F6282F76BD3C938CD417C /* Pods_3332323.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 29E360D98108EDF26A267B1B /* Pods_3332323.framework */; };
 /* End PBXBuildFile section */
 
@@ -672,6 +673,8 @@
 		63D615DE26AD140100CDBA38 /* AudioToolbox.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AudioToolbox.framework; path = System/Library/Frameworks/AudioToolbox.framework; sourceTree = SDKROOT; };
 		63D616C526AD644A00CDBA38 /* DownLoadTabbar.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DownLoadTabbar.swift; sourceTree = "<group>"; };
 		63D616C726AD662300CDBA38 /* DownLoadListVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DownLoadListVC.swift; sourceTree = "<group>"; };
+		63DB92F3280ED72400F3D1DC /* UIViewController+DK_Extension.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "UIViewController+DK_Extension.h"; sourceTree = "<group>"; };
+		63DB92F4280ED72400F3D1DC /* UIViewController+DK_Extension.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = "UIViewController+DK_Extension.m"; sourceTree = "<group>"; };
 		6710A95B7957E2C3F73CE041 /* Pods-3332323.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-3332323.release.xcconfig"; path = "Target Support Files/Pods-3332323/Pods-3332323.release.xcconfig"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -1578,6 +1581,8 @@
 				63A48B8427A00C2500022B9F /* UIColor+Extension.swift */,
 				63A48B8527A00C2500022B9F /* UIView+Extension.swift */,
 				63A48B8627A00C2500022B9F /* UIImage+Extension.swift */,
+				63DB92F3280ED72400F3D1DC /* UIViewController+DK_Extension.h */,
+				63DB92F4280ED72400F3D1DC /* UIViewController+DK_Extension.m */,
 			);
 			path = UIKit;
 			sourceTree = "<group>";
@@ -2133,6 +2138,7 @@
 				637BAB66280815A900C7B68C /* ContextFilterLogFormatter.m in Sources */,
 				63B9A0BA26B4F74C004AC889 /* WeChatMomentDemoViewController.swift in Sources */,
 				63608E6327BF343E00760485 /* InstagramHandler.swift in Sources */,
+				63DB92F5280ED72400F3D1DC /* UIViewController+DK_Extension.m in Sources */,
 				6319E36D27C0D7F4003497E0 /* Signal_Combine.swift in Sources */,
 				63608E4827BF343E00760485 /* UIKitCell.swift in Sources */,
 				637BAB58280815A900C7B68C /* HTTPMessage.m in Sources */,

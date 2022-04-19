@@ -112,7 +112,7 @@ target '3332323' do
  pod 'LookinServer', :configurations => ['Debug']
  pod 'ZLPhotoBrowser', '~> 4.2.2'
  pod 'QuickTableViewController'
- 
+ pod 'LFPhoneInfo'
  pod 'PureLayout'
 
 # 语音视频 https://github.com/orgs/jitsi/repositories
