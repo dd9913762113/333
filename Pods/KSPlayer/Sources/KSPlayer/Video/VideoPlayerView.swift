@@ -11,6 +11,7 @@ import UIKit
 #else
 import AppKit
 #endif
+import Combine
 import MediaPlayer
 
 /// internal enum to check the pan direction
@@ -43,6 +44,7 @@ open class VideoPlayerView: PlayerView {
     public let topMaskView = LayerContainerView()
     // 是否播放过
     private(set) var isPlayed = false
+    private var cancellable: AnyCancellable?
     private var embedSubtitleDataSouce: SubtitleDataSouce? {
         didSet {
             if oldValue !== embedSubtitleDataSouce {
@@ -51,9 +53,8 @@ open class VideoPlayerView: PlayerView {
                 }
                 if let embedSubtitleDataSouce = embedSubtitleDataSouce {
                     srtControl.add(dataSouce: embedSubtitleDataSouce)
-                    let infos = srtControl.filterInfos { $0.subtitleDataSouce === embedSubtitleDataSouce }
-                    if KSPlayerManager.autoSelectEmbedSubtitle, let first = infos.first {
-                        srtControl.view.selectedInfo.wrappedValue = first
+                    if resource?.definitions[currentDefinition].options.autoSelectEmbedSubtitle ?? false, let first = embedSubtitleDataSouce.infos?.first {
+                        srtControl.view.selectedInfo = first
                     }
                 }
             }
@@ -72,6 +73,9 @@ open class VideoPlayerView: PlayerView {
         didSet {
             if let resource = resource, oldValue !== resource {
                 srtControl.searchSubtitle(name: resource.name)
+                subtitleBackView.isHidden = true
+                subtitleBackView.image = nil
+                subtitleLabel.attributedText = nil
                 titleLabel.text = resource.name
                 toolBar.definitionButton.isHidden = resource.definitions.count < 2
                 autoFadeOutViewWithAnimation()
@@ -114,9 +118,31 @@ open class VideoPlayerView: PlayerView {
         }
     }
 
+    override public var playerLayer: KSPlayerLayer? {
+        didSet {
+            oldValue?.removeFromSuperview()
+            if let playerLayer = playerLayer {
+                #if canImport(UIKit)
+                addSubview(playerLayer)
+                sendSubviewToBack(playerLayer)
+                #else
+                addSubview(playerLayer, positioned: .below, relativeTo: contentOverlayView)
+                #endif
+                playerLayer.translatesAutoresizingMaskIntoConstraints = false
+                NSLayoutConstraint.activate([
+                    playerLayer.topAnchor.constraint(equalTo: topAnchor),
+                    playerLayer.leadingAnchor.constraint(equalTo: leadingAnchor),
+                    playerLayer.bottomAnchor.constraint(equalTo: bottomAnchor),
+                    playerLayer.trailingAnchor.constraint(equalTo: trailingAnchor),
+                ])
+            }
+        }
+    }
+
     override public init(frame: CGRect) {
         super.init(frame: frame)
         setupUIComponents()
+        cancellable = playerLayer?.$isPipActive.assign(to: \.isSelected, on: toolBar.pipButton)
     }
 
     // MARK: - Action Response
@@ -143,20 +169,11 @@ open class VideoPlayerView: PlayerView {
             alertController.addAction(UIAlertAction(title: NSLocalizedString("cancel", comment: ""), style: .cancel, handler: nil))
             viewController?.present(alertController, animated: true, completion: nil)
         } else if type == .pictureInPicture {
-            if #available(tvOS 14.0, macOS 10.15, *) {
-                guard let pipController = playerLayer.player?.pipController else {
-                    return
-                }
-                if pipController.isPictureInPictureActive {
-                    pipController.stopPictureInPicture()
-                    button.isSelected = false
-                } else {
-                    pipController.startPictureInPicture()
-                    button.isSelected = true
-                }
+            if #available(tvOS 14.0, *) {
+                playerLayer?.isPipActive.toggle()
             }
         } else if type == .audioSwitch || type == .videoSwitch {
-            guard let tracks = playerLayer.player?.tracks(mediaType: type == .audioSwitch ? .audio : .video) else {
+            guard let tracks = playerLayer?.player.tracks(mediaType: type == .audioSwitch ? .audio : .video) else {
                 return
             }
             let alertController = UIAlertController(title: NSLocalizedString(type == .audioSwitch ? "switch audio" : "switch video", comment: ""), message: nil, preferredStyle: preferredStyle())
@@ -168,7 +185,7 @@ open class VideoPlayerView: PlayerView {
                 }
                 let action = UIAlertAction(title: title, style: .default) { [weak self] _ in
                     guard let self = self, !isEnabled else { return }
-                    self.playerLayer.player?.select(track: track)
+                    self.playerLayer?.player.select(track: track)
                 }
                 action.setValue(isEnabled, forKey: "checked")
                 alertController.addAction(action)
@@ -185,7 +202,7 @@ open class VideoPlayerView: PlayerView {
             let action = UIAlertAction(title: title, style: .default) { [weak self] _ in
                 guard let self = self else { return }
                 button.setTitle(title, for: .normal)
-                self.playerLayer.player?.playbackRate = Float(rate)
+                self.playerLayer?.player.playbackRate = Float(rate)
             }
             action.setValue(title == button.title, forKey: "checked")
             alertController.addAction(action)
@@ -195,7 +212,6 @@ open class VideoPlayerView: PlayerView {
     }
 
     open func setupUIComponents() {
-        addSubview(playerLayer)
         backgroundColor = .black
         addSubview(contentOverlayView)
         addSubview(controllerView)
@@ -252,6 +268,7 @@ open class VideoPlayerView: PlayerView {
         controllerView.addGestureRecognizer(tapGesture)
         panGesture.addTarget(self, action: #selector(panGestureAction(_:)))
         controllerView.addGestureRecognizer(panGesture)
+        panGesture.isEnabled = false
         doubleTapGesture.addTarget(self, action: #selector(doubleTapGestureAction))
         doubleTapGesture.numberOfTapsRequired = 2
         tapGesture.require(toFail: doubleTapGesture)
@@ -272,9 +289,9 @@ open class VideoPlayerView: PlayerView {
         switch state {
         case .readyToPlay:
             toolBar.timeSlider.isPlayable = true
-            embedSubtitleDataSouce = layer.player?.subtitleDataSouce
-            toolBar.videoSwitchButton.isHidden = layer.player?.tracks(mediaType: .video).count ?? 1 < 2
-            toolBar.audioSwitchButton.isHidden = layer.player?.tracks(mediaType: .audio).count ?? 1 < 2
+            embedSubtitleDataSouce = layer.player.subtitleDataSouce
+            toolBar.videoSwitchButton.isHidden = layer.player.tracks(mediaType: .video).count < 2
+            toolBar.audioSwitchButton.isHidden = layer.player.tracks(mediaType: .audio).count < 2
         case .buffering:
             isPlayed = true
             replayButton.isHidden = true
@@ -295,15 +312,14 @@ open class VideoPlayerView: PlayerView {
             if state == .playedToTheEnd {
                 replayButton.isSelected = true
             }
-        default:
-            break
+        case .prepareToPlay:
+            embedSubtitleDataSouce = nil
         }
     }
 
     override open func resetPlayer() {
         super.resetPlayer()
         delayItem = nil
-        resource = nil
         toolBar.reset()
         isMaskShow = false
         hideLoader()
@@ -334,14 +350,16 @@ open class VideoPlayerView: PlayerView {
     open func change(definitionIndex: Int) {
         guard let resource = resource else { return }
         var shouldSeekTo = 0.0
-        if playerLayer.state != .playedToTheEnd, let currentTime = playerLayer.player?.currentPlaybackTime {
-            shouldSeekTo = currentTime
+        if let playerLayer = playerLayer, playerLayer.state != .playedToTheEnd {
+            shouldSeekTo = playerLayer.player.currentPlaybackTime
         }
         currentDefinition = definitionIndex >= resource.definitions.count ? resource.definitions.count - 1 : definitionIndex
         let asset = resource.definitions[currentDefinition]
         super.set(url: asset.url, options: asset.options)
         if shouldSeekTo > 0 {
-            seek(time: shouldSeekTo)
+            Task {
+                await seek(time: shouldSeekTo)
+            }
         }
     }
 
@@ -414,6 +432,20 @@ open class VideoPlayerView: PlayerView {
         }
     }
 
+    open func showSubtile(from subtitle: KSSubtitleProtocol, at time: TimeInterval) {
+        let time = time + (resource?.definitions[currentDefinition].options.subtitleDelay ?? 0.0)
+        if let part = subtitle.search(for: time) {
+            subtitleEndTime = part.end
+            subtitleBackView.image = part.image
+            subtitleLabel.attributedText = part.text
+        } else {
+            if time > subtitleEndTime {
+                subtitleBackView.image = nil
+                subtitleLabel.attributedText = nil
+            }
+        }
+    }
+
     #if canImport(UIKit)
     override open func pressesBegan(_ presses: Set<UIPress>, with event: UIPressesEvent?) {
         guard let presse = presses.first else {
@@ -421,7 +453,7 @@ open class VideoPlayerView: PlayerView {
         }
         switch presse.type {
         case .playPause:
-            if playerLayer.state.isPlaying {
+            if let playerLayer = playerLayer, playerLayer.state.isPlaying {
                 pause()
             } else {
                 play()
@@ -484,6 +516,12 @@ extension VideoPlayerView {
         subtitleLabel.textAlignment = .center
         subtitleLabel.textColor = .white
         subtitleLabel.font = .systemFont(ofSize: 16)
+        subtitleLabel.backingLayer?.shadowColor = UIColor.black.cgColor
+        subtitleLabel.backingLayer?.shadowOffset = CGSize(width: 1.0, height: 1.0)
+        subtitleLabel.backingLayer?.shadowOpacity = 0.9
+        subtitleLabel.backingLayer?.shadowRadius = 1.0
+        subtitleLabel.backingLayer?.shouldRasterize = true
+        subtitleBackView.backgroundColor = UIColor.clear
         subtitleBackView.cornerRadius = 2
         subtitleBackView.addSubview(subtitleLabel)
         subtitleBackView.isHidden = true
@@ -542,23 +580,6 @@ extension VideoPlayerView {
         loadingIndector.stopAnimating()
     }
 
-    open func showSubtile(from subtitle: KSSubtitleProtocol, at time: TimeInterval) {
-        let time = time + (resource?.definitions[currentDefinition].options.subtitleDelay ?? 0.0)
-        if let part = subtitle.search(for: time) {
-            subtitleEndTime = part.end
-            if let image = part.image {
-                subtitleBackView.image = image
-            } else {
-                subtitleLabel.attributedText = part.text
-            }
-        } else {
-            if time > subtitleEndTime {
-                subtitleBackView.image = nil
-                subtitleLabel.attributedText = nil
-            }
-        }
-    }
-
     private func addConstraint() {
         toolBar.playButton.tintColor = .white
         toolBar.playbackRateButton.tintColor = .white
@@ -577,7 +598,7 @@ extension VideoPlayerView {
         toolBar.addArrangedSubview(toolBar.pipButton)
         toolBar.audioSwitchButton.isHidden = true
         toolBar.videoSwitchButton.isHidden = true
-        if #available(tvOS 14.0, macOS 10.15, *) {
+        if #available(tvOS 14.0, *) {
             toolBar.pipButton.isHidden = !AVPictureInPictureController.isPictureInPictureSupported()
         } else {
             toolBar.pipButton.isHidden = true
@@ -596,13 +617,8 @@ extension VideoPlayerView {
         loadingIndector.translatesAutoresizingMaskIntoConstraints = false
         seekToView.translatesAutoresizingMaskIntoConstraints = false
         replayButton.translatesAutoresizingMaskIntoConstraints = false
-        playerLayer.translatesAutoresizingMaskIntoConstraints = false
         lockButton.translatesAutoresizingMaskIntoConstraints = false
         NSLayoutConstraint.activate([
-            playerLayer.topAnchor.constraint(equalTo: topAnchor),
-            playerLayer.leadingAnchor.constraint(equalTo: leadingAnchor),
-            playerLayer.bottomAnchor.constraint(equalTo: bottomAnchor),
-            playerLayer.trailingAnchor.constraint(equalTo: trailingAnchor),
             contentOverlayView.topAnchor.constraint(equalTo: topAnchor),
             contentOverlayView.leadingAnchor.constraint(equalTo: leadingAnchor),
             contentOverlayView.bottomAnchor.constraint(equalTo: bottomAnchor),
@@ -672,11 +688,7 @@ public extension KSPlayerManager {
     static var enableVolumeGestures = true
     /// 开启进度滑动手势 默认true
     static var enablePlaytimeGestures = true
-    /// 竖屏是否开启手势控制 默认false
-    static var enablePortraitGestures = false
     /// 播放内核选择策略 先使用firstPlayer，失败了自动切换到secondPlayer，播放内核有KSAVPlayer、KSMEPlayer两个选项
     /// 是否能后台播放视频
     static var canBackgroundPlay = false
-
-    static var autoSelectEmbedSubtitle = true
 }

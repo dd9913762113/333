@@ -32,8 +32,8 @@ class MediaPlay : UIViewController, PlayerControllerDelegate {
             options.isSecondOpen = true
             options.isAccurateSeek = true
             options.isLoopPlay = true
-            options.hardwareDecodeH265 = true
-            options.hardwareDecodeH264 = true
+//            options.hardwareDecodeH265 = true
+//            options.hardwareDecodeH264 = true
             playerView.set(url: url, options: options)
             playerView.play()
             
@@ -96,8 +96,8 @@ class MediaPlay : UIViewController, PlayerControllerDelegate {
         KSOptions.isSecondOpen = true
         KSOptions.isAccurateSeek = true
         KSOptions.isLoopPlay = true
-        KSOptions.hardwareDecodeH265 = true
-        KSOptions.hardwareDecodeH264 = true
+//        KSOptions.hardwareDecodeH265 = true
+//        KSOptions.hardwareDecodeH264 = true
 
     }
 

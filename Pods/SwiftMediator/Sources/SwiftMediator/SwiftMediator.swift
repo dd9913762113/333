@@ -10,6 +10,8 @@ import UIKit
 //MARK:--单例--Swift
 public class SwiftMediator {
     public static let shared = SwiftMediator()
+    ///保证单例调用
+    private init(){ }
 }
 
 //MARK:--初始化对象--Swift
@@ -160,13 +162,13 @@ extension SwiftMediator {
     ///   - vcName: 目标VC名称
     ///   - paramsDic: 参数字典
     ///   - modelStyle: 0:模态样式为默认，1:全屏模态,2:custom
-    ///   - needNav: 是否需要导航栏
+    ///   - needNav: 是否需要导航栏(原生导航栏,如需要自定义导航栏请直接传递相应的带导航栏VC对象)
     ///   - animated: 是否有动画
     public func present(_ vcName: String,
                         moduleName: String? = nil,
                         paramsDic:[String:Any]? = nil,
                         fromVC: UIViewController? = nil,
-                        needNav: Bool = true,
+                        needNav: Bool = false,
                         modelStyle: Int = 0,
                         animated: Bool = true) {
         guard let vc = initVC(vcName, moduleName: moduleName, dic: paramsDic) else { return }
@@ -176,14 +178,14 @@ extension SwiftMediator {
     
     /// 简单present,提前初始化好VC
     /// - Parameters:
-    ///   - vc: 已初始化好的VC对象
+    ///   - vc: 已初始化好的VC对象,可传递Nav对象(自定义导航栏的)
     ///   - fromVC: 从哪个页面push,不传则路由选择最上层VC
-    ///   - needNav: 是否需要导航栏
+    ///   - needNav: 是否需要导航栏(原生导航栏,如需要自定义导航栏请直接传递相应的带导航栏VC对象)
     ///   - modelStyle: 0:模态样式为默认，1:全屏模态,2:custom
     ///   - animated: 是否有动画
     public func present(_ vc: UIViewController?,
                         fromVC: UIViewController? = nil,
-                        needNav: Bool = true,
+                        needNav: Bool = false,
                         modelStyle: Int = 0,
                         animated: Bool = true) {
         guard let vc = vc else { return }
@@ -221,6 +223,7 @@ extension SwiftMediator {
         }
         from.present(container, animated: animated, completion: nil)
     }
+    
 }
 
 //MARK:--URL路由跳转--Swift
@@ -245,7 +248,7 @@ extension SwiftMediator {
     }
 }
 
-//MARK:--路由执行方法
+//MARK:--路由执行方法///Swift反射执行函数功能有限,OC方式可以传递block参数(OC方式的路由中间件参见https://github.com/jackiehu/JHMediator)
 extension SwiftMediator {
     /// 路由调用实例对象方法：必须标记@objc  例子： @objc class func qqqqq(_ name: String)
     /// - Parameters:
@@ -323,17 +326,27 @@ extension SwiftMediator {
 
 //MARK:--获取最上层视图
 extension SwiftMediator {
+    /// 获取UIWindowScene
+    @available(iOS 13.0, *)
+    public func currentWindowSence() -> UIWindowScene?  {
+        for scene in UIApplication.shared.connectedScenes{
+            if scene.activationState == .foregroundActive{
+                return scene as? UIWindowScene
+            }
+        }
+        return nil
+    }
     
     /// 获取顶层Nav 根据window
     public func currentNavigationController() -> UINavigationController? {
-        return currentViewController()?.navigationController
+        currentViewController()?.navigationController
     }
     
     /// 获取顶层VC 根据window
     public func currentViewController() -> UIViewController? {
-        var window = UIApplication.shared.keyWindow
+        var window = UIApplication.shared.windows[0]
         //是否为当前显示的window
-        if window?.windowLevel != UIWindow.Level.normal{
+        if window.windowLevel != UIWindow.Level.normal{
             let windows = UIApplication.shared.windows
             for  windowTemp in windows{
                 if windowTemp.windowLevel == UIWindow.Level.normal{
@@ -342,7 +355,7 @@ extension SwiftMediator {
                 }
             }
         }
-        let vc = window?.rootViewController
+        let vc = window.rootViewController
         return getCurrentViewController(withCurrentVC: vc)
     }
     
@@ -400,8 +413,8 @@ public extension NSObject {
 }
 
 //MARK:--URL获取query字典
-extension URL {
-    public var queryDictionary: [String: Any]? {
+public extension URL {
+    var queryDictionary: [String: Any]? {
         guard let query = self.query else { return nil}
         
         var queryStrings = [String: String]()
@@ -420,16 +433,14 @@ extension URL {
     }
 }
 //MARK:--URL编解码
-extension String {
+public extension String {
     //将原始的url编码为合法的url
     func urlEncoded() -> String {
-        let encodeUrlString = self.addingPercentEncoding(withAllowedCharacters:
-            .urlQueryAllowed)
-        return encodeUrlString ?? ""
+        self.addingPercentEncoding(withAllowedCharacters:.urlQueryAllowed) ?? ""
     }
-     
+    
     //将编码后的url转换回原始的url
     func urlDecoded() -> String {
-        return self.removingPercentEncoding ?? ""
+        self.removingPercentEncoding ?? ""
     }
 }

@@ -6,28 +6,22 @@
 //
 import Foundation
 
-public protocol SubtitleInfo: AnyObject {
-    var userInfo: NSMutableDictionary? { get set }
-    var subtitleDataSouce: SubtitleDataSouce? { get set }
-    var name: String { get }
-    var subtitleID: String { get }
-    var comment: String? { get }
-    func makeSubtitle(completion: @escaping (Result<KSSubtitleProtocol?, NSError>) -> Void)
-}
-
 public class URLSubtitleInfo: SubtitleInfo {
-    public weak var subtitleDataSouce: SubtitleDataSouce?
     public let name: String
     public let subtitleID: String
     public var comment: String?
     public var downloadURL: URL?
     public var userInfo: NSMutableDictionary?
-    public init(subtitleID: String, name: String) {
+    private let fetchSubtitleDetail: (((NSError?) -> Void) -> Void)?
+    public init(subtitleID: String, name: String, fetchSubtitleDetail: (((NSError?) -> Void) -> Void)? = nil) {
         self.subtitleID = subtitleID
         self.name = name
+        self.fetchSubtitleDetail = fetchSubtitleDetail
     }
 
-    public func makeSubtitle(completion: @escaping (Result<KSSubtitleProtocol?, NSError>) -> Void) {
+    public func disableSubtitle() {}
+
+    public func enableSubtitle(completion: @escaping (Result<KSSubtitleProtocol, NSError>) -> Void) {
         let block = { (url: URL) in
             let subtitles = KSURLSubtitle()
             do {
@@ -39,22 +33,21 @@ public class URLSubtitleInfo: SubtitleInfo {
         }
         if let downloadURL = downloadURL {
             block(downloadURL)
-        } else if let subtitleDataSouce = subtitleDataSouce {
-            subtitleDataSouce.fetchSubtitleDetail(info: self) { [weak self] _, error in
+        } else if let fetchSubtitleDetail = fetchSubtitleDetail {
+            fetchSubtitleDetail { [weak self] error in
                 guard let self = self else { return }
                 if let error = error {
                     completion(.failure(error))
-                } else if let downloadURL = self.downloadURL {
-                    block(downloadURL)
-                    if let cache = subtitleDataSouce as? SubtitletoCache {
-                        cache.addCache(subtitleID: self.subtitleID, downloadURL: downloadURL)
-                    }
                 } else {
-                    completion(.success(nil))
+                    if let downloadURL = self.downloadURL {
+                        block(downloadURL)
+                    } else {
+                        completion(.failure(NSError(errorCode: .subtitleParamsEmpty)))
+                    }
                 }
             }
         } else {
-            completion(.success(nil))
+            completion(.failure(NSError(errorCode: .subtitleParamsEmpty)))
         }
     }
 }
@@ -70,11 +63,12 @@ public extension SubtitletoCache {
 }
 
 public protocol SubtitleDataSouce: AnyObject {
-    func searchSubtitle(name: String, completion: @escaping ([SubtitleInfo]?) -> Void)
-    func fetchSubtitleDetail(info: SubtitleInfo, completion: @escaping (SubtitleInfo, NSError?) -> Void)
+    var infos: [SubtitleInfo]? { get }
+    func searchSubtitle(name: String, completion: @escaping (() -> Void))
 }
 
 public class CacheDataSouce: SubtitleDataSouce {
+    public var infos: [SubtitleInfo]?
     private let cacheFolder = (NSTemporaryDirectory() as NSString).appendingPathComponent("KSSubtitleCache")
     private var srtCacheInfoPath: String
     // 因为plist不能保存URL
@@ -86,32 +80,30 @@ public class CacheDataSouce: SubtitleDataSouce {
         srtCacheInfoPath = (cacheFolder as NSString).appendingPathComponent("KSSrtInfo.plist")
     }
 
-    public func searchSubtitle(name: String, completion: @escaping ([SubtitleInfo]?) -> Void) {
+    public func searchSubtitle(name: String, completion: @escaping (() -> Void)) {
         srtCacheInfoPath = (cacheFolder as NSString).appendingPathComponent("KSSrtInfo_\(name).plist")
-        if FileManager.default.fileExists(atPath: srtCacheInfoPath), let infos = NSMutableDictionary(contentsOfFile: srtCacheInfoPath) as? [String: String] {
-            srtInfoCaches = infos.filter { FileManager.default.fileExists(atPath: $1) }
-            if !srtInfoCaches.isEmpty {
+        if FileManager.default.fileExists(atPath: srtCacheInfoPath), let files = NSMutableDictionary(contentsOfFile: srtCacheInfoPath) as? [String: String] {
+            srtInfoCaches = files.filter { FileManager.default.fileExists(atPath: $1) }
+            if srtInfoCaches.isEmpty {
+                infos = nil
+            } else {
                 let array = srtInfoCaches.map { subtitleID, downloadURL -> SubtitleInfo in
                     let info = URLSubtitleInfo(subtitleID: subtitleID, name: (downloadURL as NSString).lastPathComponent)
                     info.downloadURL = URL(fileURLWithPath: downloadURL)
                     info.comment = "本地"
-                    info.subtitleDataSouce = self
                     return info
                 }
-                completion(array)
-            } else {
-                completion(nil)
+                infos = array
             }
-            if srtInfoCaches.count != infos.count {
+            if srtInfoCaches.count != files.count {
                 (srtInfoCaches as NSDictionary).write(toFile: srtCacheInfoPath, atomically: false)
             }
         } else {
             srtInfoCaches = [String: String]()
-            completion(nil)
+            infos = nil
         }
+        completion()
     }
-
-    public func fetchSubtitleDetail(info _: SubtitleInfo, completion _: @escaping (SubtitleInfo, NSError?) -> Void) {}
 
     public func addCache(subtitleID: String, downloadURL: URL) {
         srtInfoCaches[subtitleID] = downloadURL.path

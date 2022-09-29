@@ -148,44 +148,44 @@ class WXZLPhoto: UIViewController {
 //        config.editImageClipRatios = [.custom, .wh1x1, .wh3x4, .wh16x9, ZLImageClipRatio(title: "2 : 1", whRatio: 2 / 1)]
 //        config.filters = [.normal, .process, ZLFilter(name: "custom", applier: ZLCustomFilter.hazeRemovalFilter)]
         
-        config.imageStickerContainerView = ImageStickerContainerView()
-        
-        // You can first determine whether the asset is allowed to be selected.
-        config.canSelectAsset = { (asset) -> Bool in
-            return true
-        }
-        
-        config.noAuthorityCallback = { (type) in
-            switch type {
-            case .library:
-                debugPrint("No library authority")
-            case .camera:
-                debugPrint("No camera authority")
-            case .microphone:
-                debugPrint("No microphone authority")
-            }
-        }
-        
-        let ac = ZLPhotoPreviewSheet(selectedAssets: self.takeSelectedAssetsSwitch.isOn ? self.selectedAssets : [])
-        ac.selectImageBlock = { [weak self] (images, assets, isOriginal) in
-            self?.selectedImages = images
-            self?.selectedAssets = assets
-            self?.isOriginal = isOriginal
-            self?.collectionView.reloadData()
-            debugPrint("\(images)   \(assets)   \(isOriginal)")
-        }
-        ac.cancelBlock = {
-            debugPrint("cancel select")
-        }
-        ac.selectImageRequestErrorBlock = { (errorAssets, errorIndexs) in
-            debugPrint("fetch error assets: \(errorAssets), error indexs: \(errorIndexs)")
-        }
-        
-        if preview {
-            ac.showPreview(animate: true, sender: self)
-        } else {
-            ac.showPhotoLibrary(sender: self)
-        }
+//        config.imageStickerContainerView = ImageStickerContainerView()
+//        
+//        // You can first determine whether the asset is allowed to be selected.
+//        config.canSelectAsset = { (asset) -> Bool in
+//            return true
+//        }
+//        
+//        config.noAuthorityCallback = { (type) in
+//            switch type {
+//            case .library:
+//                debugPrint("No library authority")
+//            case .camera:
+//                debugPrint("No camera authority")
+//            case .microphone:
+//                debugPrint("No microphone authority")
+//            }
+//        }
+//        
+//        let ac = ZLPhotoPreviewSheet(selectedAssets: self.takeSelectedAssetsSwitch.isOn ? self.selectedAssets : [])
+//        ac.selectImageBlock = { [weak self] (images, assets, isOriginal) in
+//            self?.selectedImages = images
+//            self?.selectedAssets = assets
+//            self?.isOriginal = isOriginal
+//            self?.collectionView.reloadData()
+//            debugPrint("\(images)   \(assets)   \(isOriginal)")
+//        }
+//        ac.cancelBlock = {
+//            debugPrint("cancel select")
+//        }
+//        ac.selectImageRequestErrorBlock = { (errorAssets, errorIndexs) in
+//            debugPrint("fetch error assets: \(errorAssets), error indexs: \(errorIndexs)")
+//        }
+//        
+//        if preview {
+//            ac.showPreview(animate: true, sender: self)
+//        } else {
+//            ac.showPhotoLibrary(sender: self)
+//        }
     }
     
     @objc func previewLocalAndNetImage() {
@@ -248,9 +248,9 @@ class WXZLPhoto: UIViewController {
     }
     
     func save(image: UIImage?, videoUrl: URL?) {
-        let hud = ZLProgressHUD(style: ZLPhotoConfiguration.default().hudStyle)
+//        let hud = ZLProgressHUD(style: ZLPhotoConfiguration.default().hudStyle)
         if let image = image {
-            hud.show()
+//            hud.show()
             ZLPhotoManager.saveImageToAlbum(image: image) { [weak self] (suc, asset) in
                 if suc, let at = asset {
                     self?.selectedImages = [image]
@@ -259,17 +259,17 @@ class WXZLPhoto: UIViewController {
                 } else {
                     debugPrint("保存图片到相册失败")
                 }
-                hud.hide()
+//                hud.hide()
             }
         } else if let videoUrl = videoUrl {
-            hud.show()
+//            hud.show()
             ZLPhotoManager.saveVideoToAlbum(url: videoUrl) { [weak self] (suc, asset) in
                 if suc, let at = asset {
                     self?.fetchImage(for: at)
                 } else {
                     debugPrint("保存视频到相册失败")
                 }
-                hud.hide()
+//                hud.hide()
             }
         }
     }
@@ -334,14 +334,43 @@ extension WXZLPhoto: UICollectionViewDataSource, UICollectionViewDelegateFlowLay
     }
     
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
+//        let ac = ZLPhotoPreviewSheet()
+//        ac.selectImageBlock = { [weak self] (images, assets, isOriginal) in
+//            self?.selectedImages = images
+//            self?.selectedAssets = assets
+//            self?.isOriginal = isOriginal
+//            self?.collectionView.reloadData()
+//            debugPrint("\(images)   \(assets)   \(isOriginal)")
+//        }
         let ac = ZLPhotoPreviewSheet()
-        ac.selectImageBlock = { [weak self] (images, assets, isOriginal) in
-            self?.selectedImages = images
-            self?.selectedAssets = assets
-            self?.isOriginal = isOriginal
-            self?.collectionView.reloadData()
-            debugPrint("\(images)   \(assets)   \(isOriginal)")
+        ac.selectImageBlock = { [weak self] results, isOriginal in
+            guard let `self` = self else { return }
+//            self.selectedResults = results
+            self.selectedImages = results.map { $0.image }
+            self.selectedAssets = results.map { $0.asset }
+            self.isOriginal = isOriginal
+            self.collectionView.reloadData()
+            debugPrint("images: \(self.selectedImages)")
+            debugPrint("assets: \(self.selectedAssets)")
+            debugPrint("isEdited: \(results.map { $0.isEdited })")
+            debugPrint("isOriginal: \(isOriginal)")
+            
+//            guard !self.selectedAssets.isEmpty else { return }
+//            self?.saveAsset(self.selectedAssets[0])
         }
+        ac.cancelBlock = {
+            debugPrint("cancel select")
+        }
+        ac.selectImageRequestErrorBlock = { errorAssets, errorIndexs in
+            debugPrint("fetch error assets: \(errorAssets), error indexs: \(errorIndexs)")
+        }
+//
+//        if preview {
+//            ac.showPreview(animate: true, sender: self)
+//        } else {
+//            ac.showPhotoLibrary(sender: self)
+//        }
+
         
         ac.previewAssets(sender: self, assets: self.selectedAssets, index: indexPath.row, isOriginal: self.isOriginal, showBottomViewAndSelectBtn: true)
     }

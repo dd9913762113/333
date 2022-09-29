@@ -15,11 +15,11 @@ import CoreGraphics
 import Foundation
 public class SubtitlePart: CustomStringConvertible, NSMutableCopying {
     public let start: TimeInterval
-    public let end: TimeInterval
-    public let text: NSMutableAttributedString
+    public var end: TimeInterval
+    public let text: NSMutableAttributedString?
     public var image: UIImage?
     public var description: String {
-        "Subtile Group ==========\nstart: \(start)\nend:\(end)\ntext:\(text)"
+        "Subtile Group ==========\nstart: \(start)\nend:\(end)\ntext:\(String(describing: text))"
     }
 
     public convenience init(_ start: TimeInterval, _ end: TimeInterval, _ string: String) {
@@ -29,16 +29,14 @@ public class SubtitlePart: CustomStringConvertible, NSMutableCopying {
         self.init(start, end, attributedString: NSMutableAttributedString(string: text))
     }
 
-    public init(_ start: TimeInterval, _ end: TimeInterval, attributedString: NSMutableAttributedString) {
+    public init(_ start: TimeInterval, _ end: TimeInterval, attributedString: NSMutableAttributedString?) {
         self.start = start
         self.end = end
         text = attributedString
     }
 
     public func mutableCopy(with _: NSZone? = nil) -> Any {
-        // swiftlint:disable force_cast
-        SubtitlePart(start, end, attributedString: text.mutableCopy() as! NSMutableAttributedString)
-        // swiftlint:enable force_cast
+        SubtitlePart(start, end, attributedString: text?.mutableCopy() as? NSMutableAttributedString)
     }
 }
 
@@ -71,15 +69,18 @@ extension SubtitlePart: NumericComparable {
     }
 }
 
-public protocol KSSubtitleProtocol: AnyObject {
+public protocol KSSubtitleProtocol {
     func search(for time: TimeInterval) -> SubtitlePart?
 }
 
-public func == (lhs: KSSubtitleProtocol, rhs: KSSubtitleProtocol) -> Bool {
-    if let lhs = lhs as? KSURLSubtitle, let rhs = rhs as? KSURLSubtitle {
-        return lhs.url == rhs.url
-    }
-    return lhs === rhs
+public protocol SubtitleInfo: AnyObject {
+    var subtitleID: String { get }
+    var name: String { get }
+    //    var userInfo: NSMutableDictionary? { get set }
+    //    var subtitleDataSouce: SubtitleDataSouce? { get set }
+//    var comment: String? { get }
+    func disableSubtitle()
+    func enableSubtitle(completion: @escaping (Result<KSSubtitleProtocol, NSError>) -> Void)
 }
 
 public class KSSubtitle {
@@ -156,6 +157,10 @@ public class KSURLSubtitle: KSSubtitle {
             throw NSError(errorCode: .subtitleUnEncoding, userInfo: ["url": url.absoluteString])
         }
     }
+
+    public static func == (lhs: KSURLSubtitle, rhs: KSURLSubtitle) -> Bool {
+        lhs.url == rhs.url
+    }
 }
 
 extension KSSubtitle: KSSubtitleProtocol {
@@ -170,8 +175,10 @@ extension KSSubtitle: KSSubtitleProtocol {
                 let text = copy.text
                 index = currentIndex + 1
                 while index < parts.count, parts[index] == time {
-                    text.append(NSAttributedString(string: "\n"))
-                    text.append(parts[index].text)
+                    if let otherText = parts[index].text {
+                        text?.append(NSAttributedString(string: "\n"))
+                        text?.append(otherText)
+                    }
                     index += 1
                 }
                 return copy
@@ -213,7 +220,7 @@ extension KSSubtitle: KSSubtitleProtocol {
     public func searchIndex(filter: (SubtitlePart, Int) -> Bool) -> NSRange? {
         var length = 0
         for (index, group) in parts.enumerated() {
-            let count = group.text.length
+            let count = group.text?.length ?? 0
             if filter(group, length + count) {
                 if currentIndex != index {
                     currentIndex = index

@@ -73,15 +73,6 @@ public class KSPlayerResourceDefinition: Hashable {
      - parameter url:        video url
      - parameter definition: url deifination
      - parameter options:    specifying options for the initialization of the AVURLAsset
-
-     you can add http-header or other options which mentions in https://developer.apple.com/reference/avfoundation/avurlasset/initialization_options
-
-     to add http-header init options like this
-     ```
-     let header = ["user_agent":"KSPlayer"]
-     let options = KSOptions()
-     options.avOptions = ["AVURLAssetHTTPHeaderFieldsKey":header]
-     ```
      */
     public init(url: URL, definition: String, options: KSOptions = KSOptions()) {
         self.url = url
@@ -117,7 +108,8 @@ public struct KSNowPlayableMetadata {
     }
 
     init(mediaType: MPNowPlayingInfoMediaType? = nil, isLiveStream: Bool? = nil, title: String, artist: String? = nil,
-         artwork: MPMediaItemArtwork? = nil, albumArtist: String? = nil, albumTitle: String? = nil) {
+         artwork: MPMediaItemArtwork? = nil, albumArtist: String? = nil, albumTitle: String? = nil)
+    {
         self.mediaType = mediaType
         self.isLiveStream = isLiveStream
         self.title = title

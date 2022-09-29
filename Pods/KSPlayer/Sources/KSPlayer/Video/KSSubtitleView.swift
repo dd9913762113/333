@@ -11,13 +11,26 @@ import UIKit
 import AppKit
 #endif
 
-public class KSSubtitleView: UIControl, SubtitleViewProtocol {
+public class KSSubtitleView: UIControl {
     private var infos = [SubtitleInfo]()
     private let closeInfo = URLSubtitleInfo(subtitleID: "", name: NSLocalizedString("no show subtitle", comment: ""))
     private let tableView = UITableView()
     private let tableWidth = CGFloat(360)
     private var tableViewTrailingConstraint: NSLayoutConstraint!
-    public let selectedInfo: KSObservable<SubtitleInfo>
+    public weak var selectedInfo: SubtitleInfo? {
+        didSet {
+            DispatchQueue.main.asyncAfter(deadline: DispatchTime.now() + 0.2) { [weak self] in
+                guard let self = self else { return }
+                self.isHidden = true
+            }
+            oldValue?.disableSubtitle()
+            if let selectWithFilePath = selectWithFilePath {
+                selectedInfo?.enableSubtitle(completion: selectWithFilePath)
+            }
+        }
+    }
+
+    public var selectWithFilePath: ((Result<KSSubtitleProtocol, NSError>) -> Void)?
     override public var isHidden: Bool {
         didSet {
             if isHidden {
@@ -46,7 +59,7 @@ public class KSSubtitleView: UIControl, SubtitleViewProtocol {
     }
 
     override public init(frame: CGRect) {
-        selectedInfo = KSObservable(wrappedValue: closeInfo)
+        selectedInfo = closeInfo
         super.init(frame: frame)
         tableView.rowHeight = 52
         tableView.backgroundColor = UIColor(white: 0, alpha: 0.7)
@@ -101,7 +114,7 @@ public class KSSubtitleView: UIControl, SubtitleViewProtocol {
 #if canImport(UIKit)
 extension KSSubtitleView: UITableViewDelegate {
     public func tableView(_: UITableView, didSelectRowAt indexPath: IndexPath) {
-        selectedInfo.wrappedValue = infos[indexPath.row]
+        selectedInfo = infos[indexPath.row]
     }
 }
 
@@ -111,15 +124,15 @@ extension KSSubtitleView: UITableViewDataSource {
         if let srtCell = cell as? SrtListCell {
             let info = infos[indexPath.row]
             srtCell.titleLabel.text = info.name
-            if let comment = info.comment {
-                srtCell.localIconView.setTitle(comment, for: .normal)
-                srtCell.localIconViewWidth.constant = 34
-                srtCell.localIconView.isHidden = false
-            } else {
-                srtCell.localIconViewWidth.constant = 0
-                srtCell.localIconView.isHidden = true
-            }
-            srtCell.checked(info === selectedInfo.wrappedValue)
+//            if let comment = info.comment {
+//                srtCell.localIconView.setTitle(comment, for: .normal)
+//                srtCell.localIconViewWidth.constant = 34
+//                srtCell.localIconView.isHidden = false
+//            } else {
+            srtCell.localIconViewWidth.constant = 0
+            srtCell.localIconView.isHidden = true
+//            }
+            srtCell.checked(info.subtitleID == selectedInfo?.subtitleID)
         }
         return cell
     }

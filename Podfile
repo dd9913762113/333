@@ -2,7 +2,7 @@
  
 #source 'https://github.com/CocoaPods/Specs.git'
 
-platform :ios, '12.1'
+platform :ios, '13'
 inhibit_all_warnings!
 use_frameworks!
 
@@ -12,27 +12,27 @@ target '3332323' do
  pod 'Texture' ,'~> 3.1.0'
 # pod 'SwiftSignalKit',:git => 'https://github.com/dd9913762113/SwiftSignalKit', :branch => 'master'
 #pod 'SwiftSignalKit'
- pod 'SnapKit'  ,'~> 5.0.1'
- pod 'Alamofire' ,'~> 5.5.0'
- pod 'Kingfisher' ,'~> 7.1.2'
+ pod 'SnapKit'  ,'~> 5.6.0'
+ pod 'Alamofire' ,'~> 5.6.2'
+ pod 'Kingfisher' ,'~> 7.3.2'
 # pod 'OpenSSL-Universal'
 # pod "OpenSSL-Apple"
- pod 'PhoneNumberKit','~> 3.3.3'
+ pod 'PhoneNumberKit','~> 3.3.4'
  pod 'SwiftyJSON' ,'~> 5.0.1'
 
 # 微信图片框架
-# pod 'ZLPhotoBrowser' , '4.1.7'
+pod 'ZLPhotoBrowser', '~> 4.3.7'
 
 # pod 'mobile-ffmpeg-full', '4.4'
 
 # 下载框架
  pod 'Tiercel','~> 3.2.5'
  pod 'KeychainAccess'
- 
+
 # 播放视频的时候 带上缓存
- pod 'VIMediaCache'
- 
-# pod 'ImagePicker'
+pod 'VIMediaCache', '~> 0.4'
+
+# pod 'ImagePicker', '~> 3.2.0'
 # 播放器
  pod 'SwiftLint' 
  pod 'KSPlayer',:git => 'https://github.com/kingslay/KSPlayer.git', :branch => 'develop'
@@ -110,7 +110,6 @@ target '3332323' do
  pod 'KeychainAccess'
  
  pod 'LookinServer', :configurations => ['Debug']
- pod 'ZLPhotoBrowser', '~> 4.2.2'
  pod 'QuickTableViewController'
  pod 'LFPhoneInfo'
  pod 'PureLayout'
@@ -198,4 +197,24 @@ target '3332323' do
  
  
  
+end
+
+
+post_install do |installer|
+  installer.pods_project.targets.each do |target|
+    target.build_configurations.each do |config|
+      config.build_settings['IPHONEOS_DEPLOYMENT_TARGET'] = '13.0'
+      config.build_settings['ONLY_ACTIVE_ARCH'] = 'NO'  # 讓M1晶片的MAC可編譯
+      config.build_settings['LD_NO_PIE'] = 'NO'
+    end
+  end
+end
+
+
+post_install do |installer_representation|
+  installer_representation.pods_project.targets.each do |target|
+    target.build_configurations.each do |config|
+      config.build_settings['ONLY_ACTIVE_ARCH'] = 'NO' config.build_settings['BUILD_LIBRARY_FOR_DISTRIBUTION'] = 'YES'
+    end
+  end
 end

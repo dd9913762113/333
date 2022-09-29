@@ -24,23 +24,6 @@ public class SwizzleNavBar {
     }()
 }
 
-public extension NSObject {
-
-    static func swizzlingForClass(_ forClass: AnyClass, originalSelector: Selector, swizzledSelector: Selector) {
-        guard let originalMethod = class_getInstanceMethod(forClass, originalSelector),
-              let swizzledMethod = class_getInstanceMethod(forClass, swizzledSelector) else {
-            return
-        }
-
-        let isAddSuccess = class_addMethod(forClass, originalSelector, method_getImplementation(swizzledMethod), method_getTypeEncoding(swizzledMethod))
-        if isAddSuccess {
-            class_replaceMethod(forClass, swizzledSelector, method_getImplementation(originalMethod), method_getTypeEncoding(originalMethod))
-        } else {
-            method_exchangeImplementations(originalMethod, swizzledMethod)
-        }
-    }
-}
-
 public extension UIViewController {
  
     private struct Associated {
@@ -52,7 +35,7 @@ public extension UIViewController {
         guard self == UIViewController.self else { return }
         let originalSelector = #selector(viewWillAppear(_: ))
         let swizzledSelector = #selector(jh_viewWillAppear(_: ))
-        swizzlingForClass(UIViewController.self, originalSelector: originalSelector, swizzledSelector: swizzledSelector)
+        swizzling(UIViewController.self, originalSelector: originalSelector, swizzledSelector: swizzledSelector)
     }
 
     @objc internal var willAppearInjectBlock: ViewControllerWillAppearInjectBlock? {
@@ -121,11 +104,11 @@ public extension UINavigationController {
         guard self == UINavigationController.self else { return }
         let originalSelector = #selector(setViewControllers(_:animated:))
         let swizzledSelector = #selector(jh_setViewControllers(_:animated:))
-        swizzlingForClass(UINavigationController.self, originalSelector: originalSelector, swizzledSelector: swizzledSelector)
+        swizzling(UINavigationController.self, originalSelector: originalSelector, swizzledSelector: swizzledSelector)
         
         let original = #selector(pushViewController(_:animated:))
         let swizzled = #selector(jh_pushViewController(_:animated:))
-        swizzlingForClass(UINavigationController.self, originalSelector: original, swizzledSelector: swizzled)
+        swizzling(UINavigationController.self, originalSelector: original, swizzledSelector: swizzled)
     }
 
     @objc func jh_pushViewController(_ viewController: UIViewController, animated: Bool) {

@@ -36,14 +36,14 @@ enum MESourceState {
 // MARK: delegate
 
 protocol OutputRenderSourceDelegate: AnyObject {
-    var currentPlaybackTime: TimeInterval { get }
-    func getOutputRender(type: AVFoundation.AVMediaType) -> MEFrame?
+    func getVideoOutputRender() -> VideoVTBFrame?
+    func getAudioOutputRender() -> AudioFrame?
     func setVideo(time: CMTime)
     func setAudio(time: CMTime)
 }
 
 protocol CodecCapacityDelegate: AnyObject {
-    func codecDidFinished(track: PlayerItemTrackProtocol)
+    func codecDidFinished(track: CapacityProtocol)
 }
 
 protocol MEPlayerDelegate: AnyObject {
@@ -95,32 +95,12 @@ public extension KSPlayerManager {
     /// 日志级别
     static var logLevel = LogLevel.warning
     static var stackSize = 32768
-    static var audioPlayerMaximumFramesPerSlice = AVAudioFrameCount(4096)
+    static var channelLayout = AVAudioChannelLayout(layoutTag: kAudioChannelLayoutTag_Stereo)!
     #if os(macOS)
-    static var audioPlayerSampleRate = Int32(44100)
-    static var audioPlayerMaximumChannels = AVAudioChannelCount(2)
+    internal static var audioPlayerSampleRate = Int32(44100)
     #else
-    static var audioPlayerSampleRate = Int32(AVAudioSession.sharedInstance().sampleRate)
-    static var audioPlayerMaximumChannels = AVAudioChannelCount(AVAudioSession.sharedInstance().maximumOutputNumberOfChannels)
+    internal static var audioPlayerSampleRate = Int32(AVAudioSession.sharedInstance().sampleRate)
     #endif
-    internal static func outputFormat() -> AudioStreamBasicDescription {
-        #if !os(macOS)
-        try? AVAudioSession.sharedInstance().setPreferredOutputNumberOfChannels(Int(audioPlayerMaximumChannels))
-        #endif
-        var audioStreamBasicDescription = AudioStreamBasicDescription()
-        let floatByteSize = UInt32(MemoryLayout<Float>.size)
-        audioStreamBasicDescription.mBitsPerChannel = 8 * floatByteSize
-        audioStreamBasicDescription.mBytesPerFrame = floatByteSize
-        audioStreamBasicDescription.mChannelsPerFrame = audioPlayerMaximumChannels
-        audioStreamBasicDescription.mFormatFlags = kAudioFormatFlagIsFloat | kAudioFormatFlagIsNonInterleaved
-        audioStreamBasicDescription.mFormatID = kAudioFormatLinearPCM
-        audioStreamBasicDescription.mFramesPerPacket = 1
-        audioStreamBasicDescription.mBytesPerPacket = audioStreamBasicDescription.mFramesPerPacket * audioStreamBasicDescription.mBytesPerFrame
-        audioStreamBasicDescription.mSampleRate = Float64(audioPlayerSampleRate)
-        return audioStreamBasicDescription
-    }
-
-    internal static let audioDefaultFormat = AVAudioFormat(commonFormat: .pcmFormatFloat32, sampleRate: Double(audioPlayerSampleRate), channels: audioPlayerMaximumChannels, interleaved: false)!
 }
 
 enum MECodecState {
@@ -167,7 +147,7 @@ final class Packet: ObjectQueueItem {
     var duration: Int64 = 0
     var size: Int64 = 0
     var position: Int64 = 0
-    var assetTrack: TrackProtocol!
+    var assetTrack: AssetTrack!
     var corePacket: UnsafeMutablePointer<AVPacket> { packetWrap.corePacket! }
     private let packetWrap = ObjectPool.share.object(class: AVPacketWrap.self, key: "AVPacketWrap") { AVPacketWrap() }
     func fill() {
@@ -183,13 +163,14 @@ final class Packet: ObjectQueueItem {
 }
 
 final class SubtitleFrame: MEFrame {
-    var timebase = Timebase.defaultValue
+    var timebase: Timebase
     var duration: Int64 = 0
     var size: Int64 = 0
     var position: Int64 = 0
     let part: SubtitlePart
-    init(part: SubtitlePart) {
+    init(part: SubtitlePart, timebase: Timebase) {
         self.part = part
+        self.timebase = timebase
     }
 }
 
@@ -198,9 +179,12 @@ final class ByteDataWrap {
     var size: [Int] = [0] {
         didSet {
             if size.description != oldValue.description {
-                for i in 0 ..< data.count where oldValue[i] > 0 {
-                    data[i]?.deinitialize(count: oldValue[i])
-                    data[i]?.deallocate()
+                for i in 0 ..< data.count {
+                    let count = oldValue[i]
+                    if count > 0 {
+                        data[i]?.deinitialize(count: oldValue[i])
+                        data[i]?.deallocate()
+                    }
                 }
                 data.removeAll()
                 for i in 0 ..< size.count {
@@ -218,29 +202,6 @@ final class ByteDataWrap {
         for i in 0 ..< data.count {
             data[i]?.deinitialize(count: size[i])
             data[i]?.deallocate()
-        }
-        data.removeAll()
-    }
-}
-
-final class MTLBufferWrap {
-    var data: [MTLBuffer?]
-    var size: [Int] {
-        didSet {
-            if size.description != oldValue.description {
-                data = size.map { MetalRender.device.makeBuffer(length: $0) }
-            }
-        }
-    }
-
-    public init(size: [Int]) {
-        self.size = size
-        data = size.map { MetalRender.device.makeBuffer(length: $0) }
-    }
-
-    deinit {
-        (0 ..< data.count).forEach { i in
-            data[i] = nil
         }
         data.removeAll()
     }
@@ -271,7 +232,7 @@ final class VideoVTBFrame: MEFrame {
     var duration: Int64 = 0
     var size: Int64 = 0
     var position: Int64 = 0
-    var corePixelBuffer: BufferProtocol?
+    var corePixelBuffer: CVPixelBuffer?
 }
 
 extension Dictionary where Key == String {
@@ -283,6 +244,9 @@ extension Dictionary where Key == String {
             } else if let i = value as? Int {
                 av_dict_set_int(&avOptions, key, Int64(i), 0)
             } else if let string = value as? String {
+                av_dict_set(&avOptions, key, string, 0)
+            } else if let dic = value as? Dictionary {
+                let string = dic.map { "\($0.0)=\($0.1)" }.joined(separator: "\r\n")
                 av_dict_set(&avOptions, key, string, 0)
             }
         }
@@ -314,17 +278,20 @@ public extension AVError {
     static let eof = AVError(code: swift_AVERROR_EOF)
 }
 
-//// swiftlint:disable identifier_name
-// extension Character {
-//    @inlinable public var asciiValueInt32: Int32 {
-//        Int32(asciiValue ?? 0)
-//    }
-// }
-// private func swift_AVERROR(_ err: Int32) -> Int32 {
-//    return -err
-// }
-// private func MKTAG(a: Character, b: Character, c: Character, d: Character) -> Int32 {
-//    return a.asciiValueInt32 | b.asciiValueInt32 << 8 | c.asciiValueInt32 << 16 | d.asciiValueInt32 << 24
-// }
-// private let swift_AVERROR_EOF = swift_AVERROR(MKTAG(a: "E", b: "O", c: "F", d: " "))
-//// swiftlint:enable identifier_name
+extension Array {
+    init(tuple: (Element, Element, Element, Element, Element, Element, Element, Element)) {
+        self.init([tuple.0, tuple.1, tuple.2, tuple.3, tuple.4, tuple.5, tuple.6, tuple.7])
+    }
+
+    init(tuple: (Element, Element, Element, Element)) {
+        self.init([tuple.0, tuple.1, tuple.2, tuple.3])
+    }
+
+    var tuple8: (Element, Element, Element, Element, Element, Element, Element, Element) {
+        (self[0], self[1], self[2], self[3], self[4], self[5], self[6], self[7])
+    }
+
+    var tuple4: (Element, Element, Element, Element) {
+        (self[0], self[1], self[2], self[3])
+    }
+}

@@ -17,13 +17,11 @@ class SubtitleDecode: DecodeProtocol {
     private weak var delegate: DecodeResultDelegate?
     private let reg = AssParse.patternReg()
     private var codecContext: UnsafeMutablePointer<AVCodecContext>?
-    private let scale = VideoSwresample(dstFormat: AV_PIX_FMT_RGBA, forceTransfer: true)
+    private let scale = VideoSwresample(dstFormat: AV_PIX_FMT_ARGB)
     private var subtitle = AVSubtitle()
     private var preSubtitleFrame: SubtitleFrame?
-    private let timebase: Timebase
-    required init(assetTrack: TrackProtocol, options: KSOptions, delegate: DecodeResultDelegate) {
+    required init(assetTrack: AssetTrack, options: KSOptions, delegate: DecodeResultDelegate) {
         self.delegate = delegate
-        timebase = assetTrack.timebase
         assetTrack.setIsEnabled(!assetTrack.isImageSubtitle)
         do {
             codecContext = try assetTrack.stream.pointee.codecpar.pointee.ceateContext(options: options)
@@ -34,46 +32,45 @@ class SubtitleDecode: DecodeProtocol {
 
     func decode() {}
 
-    func doDecode(packet: UnsafeMutablePointer<AVPacket>) throws {
+    func doDecode(packet: Packet) throws {
         guard let codecContext = codecContext else {
             delegate?.decodeResult(frame: nil)
             return
         }
-        var pktSize = packet.pointee.size
-        var error: NSError?
-        while pktSize > 0 {
-            var gotsubtitle = Int32(0)
-            let len = avcodec_decode_subtitle2(codecContext, &subtitle, &gotsubtitle, packet)
-            if len < 0 {
-                error = .init(errorCode: .codecSubtitleSendPacket, ffmpegErrnum: len)
-                KSLog(error!)
-                break
+        var gotsubtitle = Int32(0)
+        let len = avcodec_decode_subtitle2(codecContext, &subtitle, &gotsubtitle, packet.corePacket)
+        if len < 0 {
+            KSLog(NSError(errorCode: .codecSubtitleSendPacket, ffmpegErrnum: len))
+            return
+        } else if len == 0 {
+            return
+        }
+        let (attributedString, image) = text(subtitle: subtitle)
+        let position = max(packet.corePacket.pointee.pts == Int64.min ? packet.corePacket.pointee.dts : packet.corePacket.pointee.pts, 0)
+        let seconds = packet.assetTrack.timebase.cmtime(for: position).seconds - packet.assetTrack.startTime
+        var end = seconds
+        if subtitle.end_display_time == UInt32.max {
+            end = Double(UInt32.max)
+        } else if subtitle.end_display_time > 0 {
+            end += TimeInterval(subtitle.end_display_time) / 1000.0
+        } else if packet.corePacket.pointee.duration > 0 {
+            end += packet.assetTrack.timebase.cmtime(for: packet.corePacket.pointee.duration).seconds
+        }
+        let part = SubtitlePart(seconds + TimeInterval(subtitle.start_display_time) / 1000.0, end, attributedString: attributedString)
+        part.image = image
+        let frame = SubtitleFrame(part: part, timebase: packet.assetTrack.timebase)
+        frame.position = position
+        if let preSubtitleFrame = preSubtitleFrame, preSubtitleFrame.part.end == Double(UInt32.max) {
+            preSubtitleFrame.part.end = frame.part.start
+        }
+        if let preSubtitleFrame = preSubtitleFrame, preSubtitleFrame.part == part {
+            if let attributedString = attributedString {
+                preSubtitleFrame.part.text?.append(NSAttributedString(string: "\n"))
+                preSubtitleFrame.part.text?.append(attributedString)
             }
-            let (attributedString, image) = text(subtitle: subtitle)
-            let position = max(packet.pointee.pts == Int64.min ? packet.pointee.dts : packet.pointee.pts, 0)
-            let seconds = timebase.cmtime(for: position).seconds
-            var end = seconds
-            if subtitle.end_display_time > 0 {
-                end += TimeInterval(subtitle.end_display_time) / 1000.0
-            } else if packet.pointee.duration > 0 {
-                end += timebase.cmtime(for: packet.pointee.duration).seconds
-            }
-            let part = SubtitlePart(seconds + TimeInterval(subtitle.start_display_time) / 1000.0, end, attributedString.string)
-            part.image = image
-            let frame = SubtitleFrame(part: part)
-            frame.position = position
-            frame.timebase = timebase
-            if let preSubtitleFrame = preSubtitleFrame, preSubtitleFrame.part == part {
-                preSubtitleFrame.part.text.append(NSAttributedString(string: "\n"))
-                preSubtitleFrame.part.text.append(attributedString)
-            } else {
-                preSubtitleFrame = frame
-                delegate?.decodeResult(frame: frame)
-            }
-            if len == 0 {
-                break
-            }
-            pktSize -= len
+        } else {
+            preSubtitleFrame = frame
+            delegate?.decodeResult(frame: frame)
         }
     }
 
@@ -88,25 +85,33 @@ class SubtitleDecode: DecodeProtocol {
         }
     }
 
-    private func text(subtitle: AVSubtitle) -> (NSMutableAttributedString, UIImage?) {
-        let attributedString = NSMutableAttributedString()
-        var image: CGImage?
+    private func text(subtitle: AVSubtitle) -> (NSMutableAttributedString?, UIImage?) {
+        var attributedString: NSMutableAttributedString?
+        var images = [(CGRect, CGImage)]()
         for i in 0 ..< Int(subtitle.num_rects) {
             guard let rect = subtitle.rects[i]?.pointee else {
                 continue
             }
             if let text = rect.text {
-                attributedString.append(NSAttributedString(string: String(cString: text)))
+                if attributedString == nil {
+                    attributedString = NSMutableAttributedString()
+                }
+                attributedString?.append(NSAttributedString(string: String(cString: text)))
             } else if let ass = rect.ass {
                 let scanner = Scanner(string: String(cString: ass))
-                if let group = AssParse.parse(scanner: scanner, reg: reg) {
-                    attributedString.append(group.text)
+                if let group = AssParse.parse(scanner: scanner, reg: reg), let text = group.text {
+                    if attributedString == nil {
+                        attributedString = NSMutableAttributedString()
+                    }
+                    attributedString?.append(text)
                 }
             } else if rect.type == SUBTITLE_BITMAP {
-                image = scale.transfer(format: AV_PIX_FMT_PAL8, width: rect.w, height: rect.h, data: Array(tuple: rect.data), linesize: Array(tuple: rect.linesize).map { Int($0) })
+                if let image = scale.transfer(format: AV_PIX_FMT_PAL8, width: rect.w, height: rect.h, data: Array(tuple: rect.data), linesize: Array(tuple: rect.linesize))?.cgImage() {
+                    images.append((CGRect(x: Int(rect.x), y: Int(rect.y), width: Int(rect.w), height: Int(rect.h)), image))
+                }
             }
         }
-        return (attributedString, image.map { UIImage(cgImage: $0) })
+        return (attributedString, CGImage.combine(images: images)?.image())
     }
 }
 

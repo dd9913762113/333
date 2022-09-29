@@ -8,46 +8,6 @@
 import Libavformat
 import VideoToolbox
 
-protocol DecodeProtocol {
-    init(assetTrack: TrackProtocol, options: KSOptions, delegate: DecodeResultDelegate)
-    func decode()
-    func doDecode(packet: UnsafeMutablePointer<AVPacket>) throws
-    func doFlushCodec()
-    func shutdown()
-}
-
-protocol DecodeResultDelegate: AnyObject {
-    func decodeResult(frame: MEFrame?)
-}
-
-extension TrackProtocol {
-    func makeDecode(options: KSOptions, delegate: DecodeResultDelegate) -> DecodeProtocol {
-        autoreleasepool {
-            if mediaType == .subtitle {
-                return SubtitleDecode(assetTrack: self, options: options, delegate: delegate)
-            } else if mediaType == .video, let session = DecompressionSession(codecpar: stream.pointee.codecpar.pointee, options: options) {
-                return VideoHardwareDecode(assetTrack: self, options: options, session: session, delegate: delegate)
-            } else {
-                return SoftwareDecode(assetTrack: self, options: options, delegate: delegate)
-            }
-        }
-    }
-}
-
-extension KSOptions {
-    func canHardwareDecode(codecpar: AVCodecParameters) -> Bool {
-        if videoFilters != nil {
-            return false
-        }
-        if codecpar.codec_id == AV_CODEC_ID_H264, hardwareDecodeH264 {
-            return true
-        } else if codecpar.codec_id == AV_CODEC_ID_HEVC, VTIsHardwareDecodeSupported(kCMVideoCodecType_HEVC), hardwareDecodeH265 {
-            return true
-        }
-        return false
-    }
-}
-
 class VideoHardwareDecode: DecodeProtocol {
     private weak var delegate: DecodeResultDelegate?
     private var session: DecompressionSession?
@@ -56,11 +16,12 @@ class VideoHardwareDecode: DecodeProtocol {
     private let options: KSOptions
     private var startTime = Int64(0)
     private var lastPosition = Int64(0)
-    required convenience init(assetTrack: TrackProtocol, options: KSOptions, delegate: DecodeResultDelegate) {
+    private var error: NSError?
+    required convenience init(assetTrack: AssetTrack, options: KSOptions, delegate: DecodeResultDelegate) {
         self.init(assetTrack: assetTrack, options: options, session: DecompressionSession(codecpar: assetTrack.stream.pointee.codecpar.pointee, options: options), delegate: delegate)
     }
 
-    init(assetTrack: TrackProtocol, options: KSOptions, session: DecompressionSession?, delegate: DecodeResultDelegate) {
+    init(assetTrack: AssetTrack, options: KSOptions, session: DecompressionSession?, delegate: DecodeResultDelegate) {
         timebase = assetTrack.timebase
         codecpar = assetTrack.stream.pointee.codecpar.pointee
         self.options = options
@@ -68,22 +29,35 @@ class VideoHardwareDecode: DecodeProtocol {
         self.delegate = delegate
     }
 
-    func doDecode(packet: UnsafeMutablePointer<AVPacket>) throws {
-        guard let data = packet.pointee.data, let session = session else {
+    func doDecode(packet: Packet) throws {
+        let corePacket = packet.corePacket.pointee
+        guard let data = corePacket.data, let session = session else {
             delegate?.decodeResult(frame: nil)
             return
         }
-        let sampleBuffer = try session.formatDescription.getSampleBuffer(isConvertNALSize: session.isConvertNALSize, data: data, size: Int(packet.pointee.size))
+        let sampleBuffer = try session.formatDescription.getSampleBuffer(isConvertNALSize: session.isConvertNALSize, data: data, size: Int(corePacket.size))
         let flags: VTDecodeFrameFlags = [._EnableAsynchronousDecompression]
         var flagOut = VTDecodeInfoFlags.frameDropped
-        let pts = packet.pointee.pts
-        let packetFlags = packet.pointee.flags
-        let duration = packet.pointee.duration
-        let size = Int64(packet.pointee.size)
+        let pts = corePacket.pts
+        let packetFlags = corePacket.flags
+        let duration = corePacket.duration
+        let size = Int64(corePacket.size)
         let status = VTDecompressionSessionDecodeFrame(session.decompressionSession, sampleBuffer: sampleBuffer, flags: flags, infoFlagsOut: &flagOut) { [weak self] status, infoFlags, imageBuffer, _, _ in
-            guard let self = self, status == noErr, !infoFlags.contains(.frameDropped) else {
+            guard let self = self, !infoFlags.contains(.frameDropped) else {
                 return
             }
+            guard status == noErr else {
+                if status == kVTInvalidSessionErr || status == kVTVideoDecoderMalfunctionErr || status == kVTVideoDecoderBadDataErr {
+                    if corePacket.flags & AV_PKT_FLAG_KEY == 1 {
+                        self.error = NSError(errorCode: .codecVideoReceiveFrame, ffmpegErrnum: status)
+                    } else {
+                        // 解决从后台切换到前台，解码失败的问题
+                        self.doFlushCodec()
+                    }
+                }
+                return
+            }
+            self.error = nil
             let frame = VideoVTBFrame()
             frame.corePixelBuffer = imageBuffer
             frame.timebase = self.timebase
@@ -97,8 +71,11 @@ class VideoHardwareDecode: DecodeProtocol {
             self.lastPosition += frame.duration
             self.delegate?.decodeResult(frame: frame)
         }
+        if let error = error {
+            throw error
+        }
         if status == kVTInvalidSessionErr || status == kVTVideoDecoderMalfunctionErr || status == kVTVideoDecoderBadDataErr {
-            if packet.pointee.flags & AV_PKT_FLAG_KEY == 1 {
+            if corePacket.flags & AV_PKT_FLAG_KEY == 1 {
                 throw NSError(errorCode: .codecVideoReceiveFrame, ffmpegErrnum: status)
             } else {
                 // 解决从后台切换到前台，解码失败的问题
@@ -127,45 +104,42 @@ class DecompressionSession {
     fileprivate let isConvertNALSize: Bool
     fileprivate let formatDescription: CMFormatDescription
     fileprivate let decompressionSession: VTDecompressionSession
-    init?(codecpar: AVCodecParameters, options: KSOptions) {
+    init?(codecpar: AVCodecParameters, options _: KSOptions) {
         let format = AVPixelFormat(codecpar.format)
-        guard options.canHardwareDecode(codecpar: codecpar), let pixelFormatType = format.osType(), let extradata = codecpar.extradata else {
+        guard let pixelFormatType = format.osType(), let extradata = codecpar.extradata else {
             return nil
         }
         let extradataSize = codecpar.extradata_size
-        guard extradataSize >= 7, extradata[0] == 1 else {
-            return nil
-        }
-
-        if extradata[4] == 0xFE {
+        if extradataSize >= 5, extradata[4] == 0xFE {
             extradata[4] = 0xFF
             isConvertNALSize = true
         } else {
             isConvertNALSize = false
         }
         let isFullRangeVideo = codecpar.color_range == AVCOL_RANGE_JPEG
+        let videoCodecType = codecpar.codec_id.mediaSubType.rawValue
         let dic: NSMutableDictionary = [
             kCVImageBufferChromaLocationBottomFieldKey: kCVImageBufferChromaLocation_Left,
             kCVImageBufferChromaLocationTopFieldKey: kCVImageBufferChromaLocation_Left,
             kCMFormatDescriptionExtension_FullRangeVideo: isFullRangeVideo,
+            videoCodecType == kCMVideoCodecType_HEVC ? "EnableHardwareAcceleratedVideoDecoder" : "RequireHardwareAcceleratedVideoDecoder": true,
             kCMFormatDescriptionExtension_SampleDescriptionExtensionAtoms: [
-                codecpar.codec_id == AV_CODEC_ID_HEVC ? "hvcC" : "avcC": NSData(bytes: extradata, length: Int(extradataSize)),
+                videoCodecType.avc: NSData(bytes: extradata, length: Int(extradataSize)),
             ],
         ]
         dic[kCVImageBufferPixelAspectRatioKey] = codecpar.sample_aspect_ratio.size.aspectRatio
         dic[kCVImageBufferColorPrimariesKey] = codecpar.color_primaries.colorPrimaries
         dic[kCVImageBufferTransferFunctionKey] = codecpar.color_trc.transferFunction
         dic[kCVImageBufferYCbCrMatrixKey] = codecpar.color_space.ycbcrMatrix
-        let type = codecpar.codec_id == AV_CODEC_ID_HEVC ? kCMVideoCodecType_HEVC : kCMVideoCodecType_H264
         // swiftlint:disable line_length
         var description: CMFormatDescription?
-        var status = CMVideoFormatDescriptionCreate(allocator: kCFAllocatorDefault, codecType: type, width: codecpar.width, height: codecpar.height, extensions: dic, formatDescriptionOut: &description)
+        var status = CMVideoFormatDescriptionCreate(allocator: kCFAllocatorDefault, codecType: videoCodecType, width: codecpar.width, height: codecpar.height, extensions: dic, formatDescriptionOut: &description)
         // swiftlint:enable line_length
         guard status == noErr, let formatDescription = description else {
             return nil
         }
         self.formatDescription = formatDescription
-
+//        VTDecompressionSessionCanAcceptFormatDescription(<#T##session: VTDecompressionSession##VTDecompressionSession#>, formatDescription: <#T##CMFormatDescription#>)
         let attributes: NSMutableDictionary = [
             kCVPixelBufferPixelFormatTypeKey: pixelFormatType,
             kCVPixelBufferMetalCompatibilityKey: true,
@@ -183,17 +157,6 @@ class DecompressionSession {
     deinit {
         VTDecompressionSessionWaitForAsynchronousFrames(decompressionSession)
         VTDecompressionSessionInvalidate(decompressionSession)
-    }
-}
-
-extension CGSize {
-    var aspectRatio: NSDictionary? {
-        if width != 0, height != 0, width != height {
-            return [kCVImageBufferPixelAspectRatioHorizontalSpacingKey: width,
-                    kCVImageBufferPixelAspectRatioVerticalSpacingKey: height]
-        } else {
-            return nil
-        }
     }
 }
 
@@ -240,76 +203,71 @@ extension CMFormatDescription {
     }
 }
 
-extension AVColorPrimaries {
-    var colorPrimaries: CFString? {
+extension AVCodecID {
+    var mediaSubType: CMFormatDescription.MediaSubType {
         switch self {
-        case AVCOL_PRI_BT470BG:
-            return kCVImageBufferColorPrimaries_EBU_3213
-        case AVCOL_PRI_SMPTE170M:
-            return kCVImageBufferColorPrimaries_SMPTE_C
-        case AVCOL_PRI_BT709:
-            return kCVImageBufferColorPrimaries_ITU_R_709_2
-        case AVCOL_PRI_BT2020:
-            return kCVImageBufferColorPrimaries_ITU_R_2020
+        case AV_CODEC_ID_H263:
+            return .h263
+        case AV_CODEC_ID_H264:
+            return .h264
+        case AV_CODEC_ID_HEVC:
+            return .hevc
+        case AV_CODEC_ID_MPEG1VIDEO:
+            return .mpeg1Video
+        case AV_CODEC_ID_MPEG2VIDEO:
+            return .mpeg2Video
+        case AV_CODEC_ID_MPEG4:
+            return .mpeg4Video
+        case AV_CODEC_ID_VP9:
+            return CMFormatDescription.MediaSubType(rawValue: kCMVideoCodecType_VP9)
+        case AV_CODEC_ID_AAC:
+            return .mpeg4AAC
+        case AV_CODEC_ID_AC3:
+            return .ac3
+        case AV_CODEC_ID_ADPCM_IMA_QT:
+            return .appleIMA4
+        case AV_CODEC_ID_ALAC:
+            return .appleLossless
+        case AV_CODEC_ID_AMR_NB:
+            return .amr
+        case AV_CODEC_ID_EAC3:
+            return .enhancedAC3
+        case AV_CODEC_ID_GSM_MS:
+            return .microsoftGSM
+        case AV_CODEC_ID_ILBC:
+            return .iLBC
+        case AV_CODEC_ID_MP1:
+            return .mpegLayer1
+        case AV_CODEC_ID_MP2:
+            return .mpegLayer2
+        case AV_CODEC_ID_MP3:
+            return .mpegLayer3
+        case AV_CODEC_ID_PCM_ALAW:
+            return .aLaw
+        case AV_CODEC_ID_PCM_MULAW:
+            return .uLaw
+        case AV_CODEC_ID_QDMC:
+            return .qDesign
+        case AV_CODEC_ID_QDM2:
+            return .qDesign2
         default:
-            return nil
+            return CMFormatDescription.MediaSubType(rawValue: 0)
         }
     }
 }
 
-extension AVColorTransferCharacteristic {
-    var transferFunction: CFString? {
+extension CMVideoCodecType {
+    var avc: String {
         switch self {
-        case AVCOL_TRC_BT709:
-            return kCVImageBufferTransferFunction_ITU_R_709_2
-        case AVCOL_TRC_SMPTE240M:
-            return kCVImageBufferTransferFunction_SMPTE_240M_1995
-        case AVCOL_TRC_SMPTE2084:
-            return kCVImageBufferTransferFunction_SMPTE_ST_2084_PQ
-        case AVCOL_TRC_LINEAR:
-            if #available(iOS 12.0, tvOS 12.0, OSX 10.14, *) {
-                return kCVImageBufferTransferFunction_Linear
-            } else {
-                return nil
-            }
-        case AVCOL_TRC_ARIB_STD_B67:
-            return kCVImageBufferTransferFunction_ITU_R_2100_HLG
-        case AVCOL_TRC_GAMMA22, AVCOL_TRC_GAMMA28:
-            return kCVImageBufferTransferFunction_UseGamma
-        case AVCOL_TRC_BT2020_10, AVCOL_TRC_BT2020_12:
-            return kCVImageBufferTransferFunction_ITU_R_2020
-        default:
-            return nil
-        }
-    }
-}
-
-extension AVColorSpace {
-    var ycbcrMatrix: CFString? {
-        switch self {
-        case AVCOL_SPC_BT709:
-            return kCVImageBufferYCbCrMatrix_ITU_R_709_2
-        case AVCOL_SPC_BT470BG, AVCOL_SPC_SMPTE170M:
-            return kCVImageBufferYCbCrMatrix_ITU_R_601_4
-        case AVCOL_SPC_SMPTE240M:
-            return kCVImageBufferYCbCrMatrix_SMPTE_240M_1995
-        case AVCOL_SPC_BT2020_NCL:
-            return kCVImageBufferYCbCrMatrix_ITU_R_2020
-        default:
-            return nil
-        }
-    }
-
-    var colorSpace: CGColorSpace? {
-        switch self {
-        case AVCOL_SPC_BT709:
-            return CGColorSpace(name: CGColorSpace.itur_709)
-        case AVCOL_SPC_BT470BG, AVCOL_SPC_SMPTE170M:
-            return CGColorSpace(name: CGColorSpace.sRGB)
-        case AVCOL_SPC_BT2020_NCL:
-            return CGColorSpace(name: CGColorSpace.itur_2020)
-        default:
-            return nil
+        case kCMVideoCodecType_MPEG4Video:
+            return "esds"
+        case kCMVideoCodecType_H264:
+            return "avcC"
+        case kCMVideoCodecType_HEVC:
+            return "hvcC"
+        case kCMVideoCodecType_VP9:
+            return "vpcC"
+        default: return "avcC"
         }
     }
 }

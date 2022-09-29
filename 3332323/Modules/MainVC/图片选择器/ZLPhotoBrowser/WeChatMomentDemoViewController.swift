@@ -74,22 +74,22 @@ class WeChatMomentDemoViewController: UIViewController {
         // Like this 'let photoPicker = ZLPhotoPreviewSheet(selectedAssets: assets)'
         let photoPicker = ZLPhotoPreviewSheet(selectedAssets:self.assets)
         
-        photoPicker.selectImageBlock = { [weak self] (images, assets, _) in
-            self?.hasSelectVideo = assets.first?.mediaType == .video
-            self?.images = images
-            self?.assets = assets
-            self?.collectionView.reloadData()
-        }
-        photoPicker.cancelBlock = {
-            debugPrint("cancel select")
-        }
-        photoPicker.selectImageRequestErrorBlock = { (errorAssets, errorIndexs) in
-            debugPrint("fetch error assets: \(errorAssets), error indexs: \(errorIndexs)")
-        }
-//    显示预览 和 拍照 相册 取消
-        photoPicker.showPreview(animate: true, sender: self)
-//      直接显示相册
-//        photoPicker.showPhotoLibrary(sender: self)
+//        photoPicker.selectImageBlock = { [weak self] (images, assets, _) in
+//            self?.hasSelectVideo = assets.first?.mediaType == .video
+//            self?.images = images
+//            self?.assets = assets
+//            self?.collectionView.reloadData()
+//        }
+//        photoPicker.cancelBlock = {
+//            debugPrint("cancel select")
+//        }
+//        photoPicker.selectImageRequestErrorBlock = { (errorAssets, errorIndexs) in
+//            debugPrint("fetch error assets: \(errorAssets), error indexs: \(errorIndexs)")
+//        }
+////    显示预览 和 拍照 相册 取消
+//        photoPicker.showPreview(animate: true, sender: self)
+////      直接显示相册
+////        photoPicker.showPhotoLibrary(sender: self)
     }
     
 }

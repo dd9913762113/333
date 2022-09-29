@@ -90,7 +90,13 @@
             strongSelf.count = 0;
         }
         NSLog(@"定时器次数是： %ld",strongSelf.count);
-        [strongSelf startHostPing];
+        if (strongSelf.count >= 10){
+            dispatch_cancel(_authTimer);
+            _authTimer = nil;
+        }else {
+            [strongSelf startHostPing];
+
+        }
     });
     dispatch_resume(_authTimer);
 }
@@ -107,7 +113,7 @@
             NSLog(@"222 ??? %@ time=%.2f",item.hostName, item.delayMillSeconds);
         }
         
-        self.completionHandler(hostName, sortedAddress);
+//        self.completionHandler(hostName, sortedAddress);
         
     }];
 }

@@ -11,23 +11,23 @@ import UIKit
 #else
 import AppKit
 #endif
-
-public protocol SubtitleViewProtocol {
-    var selectedInfo: KSObservable<SubtitleInfo> { get }
-    func setupDatas(infos: [SubtitleInfo])
-}
-
+import Combine
 public class KSSubtitleController {
     private let cacheDataSouce = CacheDataSouce()
     private var subtitleDataSouces: [SubtitleDataSouce] = []
     private var infos = [SubtitleInfo]()
     private var subtitleName: String?
-    public let view: UIView & SubtitleViewProtocol
+    public var view: KSSubtitleView
     public var subtitle: KSSubtitleProtocol?
-    public var selectWithFilePath: ((Result<KSSubtitleProtocol?, NSError>) -> Void)?
-    @KSObservable
+    public var selectWithFilePath: ((Result<KSSubtitleProtocol, NSError>) -> Void)? {
+        didSet {
+            view.selectWithFilePath = selectWithFilePath
+        }
+    }
+
+    @Published
     public var srtListCount: Int = 0
-    public init(customControlView: (UIView & SubtitleViewProtocol)? = nil) {
+    public init(customControlView: KSSubtitleView? = nil) {
         if let customView = customControlView {
             view = customView
         } else {
@@ -35,14 +35,6 @@ public class KSSubtitleController {
         }
         view.isHidden = true
         subtitleDataSouces = [cacheDataSouce]
-        view.selectedInfo.observer = { [weak self] _, info in
-            guard let self = self, let selectWithFilePath = self.selectWithFilePath else { return }
-            DispatchQueue.main.asyncAfter(deadline: DispatchTime.now() + 0.2) { [weak self] in
-                guard let self = self else { return }
-                self.view.isHidden = true
-            }
-            info.makeSubtitle(completion: selectWithFilePath)
-        }
     }
 
     public func searchSubtitle(name: String) {
@@ -59,7 +51,14 @@ public class KSSubtitleController {
         subtitleDataSouces.removeAll { $0 === dataSouce }
         runInMainqueue { [weak self] in
             guard let self = self else { return }
-            self.infos.removeAll { $0.subtitleDataSouce === dataSouce }
+            dataSouce.infos?.forEach { info in
+                self.infos.removeAll { other in
+                    other.subtitleID == info.subtitleID
+                }
+                if info.subtitleID == self.view.selectedInfo?.subtitleID {
+                    self.view.selectedInfo = nil
+                }
+            }
             self.srtListCount = self.infos.count
             self.view.setupDatas(infos: self.infos)
         }
@@ -80,9 +79,8 @@ public class KSSubtitleController {
     }
 
     private func searchSubtitle(datasouce: SubtitleDataSouce, name: String) {
-        datasouce.searchSubtitle(name: name) { array in
-            guard let array = array else { return }
-            array.forEach { $0.subtitleDataSouce = datasouce }
+        datasouce.searchSubtitle(name: name) {
+            guard let array = datasouce.infos else { return }
             runInMainqueue { [weak self] in
                 guard let self = self else { return }
                 self.infos.append(contentsOf: array)

@@ -307,6 +307,16 @@
 		63D616C626AD644A00CDBA38 /* DownLoadTabbar.swift in Sources */ = {isa = PBXBuildFile; fileRef = 63D616C526AD644A00CDBA38 /* DownLoadTabbar.swift */; };
 		63D616C826AD662300CDBA38 /* DownLoadListVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 63D616C726AD662300CDBA38 /* DownLoadListVC.swift */; };
 		63DB92F5280ED72400F3D1DC /* UIViewController+DK_Extension.m in Sources */ = {isa = PBXBuildFile; fileRef = 63DB92F4280ED72400F3D1DC /* UIViewController+DK_Extension.m */; };
+		63E5F3AC28E56DC100F6D7E8 /* Accelerate.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 631FF73A28051DC10010392B /* Accelerate.framework */; };
+		63E5F3AE28E56DCA00F6D7E8 /* CFNetwork.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 63E5F3AD28E56DC900F6D7E8 /* CFNetwork.framework */; };
+		63E5F3B228E56EAC00F6D7E8 /* CoreFoundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 63E5F3AF28E56EAB00F6D7E8 /* CoreFoundation.framework */; };
+		63E5F3B328E56EAD00F6D7E8 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 63E5F3B028E56EAB00F6D7E8 /* Foundation.framework */; };
+		63E5F3B428E56EAE00F6D7E8 /* AVFoundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 63E5F3B128E56EAC00F6D7E8 /* AVFoundation.framework */; };
+		63E5F3B628E5771400F6D7E8 /* CustomAlertController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 63E5F3B528E5771400F6D7E8 /* CustomAlertController.swift */; };
+		63E5F3B828E5783400F6D7E8 /* CustomAlertControllerTransitionAnimation.swift in Sources */ = {isa = PBXBuildFile; fileRef = 63E5F3B728E5783400F6D7E8 /* CustomAlertControllerTransitionAnimation.swift */; };
+		63E5F3BA28E57BFA00F6D7E8 /* DLog.swift in Sources */ = {isa = PBXBuildFile; fileRef = 63E5F3B928E57BFA00F6D7E8 /* DLog.swift */; };
+		63E5F3BD28E5828500F6D7E8 /* TimerManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 63E5F3BC28E5828500F6D7E8 /* TimerManager.swift */; };
+		63E5F3BF28E582DC00F6D7E8 /* TimerDemoViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 63E5F3BE28E582DC00F6D7E8 /* TimerDemoViewController.swift */; };
 		DE7F6282F76BD3C938CD417C /* Pods_3332323.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 29E360D98108EDF26A267B1B /* Pods_3332323.framework */; };
 /* End PBXBuildFile section */
 
@@ -675,6 +685,15 @@
 		63D616C726AD662300CDBA38 /* DownLoadListVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DownLoadListVC.swift; sourceTree = "<group>"; };
 		63DB92F3280ED72400F3D1DC /* UIViewController+DK_Extension.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "UIViewController+DK_Extension.h"; sourceTree = "<group>"; };
 		63DB92F4280ED72400F3D1DC /* UIViewController+DK_Extension.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = "UIViewController+DK_Extension.m"; sourceTree = "<group>"; };
+		63E5F3AD28E56DC900F6D7E8 /* CFNetwork.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CFNetwork.framework; path = System/Library/Frameworks/CFNetwork.framework; sourceTree = SDKROOT; };
+		63E5F3AF28E56EAB00F6D7E8 /* CoreFoundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreFoundation.framework; path = System/Library/Frameworks/CoreFoundation.framework; sourceTree = SDKROOT; };
+		63E5F3B028E56EAB00F6D7E8 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
+		63E5F3B128E56EAC00F6D7E8 /* AVFoundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AVFoundation.framework; path = System/Library/Frameworks/AVFoundation.framework; sourceTree = SDKROOT; };
+		63E5F3B528E5771400F6D7E8 /* CustomAlertController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomAlertController.swift; sourceTree = "<group>"; };
+		63E5F3B728E5783400F6D7E8 /* CustomAlertControllerTransitionAnimation.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomAlertControllerTransitionAnimation.swift; sourceTree = "<group>"; };
+		63E5F3B928E57BFA00F6D7E8 /* DLog.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DLog.swift; sourceTree = "<group>"; };
+		63E5F3BC28E5828500F6D7E8 /* TimerManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TimerManager.swift; sourceTree = "<group>"; };
+		63E5F3BE28E582DC00F6D7E8 /* TimerDemoViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TimerDemoViewController.swift; sourceTree = "<group>"; };
 		6710A95B7957E2C3F73CE041 /* Pods-3332323.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-3332323.release.xcconfig"; path = "Target Support Files/Pods-3332323/Pods-3332323.release.xcconfig"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -684,13 +703,18 @@
 			buildActionMask = 2147483647;
 			files = (
 				63608E7627BFA9CA00760485 /* UserNotifications.framework in Frameworks */,
+				63E5F3AC28E56DC100F6D7E8 /* Accelerate.framework in Frameworks */,
+				63E5F3B428E56EAE00F6D7E8 /* AVFoundation.framework in Frameworks */,
+				63E5F3B328E56EAD00F6D7E8 /* Foundation.framework in Frameworks */,
 				631FF73B28051DC10010392B /* Accelerate.framework in Frameworks */,
 				63608E7527BFA9CA00760485 /* NotificationCenter.framework in Frameworks */,
+				63E5F3B228E56EAC00F6D7E8 /* CoreFoundation.framework in Frameworks */,
 				63D615DD26AD13FA00CDBA38 /* VideoToolbox.framework in Frameworks */,
 				6328303226B1060F0041F5BF /* MetalKit.framework in Frameworks */,
 				DE7F6282F76BD3C938CD417C /* Pods_3332323.framework in Frameworks */,
 				63D615DF26AD140100CDBA38 /* AudioToolbox.framework in Frameworks */,
 				631FF73928051DAF0010392B /* libc++.tbd in Frameworks */,
+				63E5F3AE28E56DCA00F6D7E8 /* CFNetwork.framework in Frameworks */,
 				631FF73728051D920010392B /* SystemConfiguration.framework in Frameworks */,
 				63608E7027BFA9BB00760485 /* CallKit.framework in Frameworks */,
 				631FF71A280515030010392B /* libresolv.tbd in Frameworks */,
@@ -936,6 +960,7 @@
 			isa = PBXGroup;
 			children = (
 				63A7739C26A6B5C7000DE05B /* MainVC.swift */,
+				63E5F3BB28E5827000F6D7E8 /* 定时器 */,
 				637BAAEF280814E700C7B68C /* 上传文件到手机 */,
 				631FF74028054C4B0010392B /* DKiOSTerminal */,
 				631FF717280514C50010392B /* DKNetDiagnoService */,
@@ -1583,6 +1608,7 @@
 				63A48B8627A00C2500022B9F /* UIImage+Extension.swift */,
 				63DB92F3280ED72400F3D1DC /* UIViewController+DK_Extension.h */,
 				63DB92F4280ED72400F3D1DC /* UIViewController+DK_Extension.m */,
+				63E5F3B928E57BFA00F6D7E8 /* DLog.swift */,
 			);
 			path = UIKit;
 			sourceTree = "<group>";
@@ -1728,6 +1754,8 @@
 				63B9A0B126B4F74C004AC889 /* PhotoConfigureViewController.swift */,
 				63B9A0B326B4F74C004AC889 /* WeChatMomentDemoViewController.swift */,
 				63B9A0AF26B4F74C004AC889 /* ZLCustomFilter.swift */,
+				63E5F3B528E5771400F6D7E8 /* CustomAlertController.swift */,
+				63E5F3B728E5783400F6D7E8 /* CustomAlertControllerTransitionAnimation.swift */,
 			);
 			path = ZLPhotoBrowser;
 			sourceTree = "<group>";
@@ -1783,6 +1811,15 @@
 			path = MediaPlayer;
 			sourceTree = "<group>";
 		};
+		63E5F3BB28E5827000F6D7E8 /* 定时器 */ = {
+			isa = PBXGroup;
+			children = (
+				63E5F3BC28E5828500F6D7E8 /* TimerManager.swift */,
+				63E5F3BE28E582DC00F6D7E8 /* TimerDemoViewController.swift */,
+			);
+			path = "定时器";
+			sourceTree = "<group>";
+		};
 		7004946E9141D3189BDECF51 /* Pods */ = {
 			isa = PBXGroup;
 			children = (
@@ -1795,6 +1832,10 @@
 		E7D6978AD7007A38E7487336 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				63E5F3B128E56EAC00F6D7E8 /* AVFoundation.framework */,
+				63E5F3AF28E56EAB00F6D7E8 /* CoreFoundation.framework */,
+				63E5F3B028E56EAB00F6D7E8 /* Foundation.framework */,
+				63E5F3AD28E56DC900F6D7E8 /* CFNetwork.framework */,
 				631FF73A28051DC10010392B /* Accelerate.framework */,
 				631FF73828051DA80010392B /* libc++.tbd */,
 				631FF73628051D920010392B /* SystemConfiguration.framework */,
@@ -1829,7 +1870,7 @@
 				63A66774269861B4009235A3 /* Frameworks */,
 				63A66775269861B4009235A3 /* Resources */,
 				51117437E369241073F0D9DC /* [CP] Embed Pods Frameworks */,
-				A34043F9EF15A208277B5F96 /* [CP] Copy Pods Resources */,
+				513DD71E3DDF5EAAFDF14019 /* [CP] Copy Pods Resources */,
 			);
 			buildRules = (
 			);
@@ -1997,7 +2038,7 @@
 			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-3332323/Pods-3332323-frameworks.sh\"\n";
 			showEnvVarsInLog = 0;
 		};
-		A34043F9EF15A208277B5F96 /* [CP] Copy Pods Resources */ = {
+		513DD71E3DDF5EAAFDF14019 /* [CP] Copy Pods Resources */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -2122,7 +2163,9 @@
 				63608E5127BF343E00760485 /* WashingtonPostHandler.swift in Sources */,
 				637BAB63280815A900C7B68C /* DDTTYLogger.m in Sources */,
 				63608E4D27BF343E00760485 /* CashAppCell.swift in Sources */,
+				63E5F3BD28E5828500F6D7E8 /* TimerManager.swift in Sources */,
 				637BAB55280815A900C7B68C /* HTTPFileResponse.m in Sources */,
+				63E5F3BF28E582DC00F6D7E8 /* TimerDemoViewController.swift in Sources */,
 				63608E4327BF343E00760485 /* FastNewsCell.swift in Sources */,
 				6319E36727C0D7F4003497E0 /* Promise.swift in Sources */,
 				63A5CB0227F188DA00DF348A /* NENSinglePinger.m in Sources */,
@@ -2159,6 +2202,7 @@
 				63608DDE27BE5B9A00760485 /* Localized.swift in Sources */,
 				63608E3B27BF343E00760485 /* NBCNewsCellLarge.swift in Sources */,
 				63608E6427BF343E00760485 /* AxiosCell.swift in Sources */,
+				63E5F3BA28E57BFA00F6D7E8 /* DLog.swift in Sources */,
 				637BAB59280815A900C7B68C /* HTTPConnection.m in Sources */,
 				63608E6A27BF343E00760485 /* TheNewsImageDownloader.swift in Sources */,
 				63A5CAF827F17E5C00DF348A /* Ping.swift in Sources */,
@@ -2189,6 +2233,7 @@
 				63B9A0C326B52B8E004AC889 /* CommonTextView.swift in Sources */,
 				63608E5A27BF343E00760485 /* FacebookCell.swift in Sources */,
 				63820BC227C759F500C02634 /* MainModel.swift in Sources */,
+				63E5F3B628E5771400F6D7E8 /* CustomAlertController.swift in Sources */,
 				631FF734280515A50010392B /* LDNetConnect.m in Sources */,
 				63B9A0CE26B52DFF004AC889 /* PublishPostAddPicView.swift in Sources */,
 				63608E5F27BF343E00760485 /* RobinhoodCellLarge.swift in Sources */,
@@ -2201,6 +2246,7 @@
 				63608E5827BF343E00760485 /* CNNCell.swift in Sources */,
 				63A48B9B27A00E6600022B9F /* BaseWebController.swift in Sources */,
 				63A48B6A27A006B300022B9F /* BaseTabbarController.swift in Sources */,
+				63E5F3B828E5783400F6D7E8 /* CustomAlertControllerTransitionAnimation.swift in Sources */,
 				631FF732280515A50010392B /* LDNetGetAddress.m in Sources */,
 				63D6155B26AC284500CDBA38 /* DownloadTaskCell.swift in Sources */,
 				63B9A0B426B4F74C004AC889 /* PhotoConfigureCNViewController.swift in Sources */,
@@ -2401,6 +2447,7 @@
 					"\"${PODS_CONFIGURATION_BUILD_DIR}/Texture/AsyncDisplayKit.framework/Headers\"",
 				);
 				INFOPLIST_FILE = 3332323/Info.plist;
+				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.developer-tools";
 				IPHONEOS_DEPLOYMENT_TARGET = 13.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
@@ -2451,6 +2498,7 @@
 					"\"${PODS_CONFIGURATION_BUILD_DIR}/Texture/AsyncDisplayKit.framework/Headers\"",
 				);
 				INFOPLIST_FILE = 3332323/Info.plist;
+				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.developer-tools";
 				IPHONEOS_DEPLOYMENT_TARGET = 13.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",

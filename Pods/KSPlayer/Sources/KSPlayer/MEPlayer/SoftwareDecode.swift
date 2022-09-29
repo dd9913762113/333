@@ -11,8 +11,6 @@ import Libavcodec
 
 class SoftwareDecode: DecodeProtocol {
     private weak var delegate: DecodeResultDelegate?
-    private let mediaType: AVFoundation.AVMediaType
-    private let timebase: Timebase
     private let options: KSOptions
     // 第一次seek不要调用avcodec_flush_buffers。否则seek完之后可能会因为不是关键帧而导致蓝屏
     private var firstSeek = true
@@ -20,10 +18,8 @@ class SoftwareDecode: DecodeProtocol {
     private var codecContext: UnsafeMutablePointer<AVCodecContext>?
     private var bestEffortTimestamp = Int64(0)
     private let swresample: Swresample
-    private let filter: MEFilter?
-    required init(assetTrack: TrackProtocol, options: KSOptions, delegate: DecodeResultDelegate) {
-        timebase = assetTrack.timebase
-        mediaType = assetTrack.mediaType
+    private let filter: MEFilter
+    required init(assetTrack: AssetTrack, options: KSOptions, delegate: DecodeResultDelegate) {
         self.delegate = delegate
         self.options = options
         var codecpar = assetTrack.stream.pointee.codecpar.pointee
@@ -32,47 +28,39 @@ class SoftwareDecode: DecodeProtocol {
         } catch {
             KSLog(error as CustomStringConvertible)
         }
-        codecContext?.pointee.time_base = timebase.rational
-        if mediaType == .video {
-            filter = options.videoFilters.flatMap { str -> MEFilter? in
-                let ratio = codecpar.sample_aspect_ratio
-                let timebase = assetTrack.timebase
-                let args = "video_size=\(codecpar.width)x\(codecpar.height):pix_fmt=\(codecpar.format):time_base=\(timebase.num)/\(timebase.den):pixel_aspect=\(ratio.num)/\(ratio.den)"
-                return MEFilter(filters: str, args: args, isAudio: false)
-            }
+        codecContext?.pointee.time_base = assetTrack.timebase.rational
+        filter = MEFilter(timebase: assetTrack.timebase, isAudio: assetTrack.mediaType == .audio)
+        if assetTrack.mediaType == .video {
             swresample = VideoSwresample()
         } else {
-            filter = options.audioFilters.flatMap { str -> MEFilter? in
-                let fmt = String(describing: av_get_sample_fmt_name(AVSampleFormat(rawValue: codecpar.format)))
-                let timebase = assetTrack.timebase
-                let args = "sample_rate=\(codecpar.sample_rate):sample_fmt=\(fmt):time_base=\(timebase.num)/\(timebase.den):channels=\(codecpar.channels):channel_layout=\(codecpar.channel_layout)"
-                return MEFilter(filters: str, args: args, isAudio: true)
-            }
             swresample = AudioSwresample(codecpar: codecpar)
         }
     }
 
-    func doDecode(packet: UnsafeMutablePointer<AVPacket>) throws {
-        guard let codecContext = codecContext, avcodec_send_packet(codecContext, packet) == 0 else {
+    func doDecode(packet: Packet) throws {
+        guard let codecContext = codecContext, avcodec_send_packet(codecContext, packet.corePacket) == 0 else {
             delegate?.decodeResult(frame: nil)
             return
         }
         while true {
             let result = avcodec_receive_frame(codecContext, coreFrame)
             if result == 0, let avframe = coreFrame {
-                let timestamp = max(avframe.pointee.best_effort_timestamp, avframe.pointee.pts, avframe.pointee.pkt_dts)
-                if timestamp >= bestEffortTimestamp {
-                    bestEffortTimestamp = timestamp
-                }
-                var frame = try swresample.transfer(avframe: filter?.filter(inputFrame: avframe) ?? avframe)
-                frame.timebase = timebase
+                let isAudio = packet.assetTrack.mediaType == .audio
+                var frame = try swresample.transfer(avframe: filter.filter(filters: isAudio ? options.audioFilters : options.videoFilters, inputFrame: avframe))
+                frame.timebase = packet.assetTrack.timebase
+//                frame.timebase = Timebase(avframe.pointee.time_base)
                 frame.duration = avframe.pointee.pkt_duration
                 frame.size = Int64(avframe.pointee.pkt_size)
-                if mediaType == .audio, frame.duration == 0 {
-                    frame.duration = Int64(avframe.pointee.nb_samples) * Int64(frame.timebase.den) / (Int64(avframe.pointee.sample_rate) * Int64(frame.timebase.num))
+                if packet.assetTrack.mediaType == .audio {
+                    bestEffortTimestamp = max(bestEffortTimestamp, avframe.pointee.pts)
+                    frame.position = bestEffortTimestamp
+                    if frame.duration == 0 {
+                        frame.duration = Int64(avframe.pointee.nb_samples) * Int64(frame.timebase.den) / (Int64(avframe.pointee.sample_rate) * Int64(frame.timebase.num))
+                    }
+                    bestEffortTimestamp += frame.duration
+                } else {
+                    frame.position = avframe.pointee.best_effort_timestamp
                 }
-                frame.position = bestEffortTimestamp
-                bestEffortTimestamp += frame.duration
                 delegate?.decodeResult(frame: frame)
             } else {
                 if result == AVError.eof.code {
@@ -81,7 +69,7 @@ class SoftwareDecode: DecodeProtocol {
                 } else if result == AVError.tryAgain.code {
                     break
                 } else {
-                    let error = NSError(errorCode: mediaType == .audio ? .codecAudioReceiveFrame : .codecVideoReceiveFrame, ffmpegErrnum: result)
+                    let error = NSError(errorCode: packet.assetTrack.mediaType == .audio ? .codecAudioReceiveFrame : .codecVideoReceiveFrame, ffmpegErrnum: result)
                     KSLog(error)
                     throw error
                 }
@@ -125,9 +113,14 @@ extension AVCodecParameters {
             avcodec_free_context(&codecContextOption)
             throw NSError(errorCode: .codecContextSetParam, ffmpegErrnum: result)
         }
-//        if options.canHardwareDecode(codecpar: pointee) {
-//            codecContext.getFormat()
-//        }
+        if codec_type == AVMEDIA_TYPE_VIDEO, options.enableHardwareDecode() {
+            var hwDeviceCtx: UnsafeMutablePointer<AVBufferRef>?
+            let ret = av_hwdevice_ctx_create(&hwDeviceCtx, AV_HWDEVICE_TYPE_VIDEOTOOLBOX, nil, nil, 0)
+            if ret == 0 {
+                codecContext.pointee.hw_device_ctx = hwDeviceCtx
+//                codecContext.pointee.hw_device_ctx = av_buffer_ref(hwDeviceCtx)
+            }
+        }
         guard let codec = avcodec_find_decoder(codecContext.pointee.codec_id) else {
             avcodec_free_context(&codecContextOption)
             throw NSError(errorCode: .codecContextFindDecoder, ffmpegErrnum: result)
@@ -161,11 +154,10 @@ extension UnsafeMutablePointer where Pointee == AVCodecContext {
             var i = 0
             while fmt[i] != AV_PIX_FMT_NONE {
                 if fmt[i] == AV_PIX_FMT_VIDEOTOOLBOX {
-                    var deviceCtx = av_hwdevice_ctx_alloc(AV_HWDEVICE_TYPE_VIDEOTOOLBOX)
+                    let deviceCtx = av_hwdevice_ctx_alloc(AV_HWDEVICE_TYPE_VIDEOTOOLBOX)
                     if deviceCtx == nil {
                         break
                     }
-                    av_buffer_unref(&deviceCtx)
                     var framesCtx = av_hwframe_ctx_alloc(deviceCtx)
                     if let framesCtx = framesCtx {
                         let framesCtxData = UnsafeMutableRawPointer(framesCtx.pointee.data)

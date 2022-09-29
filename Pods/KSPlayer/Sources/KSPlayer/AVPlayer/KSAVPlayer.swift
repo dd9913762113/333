@@ -4,7 +4,10 @@ import AVKit
 import UIKit
 #else
 import AppKit
+public typealias UIImage = NSImage
 #endif
+import Combine
+import CoreGraphics
 public final class KSAVPlayerView: UIView {
     public let player = AVQueuePlayer()
     override public init(frame: CGRect) {
@@ -61,10 +64,11 @@ public final class KSAVPlayerView: UIView {
 }
 
 public class KSAVPlayer {
+    private var cancellable: AnyCancellable?
     private var options: KSOptions {
         didSet {
             player.currentItem?.preferredForwardBufferDuration = options.preferredForwardBufferDuration
-            options.$preferredForwardBufferDuration.observer = { [weak self] _, newValue in
+            cancellable = options.$preferredForwardBufferDuration.sink { [weak self] newValue in
                 self?.player.currentItem?.preferredForwardBufferDuration = newValue
             }
         }
@@ -90,10 +94,19 @@ public class KSAVPlayer {
         }
     }
 
-    @available(tvOS 14.0, macOS 10.15, *)
-    public private(set) lazy var pipController: AVPictureInPictureController? = AVPictureInPictureController(playerLayer: playerView.playerLayer)
+    @available(tvOS 14.0, *)
+    public func pipController() -> AVPictureInPictureController? {
+        if #available(tvOS 14.0, *) {
+            return AVPictureInPictureController(playerLayer: self.playerView.playerLayer)
+        } else {
+            return nil
+        }
+    }
+
     @available(macOS 12.0, iOS 15.0, tvOS 15.0, *)
-    public private(set) lazy var playbackCoordinator: AVPlaybackCoordinator = playerView.player.playbackCoordinator
+    public var playbackCoordinator: AVPlaybackCoordinator {
+        playerView.player.playbackCoordinator
+    }
 
     public private(set) var bufferingProgress = 0 {
         didSet {
@@ -143,20 +156,21 @@ public class KSAVPlayer {
         }
     }
 
-    public private(set) var isPreparedToPlay = false {
+    public private(set) var isReadyToPlay = false {
         didSet {
-            if isPreparedToPlay != oldValue {
-                if isPreparedToPlay {
-                    delegate?.preparedToPlay(player: self)
+            if isReadyToPlay != oldValue {
+                if isReadyToPlay {
+                    options.readyTime = CACurrentMediaTime()
+                    delegate?.readyToPlay(player: self)
                 }
             }
         }
     }
 
     public required init(url: URL, options: KSOptions) {
+        KSPlayerManager.setAudioSession()
         urlAsset = AVURLAsset(url: url, options: options.avOptions)
         self.options = options
-        setAudioSession()
         itemObservation = player.observe(\.currentItem) { [weak self] player, _ in
             guard let self = self else { return }
             self.observer(playerItem: player.currentItem)
@@ -198,7 +212,7 @@ extension KSAVPlayer {
             // 默认选择第一个声道
             item.tracks.filter { $0.assetTrack?.mediaType.rawValue == AVMediaType.audio.rawValue }.dropFirst().forEach { $0.isEnabled = false }
             duration = item.duration.seconds
-            isPreparedToPlay = true
+            isReadyToPlay = true
         } else if item.status == .failed {
             error = item.error
         }
@@ -295,7 +309,7 @@ extension KSAVPlayer {
 extension KSAVPlayer: MediaPlayerProtocol {
     public var subtitleDataSouce: SubtitleDataSouce? { nil }
     public var isPlaying: Bool { player.rate > 0 ? true : playbackState == .playing }
-    public var view: UIView { playerView }
+    public var view: UIView? { playerView }
     public var allowsExternalPlayback: Bool {
         get {
             player.allowsExternalPlayback
@@ -332,11 +346,13 @@ extension KSAVPlayer: MediaPlayerProtocol {
                 return TimeInterval(shouldSeekTo)
             } else {
                 // 防止卡主
-                return isPreparedToPlay ? player.currentTime().seconds : 0
+                return isReadyToPlay ? player.currentTime().seconds : 0
             }
         }
         set {
-            seek(time: newValue)
+            Task {
+                _ = await seek(time: newValue)
+            }
         }
     }
 
@@ -347,35 +363,35 @@ extension KSAVPlayer: MediaPlayerProtocol {
         return event.numberOfBytesTransferred
     }
 
-    public func thumbnailImageAtCurrentTime(handler: @escaping (UIImage?) -> Void) {
-        guard let playerItem = player.currentItem, isPreparedToPlay else {
-            return handler(nil)
+    public func thumbnailImageAtCurrentTime() async -> UIImage? {
+        guard let playerItem = player.currentItem, isReadyToPlay else {
+            return nil
         }
-        return urlAsset.thumbnailImage(currentTime: playerItem.currentTime(), handler: handler)
+        return await withCheckedContinuation { continuation in
+            urlAsset.thumbnailImage(currentTime: playerItem.currentTime()) { result in
+                continuation.resume(returning: result)
+            }
+        }
     }
 
-    public func seek(time: TimeInterval, completion handler: ((Bool) -> Void)? = nil) {
-        guard time >= 0 else { return }
+    public func seek(time: TimeInterval) async -> Bool {
+        guard time >= 0 else { return false }
         shouldSeekTo = time
-        let oldPlaybackState = playbackState
         playbackState = .seeking
         runInMainqueue { [weak self] in
             self?.bufferingProgress = 0
         }
         let tolerance: CMTime = options.isAccurateSeek ? .zero : .positiveInfinity
-        player.seek(to: CMTime(seconds: time, preferredTimescale: Int32(NSEC_PER_SEC)), toleranceBefore: tolerance, toleranceAfter: tolerance) { [weak self] finished in
-            guard let self = self else { return }
-            self.playbackState = oldPlaybackState
-            self.shouldSeekTo = 0
-            handler?(finished)
-        }
+        let finished = await player.seek(to: CMTime(seconds: time, preferredTimescale: Int32(NSEC_PER_SEC)), toleranceBefore: tolerance, toleranceAfter: tolerance)
+        shouldSeekTo = 0
+        return finished
     }
 
     public func prepareToPlay() {
         KSLog("prepareToPlay \(self)")
+        options.prepareTime = CACurrentMediaTime()
         runInMainqueue { [weak self] in
             guard let self = self else { return }
-            self.options.starTime = CACurrentMediaTime()
             self.bufferingProgress = 0
             let playerItem = AVPlayerItem(asset: self.urlAsset)
             self.options.openTime = CACurrentMediaTime()
@@ -397,7 +413,7 @@ extension KSAVPlayer: MediaPlayerProtocol {
 
     public func shutdown() {
         KSLog("shutdown \(self)")
-        isPreparedToPlay = false
+        isReadyToPlay = false
         playbackState = .stopped
         loadState = .idle
         urlAsset.cancelLoading()
@@ -413,10 +429,10 @@ extension KSAVPlayer: MediaPlayerProtocol {
 
     public var contentMode: UIViewContentMode {
         get {
-            view.contentMode
+            playerView.contentMode
         }
         set {
-            view.contentMode = newValue
+            playerView.contentMode = newValue
         }
     }
 
@@ -446,10 +462,8 @@ extension KSAVPlayer: MediaPlayerProtocol {
     }
 
     public func select(track: MediaPlayerTrack) {
-        if var track = track as? AVMediaPlayerTrack {
-            player.currentItem?.tracks.filter { $0.assetTrack?.mediaType == track.mediaType }.forEach { $0.isEnabled = false }
-            track.isEnabled = true
-        }
+        player.currentItem?.tracks.filter { $0.assetTrack?.mediaType == track.mediaType }.forEach { $0.isEnabled = false }
+        track.setIsEnabled(true)
     }
 }
 
@@ -469,20 +483,25 @@ extension AVMediaType {
 }
 
 struct AVMediaPlayerTrack: MediaPlayerTrack {
+    let description: String
     private let track: AVPlayerItemTrack
     let nominalFrameRate: Float
-    let codecType: FourCharCode
+    let trackID: Int32
+    let mediaSubType: CMFormatDescription.MediaSubType
     let rotation: Double = 0
-    let bitRate: Int64 = 0
+    let bitRate: Int64
     let naturalSize: CGSize
     let name: String
     let language: String?
     let mediaType: AVMediaType
-    let bitDepth: Int32
+    let depth: Int32
+    let fullRangeVideo: Bool
+    let colorSpace: String?
     let colorPrimaries: String?
     let transferFunction: String?
     let yCbCrMatrix: String?
-
+    var dovi: DOVIDecoderConfigurationRecord?
+    var audioStreamBasicDescription: AudioStreamBasicDescription?
     var isEnabled: Bool {
         get {
             track.isEnabled
@@ -494,27 +513,90 @@ struct AVMediaPlayerTrack: MediaPlayerTrack {
 
     init(track: AVPlayerItemTrack) {
         self.track = track
+        trackID = track.assetTrack?.trackID ?? 0
         mediaType = track.assetTrack?.mediaType ?? .video
         name = track.assetTrack?.languageCode ?? ""
         language = track.assetTrack?.extendedLanguageTag
         nominalFrameRate = track.assetTrack?.nominalFrameRate ?? 24.0
         naturalSize = track.assetTrack?.naturalSize ?? .zero
+        bitRate = Int64(track.assetTrack?.estimatedDataRate ?? 0)
         if let formatDescription = track.assetTrack?.formatDescriptions.first {
             // swiftlint:disable force_cast
             let desc = formatDescription as! CMFormatDescription
             // swiftlint:enable force_cast
-            codecType = CMFormatDescriptionGetMediaSubType(desc)
+            mediaSubType = desc.mediaSubType
+            audioStreamBasicDescription = desc.audioStreamBasicDescription
             let dictionary = CMFormatDescriptionGetExtensions(desc) as NSDictionary?
-            bitDepth = dictionary?["BitsPerComponent"] as? Int32 ?? 8
+            colorSpace = dictionary?[kCVImageBufferCGColorSpaceKey] as? String
             colorPrimaries = dictionary?[kCVImageBufferColorPrimariesKey] as? String
             transferFunction = dictionary?[kCVImageBufferTransferFunctionKey] as? String
             yCbCrMatrix = dictionary?[kCVImageBufferYCbCrMatrixKey] as? String
+            fullRangeVideo = (dictionary?[kCMFormatDescriptionExtension_FullRangeVideo] as? Int32 ?? 0) == 1
+            depth = dictionary?[kCMFormatDescriptionExtension_Depth] as? Int32 ?? 24
+            description = mediaSubType.rawValue.string
         } else {
-            bitDepth = 8
+            depth = 24
             colorPrimaries = nil
             transferFunction = nil
             yCbCrMatrix = nil
-            codecType = 0
+            colorSpace = nil
+            mediaSubType = CMFormatDescription.MediaSubType(string: "")
+            fullRangeVideo = false
+            description = ""
         }
+    }
+
+    func setIsEnabled(_ isEnabled: Bool) {
+        track.isEnabled = isEnabled
+    }
+}
+
+public extension AVAsset {
+    func ceateImageGenerator() -> AVAssetImageGenerator {
+        let imageGenerator = AVAssetImageGenerator(asset: self)
+        imageGenerator.requestedTimeToleranceBefore = .zero
+        imageGenerator.requestedTimeToleranceAfter = .zero
+        return imageGenerator
+    }
+
+    func thumbnailImage(currentTime: CMTime, handler: @escaping (UIImage?) -> Void) {
+        let imageGenerator = ceateImageGenerator()
+        imageGenerator.requestedTimeToleranceBefore = .zero
+        imageGenerator.requestedTimeToleranceAfter = .zero
+        imageGenerator.generateCGImagesAsynchronously(forTimes: [NSValue(time: currentTime)]) { _, cgImage, _, _, _ in
+            if let cgImage = cgImage {
+                handler(UIImage(cgImage: cgImage))
+            } else {
+                handler(nil)
+            }
+        }
+    }
+}
+
+extension CGImage {
+    static func combine(images: [(CGRect, CGImage)]) -> CGImage? {
+        if images.isEmpty {
+            return nil
+        }
+        if images.count == 1 {
+            return images[0].1
+        }
+        var width = 0
+        var height = 0
+        for (rect, _) in images {
+            width = max(width, Int(rect.maxX))
+            height = max(height, Int(rect.maxY))
+        }
+        let bitsPerComponent = 8
+        // RGBA(的bytes) * bitsPerComponent *width
+        let bytesPerRow = 4 * 8 * bitsPerComponent * width
+        let context = CGContext(data: nil, width: width, height: height, bitsPerComponent: bitsPerComponent, bytesPerRow: bytesPerRow, space: CGColorSpaceCreateDeviceRGB(), bitmapInfo: CGImageAlphaInfo.premultipliedLast.rawValue)
+        guard let context = context else {
+            return nil
+        }
+        for (rect, cgImage) in images {
+            context.draw(cgImage, in: CGRect(x: rect.origin.x, y: CGFloat(height) - rect.origin.y, width: rect.width, height: rect.height))
+        }
+        return context.makeImage()
     }
 }

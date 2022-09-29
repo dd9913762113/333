@@ -8,10 +8,23 @@
 import AVFoundation
 import AVKit
 import CoreMedia
+import CoreServices
 #if canImport(UIKit)
 import UIKit
+public extension UIScreen {
+    static var size: CGSize {
+        main.bounds.size
+    }
+}
 #else
 import AppKit
+public typealias UIView = NSView
+public typealias UIScreen = NSScreen
+public extension NSScreen {
+    static var size: CGSize {
+        main?.frame.size ?? .zero
+    }
+}
 #endif
 
 public protocol MediaPlayback: AnyObject {
@@ -20,14 +33,14 @@ public protocol MediaPlayback: AnyObject {
     var currentPlaybackTime: TimeInterval { get }
     func prepareToPlay()
     func shutdown()
-    func seek(time: TimeInterval, completion handler: ((Bool) -> Void)?)
+    func seek(time: TimeInterval) async -> Bool
 }
 
 public protocol MediaPlayerProtocol: MediaPlayback {
     var delegate: MediaPlayerDelegate? { get set }
-    var view: UIView { get }
+    var view: UIView? { get }
     var playableTime: TimeInterval { get }
-    var isPreparedToPlay: Bool { get }
+    var isReadyToPlay: Bool { get }
     var playbackState: MediaPlaybackState { get }
     var loadState: MediaLoadState { get }
     var isPlaying: Bool { get }
@@ -41,17 +54,17 @@ public protocol MediaPlayerProtocol: MediaPlayback {
     var playbackVolume: Float { get set }
     var contentMode: UIViewContentMode { get set }
     var subtitleDataSouce: SubtitleDataSouce? { get }
-    @available(tvOS 14.0, macOS 10.15, *)
-    var pipController: AVPictureInPictureController? { get }
     @available(macOS 12.0, iOS 15.0, tvOS 15.0, *)
     var playbackCoordinator: AVPlaybackCoordinator { get }
     init(url: URL, options: KSOptions)
     func replace(url: URL, options: KSOptions)
+    @available(tvOS 14.0, *)
+    func pipController() -> AVPictureInPictureController?
     func play()
     func pause()
     func enterBackground()
     func enterForeground()
-    func thumbnailImageAtCurrentTime(handler: @escaping (UIImage?) -> Void)
+    func thumbnailImageAtCurrentTime() async -> UIImage?
     func tracks(mediaType: AVFoundation.AVMediaType) -> [MediaPlayerTrack]
     func select(track: MediaPlayerTrack)
 }
@@ -60,36 +73,10 @@ public extension MediaPlayerProtocol {
     var nominalFrameRate: Float {
         tracks(mediaType: .video).first { $0.isEnabled }?.nominalFrameRate ?? 0
     }
-
-    func updateConstraint() {
-        guard let superview = view.superview, naturalSize != .zero else {
-            return
-        }
-        view.widthConstraint.flatMap { view.removeConstraint($0) }
-        view.heightConstraint.flatMap { view.removeConstraint($0) }
-        view.centerXConstraint.flatMap { view.removeConstraint($0) }
-        view.centerYConstraint.flatMap { view.removeConstraint($0) }
-        view.translatesAutoresizingMaskIntoConstraints = false
-        NSLayoutConstraint.activate([
-            view.centerXAnchor.constraint(equalTo: superview.centerXAnchor),
-            view.centerYAnchor.constraint(equalTo: superview.centerYAnchor),
-        ])
-        if naturalSize.isHorizonal {
-            NSLayoutConstraint.activate([
-                view.widthAnchor.constraint(equalTo: superview.widthAnchor),
-                view.heightAnchor.constraint(equalTo: view.widthAnchor, multiplier: naturalSize.height / naturalSize.width),
-            ])
-        } else {
-            NSLayoutConstraint.activate([
-                view.heightAnchor.constraint(equalTo: superview.heightAnchor),
-                view.widthAnchor.constraint(equalTo: view.heightAnchor, multiplier: naturalSize.width / naturalSize.height),
-            ])
-        }
-    }
 }
 
 public protocol MediaPlayerDelegate: AnyObject {
-    func preparedToPlay(player: MediaPlayerProtocol)
+    func readyToPlay(player: MediaPlayerProtocol)
     func changeLoadState(player: MediaPlayerProtocol)
     // 缓冲加载进度，0-100
     func changeBuffering(player: MediaPlayerProtocol, progress: Int)
@@ -97,20 +84,70 @@ public protocol MediaPlayerDelegate: AnyObject {
     func finish(player: MediaPlayerProtocol, error: Error?)
 }
 
-public protocol MediaPlayerTrack {
+public protocol MediaPlayerTrack: CustomStringConvertible {
+    var trackID: Int32 { get }
     var name: String { get }
     var language: String? { get }
     var mediaType: AVFoundation.AVMediaType { get }
-    var codecType: FourCharCode { get }
+    var mediaSubType: CMFormatDescription.MediaSubType { get }
     var nominalFrameRate: Float { get }
     var rotation: Double { get }
     var bitRate: Int64 { get }
     var naturalSize: CGSize { get }
-    var isEnabled: Bool { get }
-    var bitDepth: Int32 { get }
+    var isEnabled: Bool { get set }
+    var depth: Int32 { get }
+    var fullRangeVideo: Bool { get }
+    var colorSpace: String? { get }
     var colorPrimaries: String? { get }
     var transferFunction: String? { get }
     var yCbCrMatrix: String? { get }
+    var audioStreamBasicDescription: AudioStreamBasicDescription? { get }
+    var dovi: DOVIDecoderConfigurationRecord? { get }
+    func setIsEnabled(_ isEnabled: Bool)
+}
+
+// extension MediaPlayerTrack {
+//    static func == (lhs: Self, rhs: Self) -> Bool {
+//        lhs.trackID == rhs.trackID
+//    }
+// }
+
+extension MediaPlayerTrack {
+    var codecType: FourCharCode {
+        mediaSubType.rawValue
+    }
+
+    var dynamicRange: DynamicRange {
+        if dovi != nil || codecType.string == "dvhe" || codecType == kCMVideoCodecType_DolbyVisionHEVC {
+            return .DOVI
+        } else if transferFunction == kCVImageBufferTransferFunction_SMPTE_ST_2084_PQ as String { /// HDR
+            return .HDR
+        } else if transferFunction == kCVImageBufferTransferFunction_ITU_R_2100_HLG as String { /// HDR
+            return .HLG
+        } else {
+            return .SDR
+        }
+    }
+}
+
+public enum DynamicRange: Int32 {
+    case SDR = 0
+    case HDR = 2
+    case HLG = 3
+    case DOVI = 5
+}
+
+public struct DOVIDecoderConfigurationRecord {
+    // swiftlint:disable identifier_name
+    let dv_version_major: UInt8
+    let dv_version_minor: UInt8
+    let dv_profile: UInt8
+    let dv_level: UInt8
+    let rpu_present_flag: UInt8
+    let el_present_flag: UInt8
+    let bl_present_flag: UInt8
+    let dv_bl_signal_compatibility_id: UInt8
+    // swiftlint:enable identifier_name
 }
 
 public extension FourCharCode {
@@ -123,21 +160,6 @@ public extension FourCharCode {
             0,
         ]
         return String(cString: cString)
-    }
-}
-
-extension MediaPlayerProtocol {
-    func setAudioSession() {
-        #if os(macOS)
-//        try? AVAudioSession.sharedInstance().setRouteSharingPolicy(.longFormAudio)
-        #else
-        let category = AVAudioSession.sharedInstance().category
-        if category == .playback || category == .playAndRecord {
-            return
-        }
-        try? AVAudioSession.sharedInstance().setCategory(.playback, mode: .default, policy: .longFormAudio)
-        try? AVAudioSession.sharedInstance().setActive(true)
-        #endif
     }
 }
 
@@ -165,8 +187,6 @@ public struct VideoAdaptationState {
 }
 
 open class KSOptions {
-    public static var hardwareDecodeH264 = true
-    public static var hardwareDecodeH265 = true
     /// 最低缓存视频时间
     public static var preferredForwardBufferDuration = 3.0
     /// 最大缓存视频时间
@@ -181,12 +201,13 @@ open class KSOptions {
     public static var isAutoPlay = false
     /// seek完是否自动播放
     public static var isSeekedAutoPlay = true
+    public static var isClearVideoWhereReplace = true
+    public static var enableMaxOutputChannels = true
+    public static var pipController: Any?
 
     //    public static let shared = KSOptions()
-    public var hardwareDecodeH264 = KSOptions.hardwareDecodeH264
-    public var hardwareDecodeH265 = KSOptions.hardwareDecodeH265
     /// 最低缓存视频时间
-    @KSObservable
+    @Published
     public var preferredForwardBufferDuration = KSOptions.preferredForwardBufferDuration
     /// 最大缓存视频时间
     public var maxBufferDuration = KSOptions.maxBufferDuration
@@ -200,13 +221,19 @@ open class KSOptions {
     public var isAutoPlay = KSOptions.isAutoPlay
     /// seek完是否自动播放
     public var isSeekedAutoPlay = KSOptions.isSeekedAutoPlay
+    /*
+     AVSEEK_FLAG_BACKWARD: 1
+     AVSEEK_FLAG_BYTE: 2
+     AVSEEK_FLAG_ANY: 4
+     AVSEEK_FLAG_FRAME: 8
+     */
+    public var seekFlags = Int32(1)
 //    ffmpeg only cache http
     public var cache = false
     public var display = DisplayEnum.plane
     public var audioDelay = 0.0 // s
     public var subtitleDelay = 0.0 // s
     public var videoDisable = false
-    public var audioDisable = false
     public var audioFilters: String?
     public var videoFilters: String?
     public var subtitleDisable = false
@@ -216,11 +243,17 @@ open class KSOptions {
     public var avOptions = [String: Any]()
     public var formatContextOptions = [String: Any]()
     public var decoderOptions = [String: Any]()
+    public var probesize: Int64?
+    public var maxAnalyzeDuration: Int64?
     public var lowres = UInt8(0)
+    public var autoSelectEmbedSubtitle = true
+    public var asynchronousDecompression = false
+    @Published var preferredFramesPerSecond = Float(60)
     public internal(set) var formatName = ""
-    public internal(set) var starTime = 0.0
+    public internal(set) var prepareTime = 0.0
     public internal(set) var openTime = 0.0
     public internal(set) var findTime = 0.0
+    public internal(set) var readyTime = 0.0
     public internal(set) var readAudioTime = 0.0
     public internal(set) var readVideoTime = 0.0
     public internal(set) var decodeAudioTime = 0.0
@@ -229,30 +262,48 @@ open class KSOptions {
         formatContextOptions["auto_convert"] = 0
         formatContextOptions["fps_probe_size"] = 3
         formatContextOptions["reconnect"] = 1
-        // There is total different meaning for 'timeout' option in rtmp
-        // remove 'timeout' option for rtmp、rtsp
-        formatContextOptions["timeout"] = 30_000_000
-        formatContextOptions["rw_timeout"] = 30_000_000
+//        formatContextOptions["reconnect_at_eof"] = 1
+        formatContextOptions["reconnect_streamed"] = 1
+        formatContextOptions["reconnect_on_network_error"] = 1
+
+        // There is total different meaning for 'listen_timeout' option in rtmp
+        // set 'listen_timeout' = -1 for rtmp、rtsp
+//        formatContextOptions["listen_timeout"] = 3
+        formatContextOptions["rw_timeout"] = 10_000_000
         formatContextOptions["user_agent"] = "ksplayer"
         decoderOptions["threads"] = "auto"
         decoderOptions["refcounted_frames"] = "1"
     }
 
+    /**
+     you can add http-header or other options which mentions in https://developer.apple.com/reference/avfoundation/avurlasset/initialization_options
+
+     to add http-header init options like this
+     ```
+     options.appendHeader(["Referer":"https:www.xxx.com"])
+     ```
+     */
+    public func appendHeader(_ header: [String: String]) {
+        var oldValue = avOptions["AVURLAssetHTTPHeaderFieldsKey"] as? [String: String] ?? [
+            String: String
+        ]()
+        oldValue.merge(header) { _, new in new }
+        avOptions["AVURLAssetHTTPHeaderFieldsKey"] = oldValue
+        var str = formatContextOptions["headers"] as? String ?? ""
+        for (key, value) in header {
+            str.append("\(key):\(value)\r\n")
+        }
+        formatContextOptions["headers"] = str
+    }
+
     public func setCookie(_ cookies: [HTTPCookie]) {
-        if #available(OSX 10.15, *) {
-            avOptions[AVURLAssetHTTPCookiesKey] = cookies
-        }
-        var cookieStr = "Cookie: "
-        for cookie in cookies {
-            cookieStr.append("\(cookie.name)=\(cookie.value); ")
-        }
-        cookieStr = String(cookieStr.dropLast(2))
-        cookieStr.append("\r\n")
-        formatContextOptions["headers"] = cookieStr
+        avOptions[AVURLAssetHTTPCookiesKey] = cookies
+        let cookieStr = cookies.map { cookie in "\(cookie.name)=\(cookie.value)" }.joined(separator: "; ")
+        appendHeader(["Cookie": cookieStr])
     }
 
     // 缓冲算法函数
-    open func playable(capacitys: [CapacityProtocol], isFirst: Bool, isSeek: Bool) -> LoadingState? {
+    open func playable(capacitys: [CapacityProtocol], isFirst: Bool, isSeek: Bool) -> LoadingState {
         let packetCount = capacitys.map(\.packetCount).min() ?? 0
         let frameCount = capacitys.map(\.frameCount).min() ?? 0
         let isEndOfFile = capacitys.allSatisfy(\.isEndOfFile)
@@ -264,6 +315,9 @@ open class KSOptions {
             }
             guard capacity.frameCount >= capacity.frameMaxCount >> 2 else {
                 return false
+            }
+            if capacity.isEndOfFile {
+                return true
             }
             if (syncDecodeVideo && capacity.mediaType == .video) || (syncDecodeAudio && capacity.mediaType == .audio) {
                 return true
@@ -285,8 +339,8 @@ open class KSOptions {
                             isFirst: isFirst, isSeek: isSeek)
     }
 
-    open func adaptable(state: VideoAdaptationState) -> (Int64, Int64)? {
-        guard let last = state.bitRateStates.last, CACurrentMediaTime() - last.time > maxBufferDuration / 2, let index = state.bitRates.firstIndex(of: last.bitRate) else {
+    open func adaptable(state: VideoAdaptationState?) -> (Int64, Int64)? {
+        guard let state = state, let last = state.bitRateStates.last, CACurrentMediaTime() - last.time > maxBufferDuration / 2, let index = state.bitRates.firstIndex(of: last.bitRate) else {
             return nil
         }
         let isUp = state.loadedCount > Int(Double(state.fps) * maxBufferDuration / 2)
@@ -319,8 +373,8 @@ open class KSOptions {
         nil
     }
 
-    open func videoFrameMaxCount(fps _: Float) -> Int {
-        8
+    open func videoFrameMaxCount(fps: Float) -> Int {
+        Int(fps / 4)
     }
 
     open func audioFrameMaxCount(fps _: Float, channels: Int) -> Int {
@@ -346,6 +400,17 @@ open class KSOptions {
     open func isUseDisplayLayer() -> Bool {
         display == .plane
     }
+
+    open func enableHardwareDecode() -> Bool {
+        videoFilters == nil
+    }
+
+    #if os(tvOS)
+    open func preferredDisplayCriteria(refreshRate _: Float, videoDynamicRange _: Int32) -> AVDisplayCriteria? {
+//        AVDisplayCriteria(refreshRate: refreshRate, videoDynamicRange: videoDynamicRange)
+        nil
+    }
+    #endif
 }
 
 // 缓冲情况
@@ -373,6 +438,25 @@ public enum KSPlayerManager {
     /// 日志输出方式
     public static var logFunctionPoint: (String) -> Void = {
         print($0)
+    }
+
+    static func setAudioSession() {
+        #if os(macOS)
+        //        try? AVAudioSession.sharedInstance().setRouteSharingPolicy(.longFormAudio)
+        #else
+        let category = AVAudioSession.sharedInstance().category
+        if category != .playback, category != .playAndRecord {
+            try? AVAudioSession.sharedInstance().setCategory(.playback, mode: .default, policy: .longFormAudio)
+        }
+        try? AVAudioSession.sharedInstance().setActive(true)
+        if KSOptions.enableMaxOutputChannels {
+            let maxOut = AVAudioSession.sharedInstance().maximumOutputNumberOfChannels
+            try? AVAudioSession.sharedInstance().setPreferredOutputNumberOfChannels(maxOut)
+        }
+        if #available(tvOS 15.0, iOS 15.0, *) {
+            try? AVAudioSession.sharedInstance().setSupportsMultichannelContent(true)
+        }
+        #endif
     }
 }
 
@@ -418,6 +502,7 @@ public enum KSPlayerErrorCode: Int {
     case subtitleUnEncoding
     case subtitleUnParse
     case subtitleFormatUnSupport
+    case subtitleParamsEmpty
 }
 
 extension KSPlayerErrorCode: CustomStringConvertible {
@@ -449,6 +534,8 @@ extension KSPlayerErrorCode: CustomStringConvertible {
             return "Subtitle parsing error"
         case .subtitleFormatUnSupport:
             return "Current subtitle format is not supported"
+        case .subtitleParamsEmpty:
+            return "Subtitle Params is empty"
         case .auidoSwrInit:
             return "swr_init swrContext fail"
         default:
@@ -462,5 +549,165 @@ extension NSError {
         var userInfo = userInfo
         userInfo[NSLocalizedDescriptionKey] = errorCode.description
         self.init(domain: KSPlayerErrorDomain, code: errorCode.rawValue, userInfo: userInfo)
+    }
+}
+
+extension CMTime {
+    init(seconds: TimeInterval) {
+        self.init(seconds: seconds, preferredTimescale: Int32(NSEC_PER_SEC))
+    }
+}
+
+extension CMTimeRange {
+    init(start: TimeInterval, end: TimeInterval) {
+        self.init(start: CMTime(seconds: start), end: CMTime(seconds: end))
+    }
+}
+
+extension CGPoint {
+    var reverse: CGPoint {
+        CGPoint(x: y, y: x)
+    }
+}
+
+extension CGSize {
+    var reverse: CGSize {
+        CGSize(width: height, height: width)
+    }
+
+    var toPoint: CGPoint {
+        CGPoint(x: width, y: height)
+    }
+
+    var isHorizonal: Bool {
+        width > height
+    }
+}
+
+func * (left: CGSize, right: CGFloat) -> CGSize {
+    CGSize(width: left.width * right, height: left.height * right)
+}
+
+func * (left: CGPoint, right: CGFloat) -> CGPoint {
+    CGPoint(x: left.x * right, y: left.y * right)
+}
+
+func * (left: CGRect, right: CGFloat) -> CGRect {
+    CGRect(origin: left.origin * right, size: left.size * right)
+}
+
+func - (left: CGSize, right: CGSize) -> CGSize {
+    CGSize(width: left.width - right.width, height: left.height - right.height)
+}
+
+public func runInMainqueue(block: @escaping () -> Void) {
+    if Thread.isMainThread {
+        block()
+    } else {
+        DispatchQueue.main.async(execute: block)
+    }
+}
+
+extension UIView {
+    var widthConstraint: NSLayoutConstraint? {
+        // 防止返回NSContentSizeLayoutConstraint
+        constraints.first { $0.isMember(of: NSLayoutConstraint.self) && $0.firstAttribute == .width }
+    }
+
+    var heightConstraint: NSLayoutConstraint? {
+        // 防止返回NSContentSizeLayoutConstraint
+        constraints.first { $0.isMember(of: NSLayoutConstraint.self) && $0.firstAttribute == .height }
+    }
+
+    var trailingConstraint: NSLayoutConstraint? {
+        superview?.constraints.first { $0.firstItem === self && $0.firstAttribute == .trailing }
+    }
+
+    var leadingConstraint: NSLayoutConstraint? {
+        superview?.constraints.first { $0.firstItem === self && $0.firstAttribute == .leading }
+    }
+
+    var topConstraint: NSLayoutConstraint? {
+        superview?.constraints.first { $0.firstItem === self && $0.firstAttribute == .top }
+    }
+
+    var bottomConstraint: NSLayoutConstraint? {
+        superview?.constraints.first { $0.firstItem === self && $0.firstAttribute == .bottom }
+    }
+
+    var centerXConstraint: NSLayoutConstraint? {
+        superview?.constraints.first { $0.firstItem === self && $0.firstAttribute == .centerX }
+    }
+
+    var centerYConstraint: NSLayoutConstraint? {
+        superview?.constraints.first { $0.firstItem === self && $0.firstAttribute == .centerY }
+    }
+
+    var frameConstraints: [NSLayoutConstraint] {
+        var frameConstraint = superview?.constraints.filter { constraint in
+            constraint.firstItem === self
+        } ?? [NSLayoutConstraint]()
+        for constraint in constraints where
+            constraint.isMember(of: NSLayoutConstraint.self) && constraint.firstItem === self && (constraint.firstAttribute == .width || constraint.firstAttribute == .height)
+        {
+            frameConstraint.append(constraint)
+        }
+        return frameConstraint
+    }
+
+    var safeTopAnchor: NSLayoutYAxisAnchor {
+        if #available(macOS 11.0, *) {
+            return self.safeAreaLayoutGuide.topAnchor
+        } else {
+            return topAnchor
+        }
+    }
+
+    var readableTopAnchor: NSLayoutYAxisAnchor {
+        #if os(macOS)
+        topAnchor
+        #else
+        readableContentGuide.topAnchor
+        #endif
+    }
+
+    var safeLeadingAnchor: NSLayoutXAxisAnchor {
+        if #available(macOS 11.0, *) {
+            return self.safeAreaLayoutGuide.leadingAnchor
+        } else {
+            return leadingAnchor
+        }
+    }
+
+    var safeTrailingAnchor: NSLayoutXAxisAnchor {
+        if #available(macOS 11.0, *) {
+            return self.safeAreaLayoutGuide.trailingAnchor
+        } else {
+            return trailingAnchor
+        }
+    }
+
+    var safeBottomAnchor: NSLayoutYAxisAnchor {
+        if #available(macOS 11.0, *) {
+            return self.safeAreaLayoutGuide.bottomAnchor
+        } else {
+            return bottomAnchor
+        }
+    }
+}
+
+public extension URL {
+    var isMovie: Bool {
+        if let typeID = try? resourceValues(forKeys: [.typeIdentifierKey]).typeIdentifier as CFString? {
+            return UTTypeConformsTo(typeID, kUTTypeMovie)
+        }
+        return false
+    }
+
+    var isAudio: Bool {
+        if let typeID = try? resourceValues(forKeys: [.typeIdentifierKey]).typeIdentifier as CFString? {
+            return UTTypeConformsTo(typeID, kUTTypeAudio)
+        }
+        return false
     }
 }

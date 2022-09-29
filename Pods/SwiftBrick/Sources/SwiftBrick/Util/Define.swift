@@ -22,9 +22,9 @@ public let FitWidth = ScreenWidth / 375
 /// 当前屏幕状态 高度按照4.7寸 667 屏幕比例 例如 30*FitHeight即可
 public let FitHeight = ScreenHeight / 667
 /// 当前屏幕比例
-public let Scare = UIScreen.main.scale
+public let Scale = UIScreen.main.scale
 /// 画线宽度 不同分辨率都是一像素
-public let LineHeight = CGFloat(Scare >= 1 ? 1/Scare: 1)
+public let LineHeight = CGFloat(Scale >= 1 ? 1/Scale: 1)
 
 /// 信号栏高度
 /// - Returns: 高度
@@ -97,12 +97,14 @@ public func SystemFont(_ size: CGFloat, weight: UIFont.Weight) -> UIFont {
 }
 
 public enum Weight {
+    case ultralight
+    case thin
+    case light
+    case regular
     case medium
     case semibold
-    case light
-    case ultralight
-    case regular
-    case thin
+    case bold
+    case heavy
 }
 /// pingfang-sc 字体
 public func Font(_ size: CGFloat) -> UIFont {
@@ -120,18 +122,22 @@ public func FontBold(_ size: CGFloat) -> UIFont {
 public func FontWeight(_ size: CGFloat, weight: Weight) -> UIFont {
     var name = ""
     switch weight {
+    case .ultralight:
+        name = "PingFangSC-Ultralight"
+    case .thin:
+        name = "PingFangSC-Thin"
+    case .light:
+        name = "PingFangSC-Light"
+    case .regular:
+        name = "PingFangSC-Regular"
     case .medium:
         name = "PingFangSC-Medium"
     case .semibold:
         name = "PingFangSC-Semibold"
-    case .light:
-        name = "PingFangSC-Light"
-    case .ultralight:
-        name = "PingFangSC-Ultralight"
-    case .regular:
-        name = "PingFangSC-Regular"
-    case .thin:
-        name = "PingFangSC-Thin"
+    case .bold:
+        name = "PingFangSC-Bold"
+    case .heavy:
+        name = "PingFangSC-Heavy"
     }
     return UIFont(name: name, size: size) ?? UIFont.systemFont(ofSize: size)
 }

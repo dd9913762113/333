@@ -13,11 +13,10 @@
     "tag": "1.0"
   },
   "platforms": {
-    "ios": "11.0",
-    "osx": "10.13",
-    "tvos": "11.0"
+    "ios": "13.0",
+    "osx": "10.15",
+    "tvos": "13.0"
   },
-  "swift_versions": "5.5",
   "static_framework": true,
   "testspecs": [
     {
@@ -28,20 +27,6 @@
     }
   ],
   "subspecs": [
-    {
-      "name": "UXKit",
-      "source_files": "Sources/KSPlayer/UXKit/*.{swift}",
-      "frameworks": "Foundation"
-    },
-    {
-      "name": "Basic",
-      "source_files": "Sources/KSPlayer/Basic/*.{swift}",
-      "dependencies": {
-        "KSPlayer/UXKit": [
-
-        ]
-      }
-    },
     {
       "name": "Subtitle",
       "source_files": "Sources/KSPlayer/Subtitle/*.{swift}",
@@ -64,11 +49,6 @@
       },
       "osx": {
         "frameworks": "AppKit"
-      },
-      "dependencies": {
-        "KSPlayer/Basic": [
-
-        ]
       }
     },
     {
@@ -109,6 +89,15 @@
       }
     },
     {
+      "name": "SwiftUI",
+      "source_files": "Sources/KSPlayer/SwiftUI/*.swift",
+      "dependencies": {
+        "KSPlayer/AVPlayer": [
+
+        ]
+      }
+    },
+    {
       "name": "Audio",
       "source_files": "Sources/KSPlayer/Audio/*.swift",
       "dependencies": {
@@ -129,6 +118,5 @@
         ]
       }
     }
-  ],
-  "swift_version": "5.5"
+  ]
 }

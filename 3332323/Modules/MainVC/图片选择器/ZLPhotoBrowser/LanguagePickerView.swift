@@ -42,6 +42,9 @@ extension ZLLanguageType {
             return "Português (Portuguese)"
         case .spanish:
             return "Español (Spanish)"
+        default:
+            return ""
+            break
         }
     }
     

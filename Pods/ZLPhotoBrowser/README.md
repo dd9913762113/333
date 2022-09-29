@@ -8,7 +8,6 @@
 ![image](https://github.com/longitachi/ImageFolder/blob/master/ZLPhotoBrowser/preview_with_title.png)
 
 ----------------------------------------
-# Warning: If your APP includes China in the App Store sales area, please update to the latest version(>= 4.1.9). [issue](https://github.com/longitachi/ZLPhotoBrowser/issues/650)
 
 English | [简体中文](https://github.com/longitachi/ZLPhotoBrowser/blob/master/README_CN.md)
 
@@ -92,31 +91,30 @@ If you only want to use the image edit feature, please move to [ZLImageEditor](h
 ### <a id="ChangeLog"></a>Change Log
 > [More logs](https://github.com/longitachi/ZLPhotoBrowser/blob/master/CHANGELOG.md)
 ```
-● 4.2.2
+● 4.3.7
   Add:
-    Support Spanish and Portuguese.
+    Modify the parameter type of selectImageBlock and use ZLResultModel for callback. Delete shouldAnialysisAsset property.
+    Photo editor adapts to iPad.
+    Arabic supported.
+    Support redo in graffiti and mosaic tools.
+    Support for modifying the tint color of the image editor icon.
   Fix:
-    Fix the crash when UIAlertController is displayed on iPad.
-● 4.2.1
+    Fix the bug of getting the wrong version of the video when editing the video.
+● 4.3.6
   Add:
-    Support adjusting the brightness and contrast and saturation of an image.
-    Support Indonesian.
-    Add ZLEditImageConfiguration class to configuration the image editor.
+    Provide a method to save the PHAsset to local.
+    Updated the method of parsing GIF.
   Fix:
-    Crash when calling showPhotoLibrary in UISplitViewController.
-● 4.2.0
+    Fixed crash in pop interactive transition.
+● 4.3.5
   Add:
-    Add chained calls.
-    Optmize the custom camera code.
-    Add image style of cancel button.
-  Fix:
-    Selected video duplicates after editing mode.[#655]
-    Unable to deselect photos under certain conditions.[#659]
+    Support custom alert style.
+    Improve the experience of image editor.
 ...
 ```
 
 ### <a id="Languages"></a>Languages
-🇨🇳 Chinese, 🇺🇸 English, 🇯🇵 Japanese, 🇫🇷 French, 🇩🇪 German, 🇷🇺 Russian, 🇻🇳 Vietnamese, 🇰🇷 Korean, 🇲🇾 Malay, 🇮🇹 Italian, 🇮🇩Indonesian, 🇪🇸Spanish, 🇵🇹Portuguese.
+🇨🇳 Chinese, 🇺🇸 English, 🇯🇵 Japanese, 🇫🇷 French, 🇩🇪 German, 🇷🇺 Russian, 🇻🇳 Vietnamese, 🇰🇷 Korean, 🇲🇾 Malay, 🇮🇹 Italian, 🇮🇩 Indonesian, 🇪🇸 Spanish, 🇵🇹 Portuguese, 🇹🇷 Turkish, 🇸🇦 Arabic.
 
 ### <a id="Installation"></a>Installation
 There are four ways to use ZLPhotoBrowser in your project:
@@ -158,8 +156,8 @@ github "longitachi/ZLPhotoBrowser"
 
 Then, run the following command to build the ZLPhotoBrowser framework:
 
-```
-$ carthage update ZLPhotoBrowser
+```shell
+$ carthage update
 ```
 
 If you get an error like `Building universal frameworks with common architectures is not possible. The device and simulator slices for "ZLPhotoBrowser" both build for: arm64
@@ -172,7 +170,7 @@ Rebuild with --use-xcframeworks to create an xcframework bundle instead.` [Click
 
 ### <a id="Support"></a> Support
 * [**★ Star**](#) this repo.
-* Support with <img src="https://github.com/longitachi/ImageFolder/blob/master/ZLPhotoBrowser/aliPay.png" width = "100" height = "125" /> or <img src="https://github.com/longitachi/ImageFolder/blob/master/ZLPhotoBrowser/wechatPay.png" width = "100" height = "125" /> or <img src="https://github.com/longitachi/ImageFolder/blob/master/ZLPhotoBrowser/Paypal.png" width = "150" height = "125" />
+* Support with <img src="https://github.com/longitachi/ImageFolder/blob/master/ZLPhotoBrowser/ap.png" width = "100" height = "125" /> or <img src="https://github.com/longitachi/ImageFolder/blob/master/ZLPhotoBrowser/wp.png" width = "100" height = "125" /> or <img src="https://github.com/longitachi/ImageFolder/blob/master/ZLPhotoBrowser/pp.png" width = "150" height = "125" />
 
 ### <a id="DemoEffect"></a> Demo Effect
 - Selection

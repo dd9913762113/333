@@ -30,11 +30,6 @@ import Photos
 public typealias Second = Int
 
 public class ZLPhotoConfiguration: NSObject {
-
-    @objc public enum CancelButtonStyle: Int {
-        case text
-        case image
-    }
     
     private static var single = ZLPhotoConfiguration()
     
@@ -45,14 +40,6 @@ public class ZLPhotoConfiguration: NSObject {
     @objc public class func resetConfiguration() {
         ZLPhotoConfiguration.single = ZLPhotoConfiguration()
     }
-    
-    /// Framework style.
-    @objc public var style: ZLPhotoBrowserStyle = .embedAlbumList
-    
-    @objc public var statusBarStyle: UIStatusBarStyle = .lightContent
-    
-    /// text: Cancel.  image: 'x'. Default to text.
-    @objc public var navCancelButtonStyle: ZLPhotoConfiguration.CancelButtonStyle = .text
     
     /// Photo sorting method, the preview interface is not affected by this parameter. Defaults to true.
     @objc public var sortAscending = true
@@ -96,7 +83,7 @@ public class ZLPhotoConfiguration: NSObject {
         }
     }
     
-    /// Whether photos and videos can be selected together. Default is true.
+    /// Whether photos and videos can be selected together. Defaults to true.
     /// If set to false, only one video can be selected. Defaults to true.
     @objc public var allowMixSelect = true
     
@@ -133,7 +120,7 @@ public class ZLPhotoConfiguration: NSObject {
     var pri_allowEditImage = true
     @objc public var allowEditImage: Bool {
         get {
-            return pri_allowEditImage && shouldAnialysisAsset
+            return pri_allowEditImage
         }
         set {
             pri_allowEditImage = newValue
@@ -144,7 +131,7 @@ public class ZLPhotoConfiguration: NSObject {
     var pri_allowEditVideo = false
     @objc public var allowEditVideo: Bool {
         get {
-            return pri_allowEditVideo && shouldAnialysisAsset
+            return pri_allowEditVideo
         }
         set {
             pri_allowEditVideo = newValue
@@ -187,14 +174,18 @@ public class ZLPhotoConfiguration: NSObject {
     /// Allow select full image. Defaults to true.
     @objc public var allowSelectOriginal = true
     
+    /// Always return the original photo.
+    /// - warning: Only valid when `allowSelectOriginal = false`, Defaults to false.
+    @objc public var alwaysRequestOriginal = false
+    
     /// Allow access to the preview large image interface (That is, whether to allow access to the large image interface after clicking the thumbnail image). Defaults to true.
     @objc public var allowPreviewPhotos = true
     
-    /// Whether to show the status bar when previewing photos. Defaults to false.
-    @objc public var showStatusBarInPreviewInterface = false
-    
     /// Whether to show the preview button (i.e. the preview button in the lower left corner of the thumbnail interface). Defaults to true.
     @objc public var showPreviewButtonInAlbum = true
+    
+    /// Whether to display the selected count on the button. Defaults to true.
+    @objc public var showSelectCountOnDoneBtn = true
     
     private var pri_columnCount: Int = 4
     /// The column count when iPhone is in portait mode. Minimum is 2, maximum is 6. Defaults to 4.
@@ -224,79 +215,6 @@ public class ZLPhotoConfiguration: NSObject {
     /// Image editor configuration.
     @objc public var editImageConfiguration = ZLEditImageConfiguration()
     
-    @available(*, deprecated, message: "Use editImageConfiguration, this property will be removed")
-    public var editImageTools: [ZLEditImageConfiguration.EditTool] {
-        get {
-            return editImageConfiguration.tools
-        }
-        set {
-            editImageConfiguration.tools = newValue
-        }
-    }
-    
-    @available(*, deprecated, message: "Use editImageConfiguration, this property will be removed")
-    @objc public var editImageDrawColors: [UIColor] {
-        get {
-            return editImageConfiguration.drawColors
-        }
-        set {
-            editImageConfiguration.drawColors = newValue
-        }
-    }
-    
-    @available(*, deprecated, message: "Use editImageConfiguration, this property will be removed")
-    @objc public var editImageDefaultDrawColor: UIColor {
-        get {
-            return editImageConfiguration.defaultDrawColor
-        }
-        set {
-            editImageConfiguration.defaultDrawColor = newValue
-        }
-    }
-    
-    @available(*, deprecated, message: "Use editImageConfiguration, this property will be removed")
-    @objc public var editImageClipRatios: [ZLImageClipRatio] {
-        get {
-            return editImageConfiguration.clipRatios
-        }
-        set {
-            editImageConfiguration.clipRatios = newValue
-        }
-    }
-    
-    @available(*, deprecated, message: "Use editImageConfiguration, this property will be removed")
-    @objc public var textStickerTextColors: [UIColor] {
-        get {
-            return editImageConfiguration.textStickerTextColors
-        }
-        set {
-            editImageConfiguration.textStickerTextColors = newValue
-        }
-    }
-    
-    @available(*, deprecated, message: "Use editImageConfiguration, this property will be removed")
-    @objc public var textStickerDefaultTextColor: UIColor {
-        get {
-            return editImageConfiguration.textStickerDefaultTextColor
-        }
-        set {
-            editImageConfiguration.textStickerDefaultTextColor = newValue
-        }
-    }
-    
-    @available(*, deprecated, message: "Use editImageConfiguration, this property will be removed")
-    @objc public var filters: [ZLFilter] {
-        get {
-            return editImageConfiguration.filters
-        }
-        set {
-            editImageConfiguration.filters = newValue
-        }
-    }
-    
-    @available(*, deprecated, message: "Use editImageConfiguration, this property will be removed")
-    @objc public var imageStickerContainerView: (UIView & ZLImageStickerContainerDelegate)? = nil
-    
     /// Show the image captured by the camera is displayed on the camera button inside the album. Defaults to false.
     @objc public var showCaptureImageOnTakePhotoBtn = false
     
@@ -318,72 +236,8 @@ public class ZLPhotoConfiguration: NSObject {
     /// Display the selected photos at the bottom of the preview large photos interface. Defaults to true.
     @objc public var showSelectedPhotoPreview = true
     
-    /// Developers can customize images, but the name of the custom image resource must be consistent with the image name in the replaced bundle.
-    /// - example: Developers need to replace the selected and unselected image resources, and the array that needs to be passed in is
-    /// ["zl_btn_selected", "zl_btn_unselected"].
-    @objc public var customImageNames: [String] = [] {
-        didSet {
-            ZLCustomImageDeploy.imageNames = customImageNames
-        }
-    }
-    
-    /// Developers can customize images, but the name of the custom image resource must be consistent with the image name in the replaced bundle.
-    /// - example: Developers need to replace the selected and unselected image resources, and the array that needs to be passed in is
-    /// ["zl_btn_selected": selectedImage, "zl_btn_unselected": unselectedImage].
-    public var customImageForKey: [String: UIImage?] = [:] {
-        didSet {
-            customImageForKey.forEach { ZLCustomImageDeploy.imageForKey[$0.key] = $0.value }
-        }
-    }
-    
-    /// Developers can customize images, but the name of the custom image resource must be consistent with the image name in the replaced bundle.
-    /// - example: Developers need to replace the selected and unselected image resources, and the array that needs to be passed in is
-    /// ["zl_btn_selected": selectedImage, "zl_btn_unselected": unselectedImage].
-    @objc public var customImageForKey_objc: [String: UIImage] = [:] {
-        didSet {
-            ZLCustomImageDeploy.imageForKey = customImageForKey_objc
-        }
-    }
-    
-    /// Allow framework fetch photos when callback. Defaults to true.
-    @objc public var shouldAnialysisAsset = true
-    
     /// Timeout for image parsing. Defaults to 20.
     @objc public var timeout: TimeInterval = 20
-    
-    /// Language for framework.
-    @objc public var languageType: ZLLanguageType = .system {
-        didSet {
-            ZLCustomLanguageDeploy.language = self.languageType
-            Bundle.resetLanguage()
-        }
-    }
-    
-    /// Developers can customize languages (This property is only for objc).
-    /// - example: If you needs to replace
-    /// key: @"loading", value: @"loading, waiting please" language,
-    /// The dictionary that needs to be passed in is @[@"loading": @"text to be replaced"].
-    /// - warning: Please pay attention to the placeholders contained in languages when changing, such as %ld, %@.
-    @objc public var customLanguageKeyValue_objc: [String: String] = [:] {
-        didSet {
-            var swiftParams: [ZLLocalLanguageKey: String] = [:]
-            customLanguageKeyValue_objc.forEach { (key, value) in
-                swiftParams[ZLLocalLanguageKey(rawValue: key)] = value
-            }
-            self.customLanguageKeyValue = swiftParams
-        }
-    }
-    
-    /// Developers can customize languages.
-    /// - example: If you needs to replace
-    /// key: .loading, value: "loading, waiting please" language,
-    /// The dictionary that needs to be passed in is [.loading: "text to be replaced"].
-    /// - warning: Please pay attention to the placeholders contained in languages when changing, such as %ld, %@.
-    public var customLanguageKeyValue: [ZLLocalLanguageKey: String] = [:] {
-        didSet {
-            ZLCustomLanguageDeploy.deploy = self.customLanguageKeyValue
-        }
-    }
     
     /// Whether to use custom camera. Defaults to true.
     @objc public var useCustomCamera = true
@@ -421,7 +275,7 @@ public class ZLPhotoConfiguration: NSObject {
         }
     }
     
-    private var pri_maxRecordDuration: Second = 10
+    private var pri_maxRecordDuration: Second = 20
     /// Maximum recording duration. Defaults to 10, minimum is 1.
     @objc public var maxRecordDuration: Second {
         get {
@@ -435,35 +289,10 @@ public class ZLPhotoConfiguration: NSObject {
     /// The configuration for camera.
     @objc public var cameraConfiguration = ZLCameraConfiguration()
     
-    /// Hud style. Defaults to lightBlur.
-    @objc public var hudStyle: ZLProgressHUD.HUDStyle = .lightBlur
-    
-    /// The blur effect of the navigation bar in the album list
-    @objc public var navViewBlurEffectOfAlbumList: UIBlurEffect? = UIBlurEffect(style: .dark)
-    
-    /// The blur effect of the navigation bar in the preview interface
-    @objc public var navViewBlurEffectOfPreview: UIBlurEffect? = UIBlurEffect(style: .dark)
-    
-    /// The blur effect of the bottom tool bar in the album list
-    @objc public var bottomViewBlurEffectOfAlbumList: UIBlurEffect? = UIBlurEffect(style: .dark)
-    
-    /// The blur effect of the bottom tool bar in the preview interface
-    @objc public var bottomViewBlurEffectOfPreview: UIBlurEffect? = UIBlurEffect(style: .dark)
-    
-    /// Color configuration for framework.
-    @objc public var themeColorDeploy: ZLPhotoThemeColorDeploy = .default()
-    
-    /// Font name.
-    @objc public var themeFontName: String? = nil {
-        didSet {
-            ZLCustomFontDeploy.fontName = self.themeFontName
-        }
-    }
-    
     /// This block will be called before selecting an image, the developer can first determine whether the asset is allowed to be selected.
     /// Only control whether it is allowed to be selected, and will not affect the selection logic in the framework.
     /// - Tips: If the choice is not allowed, the developer can toast prompt the user for relevant information.
-    @objc public var canSelectAsset: ( (PHAsset) -> Bool )?
+    @objc public var canSelectAsset: ((PHAsset) -> Bool)?
     
     /// If user choose limited Photo mode, a button with '+' will be added to the ZLThumbnailViewController. It will call PHPhotoLibrary.shared().presentLimitedLibraryPicker(from:) to add photo. Defaults to true.
     /// E.g., Sina Weibo's ImagePicker
@@ -474,157 +303,18 @@ public class ZLPhotoConfiguration: NSObject {
     @objc public var showEnterSettingTips = true
     
     /// Callback after the no authority alert dismiss.
-    @objc public var noAuthorityCallback: ( (ZLNoAuthorityType) -> Void )?
+    @objc public var noAuthorityCallback: ((ZLNoAuthorityType) -> Void)?
+    
+    /// Allow user to do something before select photo result callback.
+    /// And you must call the second parameter of this block to continue the photos selection.
+    /// The first parameter is the current controller.
+    /// The second parameter is the block that needs to be called after the user completes the operation.
+    @objc public var operateBeforeDoneAction: ((UIViewController, @escaping () -> Void) -> Void)?
     
 }
-
 
 @objc public enum ZLNoAuthorityType: Int {
     case library
     case camera
     case microphone
-}
-
-
-@objc public enum ZLPhotoBrowserStyle: Int {
-    
-    /// The album list is embedded in the navigation of the thumbnail interface, click the drop-down display.
-    case embedAlbumList
-    
-    /// The display relationship between the album list and the thumbnail interface is push.
-    case externalAlbumList
-    
-}
-
-/// Color deploy
-public class ZLPhotoThemeColorDeploy: NSObject {
-    
-    @objc public class func `default`() -> ZLPhotoThemeColorDeploy {
-        return ZLPhotoThemeColorDeploy()
-    }
-    
-    /// Preview selection mode, transparent background color above.
-    @objc public var previewBgColor = UIColor.black.withAlphaComponent(0.1)
-    
-    /// Preview selection mode, a background color for `Camera`, `Album`, `Cancel` buttons.
-    @objc public var previewBtnBgColor = UIColor.white
-    
-    /// Preview selection mode, a text color for `Camera`, `Album`, `Cancel` buttons.
-    @objc public var previewBtnTitleColor = UIColor.black
-    
-    /// Preview selection mode, cancel button title color when the selection amount is superior than 0.
-    @objc public var previewBtnHighlightTitleColor = zlRGB(80, 169, 56)
-    
-    /// A color for navigation bar spinner.
-    @objc public var navBarColor = zlRGB(160, 160, 160).withAlphaComponent(0.65)
-    
-    /// A color for navigation bar in preview interface.
-    @objc public var navBarColorOfPreviewVC = zlRGB(160, 160, 160).withAlphaComponent(0.65)
-    
-    /// A color for Navigation bar text.
-    @objc public var navTitleColor = UIColor.white
-    
-    /// A color for Navigation bar text of preview vc.
-    @objc public var navTitleColorOfPreviewVC = UIColor.white
-    
-    /// The background color of the title view when the frame style is embedAlbumList.
-    @objc public var navEmbedTitleViewBgColor = zlRGB(80, 80, 80)
-    
-    /// A color for background in album list.
-    @objc public var albumListBgColor = zlRGB(45, 45, 45)
-    
-    /// A color for album list title label.
-    @objc public var albumListTitleColor = UIColor.white
-    
-    /// A color for album list count label.
-    @objc public var albumListCountColor = zlRGB(180, 180, 180)
-    
-    /// A color for album list separator.
-    @objc public var separatorColor = zlRGB(60, 60, 60)
-    
-    /// A color for background in thumbnail interface.
-    @objc public var thumbnailBgColor = zlRGB(50, 50, 50)
-    
-    /// A color for background in bottom tool view.
-    @objc public var bottomToolViewBgColor = zlRGB(35, 35, 35).withAlphaComponent(0.3)
-    
-    /// A color for background in bottom tool view in preview interface.
-    @objc public var bottomToolViewBgColorOfPreviewVC = zlRGB(35, 35, 35).withAlphaComponent(0.3)
-    
-    /// The normal state title color of bottom tool view buttons.
-    @objc public var bottomToolViewBtnNormalTitleColor = UIColor.white
-    
-    /// The normal state title color of bottom tool view buttons in preview interface.
-    @objc public var bottomToolViewBtnNormalTitleColorOfPreviewVC = UIColor.white
-    
-    /// The disable state title color of bottom tool view buttons.
-    @objc public var bottomToolViewBtnDisableTitleColor = zlRGB(168, 168, 168)
-    
-    /// The disable state title color of bottom tool view buttons in preview interface.
-    @objc public var bottomToolViewBtnDisableTitleColorOfPreviewVC = zlRGB(168, 168, 168)
-    
-    /// The normal state background color of bottom tool view buttons.
-    @objc public var bottomToolViewBtnNormalBgColor = zlRGB(80, 169, 56)
-    
-    /// The normal state background color of bottom tool view buttons in preview interface.
-    @objc public var bottomToolViewBtnNormalBgColorOfPreviewVC = zlRGB(80, 169, 56)
-    
-    /// The disable state background color of bottom tool view buttons.
-    @objc public var bottomToolViewBtnDisableBgColor = zlRGB(50, 50, 50)
-    
-    /// The disable state background color of bottom tool view buttons in preview interface.
-    @objc public var bottomToolViewBtnDisableBgColorOfPreviewVC = zlRGB(50, 50, 50)
-    
-    /// With iOS14 limited authority, a color for select more photos at the bottom of the thumbnail interface.
-    @objc public var selectMorePhotoWhenAuthIsLismitedTitleColor = UIColor.white
-    
-    /// The record progress color of custom camera.
-    @objc public var cameraRecodeProgressColor = zlRGB(80, 169, 56)
-    
-    /// Mask layer color of selected cell.
-    @objc public var selectedMaskColor = UIColor.black.withAlphaComponent(0.2)
-    
-    /// Border color of selected cell.
-    @objc public var selectedBorderColor = zlRGB(80, 169, 56)
-    
-    /// Mask layer color of the cell that cannot be selected.
-    @objc public var invalidMaskColor = UIColor.white.withAlphaComponent(0.5)
-    
-    /// The background color of selected cell index label.
-    @objc public var indexLabelBgColor = zlRGB(80, 169, 56)
-    
-    /// The background color of camera cell inside album.
-    @objc public var cameraCellBgColor = UIColor(white: 0.3, alpha: 1)
-    
-    /// The normal color of adjust slider.
-    @objc public var adjustSliderNormalColor = UIColor.white
-    
-    /// The tint color of adjust slider.
-    @objc public var adjustSliderTintColor = zlRGB(80, 169, 56)
-    
-}
-
-/// Font deply
-public struct ZLCustomFontDeploy {
-    
-    static var fontName: String? = nil
-    
-}
-
-/// Language deploy
-struct ZLCustomLanguageDeploy {
-    
-    static var language: ZLLanguageType = .system
-    
-    static var deploy: [ZLLocalLanguageKey: String] = [:]
-    
-}
-
-/// Image source deploy
-struct ZLCustomImageDeploy {
-    
-    static var imageNames: [String] = []
-    
-    static var imageForKey: [String: UIImage] = [:]
-    
 }

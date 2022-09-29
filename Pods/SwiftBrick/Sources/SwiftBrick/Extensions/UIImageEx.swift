@@ -203,7 +203,7 @@ extension UIImage {
         for imageColor in imageColors {
             guard let imageColor = imageColor as? UIColor else { continue }
             
-            let color = imageColor.color(minSaturation: 0.15)
+            let color = imageColor.color(0.15)
             
             if color.isDark == !isDarkBackgound {
                 let colorCount = imageColors.count(for: color)
@@ -271,4 +271,12 @@ extension UIImage {
             }
         }
     }
+    
+    @available(iOS 13.0, *)
+    public static func symbol(_ systemName:String, size: CGFloat = 12, color: UIColor = .white) -> UIImage?{
+        let config = UIImage.SymbolConfiguration(pointSize: size)
+        return UIImage(systemName: systemName, withConfiguration: config)?.withTintColor(color, renderingMode: .alwaysOriginal)
+    }
+
 }
+

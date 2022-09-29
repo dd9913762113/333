@@ -5,11 +5,12 @@
 //  Created by kintan on 2018/10/31.
 //
 #if canImport(UIKit) && canImport(CallKit)
+import AVKit
 import CallKit
+import Combine
 import CoreServices
 import MediaPlayer
 import UIKit
-
 open class IOSVideoPlayerView: VideoPlayerView {
     private weak var originalSuperView: UIView?
     private var originalframeConstraints: [NSLayoutConstraint]?
@@ -20,10 +21,12 @@ open class IOSVideoPlayerView: VideoPlayerView {
     private let callCenter = CXCallObserver()
     private var isVolume = false
     private let volumeView = BrightnessVolume()
+    private var cancellable: AnyCancellable?
     public var volumeViewSlider = UXSlider()
     public var backButton = UIButton()
     public var airplayStatusView: UIView = AirplayStatusView()
-    public var routeButton = MPVolumeView()
+    public var routeButton = AVRoutePickerView()
+    private let routeDetector = AVRouteDetector()
     /// Image view to show video cover
     public var maskImageView = UIImageView()
     public var landscapeButton = UIButton()
@@ -35,11 +38,10 @@ open class IOSVideoPlayerView: VideoPlayerView {
 
     override open func customizeUIComponents() {
         super.customizeUIComponents()
-        panGesture.isEnabled = false
         if UIDevice.current.userInterfaceIdiom == .phone {
             subtitleLabel.font = .systemFont(ofSize: 14)
         }
-        srtControl.$srtListCount.observer = { [weak self] _, count in
+        cancellable = srtControl.$srtListCount.sink { [weak self] count in
             guard let self = self, count > 0 else {
                 return
             }
@@ -58,15 +60,11 @@ open class IOSVideoPlayerView: VideoPlayerView {
         backButton.setImage(KSPlayerManager.image(named: "KSPlayer_back"), for: .normal)
         backButton.addTarget(self, action: #selector(onButtonPressed(_:)), for: .touchUpInside)
         navigationBar.insertArrangedSubview(backButton, at: 0)
-        routeButton.showsRouteButton = true
-        routeButton.showsVolumeSlider = false
-        routeButton.sizeToFit()
         routeButton.isHidden = true
         navigationBar.addArrangedSubview(routeButton)
         addSubview(airplayStatusView)
         volumeView.move(to: self)
         let tmp = MPVolumeView(frame: CGRect(x: -100, y: -100, width: 0, height: 0))
-        UIApplication.shared.keyWindow?.addSubview(tmp)
         if let first = (tmp.subviews.first { $0 is UISlider }) as? UISlider {
             volumeViewSlider = first
         }
@@ -93,7 +91,7 @@ open class IOSVideoPlayerView: VideoPlayerView {
         maskImageView.alpha = 1
         maskImageView.image = nil
         panGesture.isEnabled = false
-        routeButton.isHidden = !routeButton.areWirelessRoutesAvailable
+        routeButton.isHidden = !routeDetector.multipleRoutesDetected
     }
 
     override open func onButtonPressed(type: PlayerButtonType, button: UIButton) {
@@ -111,12 +109,16 @@ open class IOSVideoPlayerView: VideoPlayerView {
         }
     }
 
+    open func isHorizonal() -> Bool {
+        playerLayer?.player.naturalSize.isHorizonal ?? true
+    }
+
     open func updateUI(isFullScreen: Bool) {
         guard let viewController = viewController else {
             return
         }
         landscapeButton.isSelected = isFullScreen
-        let isHorizonal = playerLayer.player?.naturalSize.isHorizonal ?? true
+        let isHorizonal = isHorizonal()
         viewController.navigationController?.interactivePopGestureRecognizer?.isEnabled = !isFullScreen
         if isFullScreen {
             if viewController is PlayerFullScreenViewController {
@@ -205,7 +207,7 @@ open class IOSVideoPlayerView: VideoPlayerView {
     }
 
     override open func player(layer: KSPlayerLayer, currentTime: TimeInterval, totalTime: TimeInterval) {
-        airplayStatusView.isHidden = !(layer.player?.isExternalPlaybackActive ?? false)
+        airplayStatusView.isHidden = !layer.player.isExternalPlaybackActive
         super.player(layer: layer, currentTime: currentTime, totalTime: totalTime)
     }
 
@@ -215,17 +217,14 @@ open class IOSVideoPlayerView: VideoPlayerView {
     }
 
     override open func change(definitionIndex: Int) {
-        playerLayer.player?.thumbnailImageAtCurrentTime { [weak self] image in
-            if let self = self, let image = image {
-                DispatchQueue.main.async { [weak self] in
-                    if let self = self {
-                        self.maskImageView.image = image
-                        self.maskImageView.alpha = 1
-                    }
-                }
+        Task {
+            let image = await playerLayer?.player.thumbnailImageAtCurrentTime()
+            if let image = image {
+                self.maskImageView.image = image
+                self.maskImageView.alpha = 1
             }
+            super.change(definitionIndex: definitionIndex)
         }
-        super.change(definitionIndex: definitionIndex)
     }
 
     override open func panGestureBegan(location point: CGPoint, direction: KSPanDirection) {
@@ -256,6 +255,14 @@ open class IOSVideoPlayerView: VideoPlayerView {
             super.panGestureChanged(velocity: point, direction: direction)
         }
     }
+
+    open func judgePanGesture() {
+        if landscapeButton.isSelected || UIDevice.current.userInterfaceIdiom == .pad {
+            panGesture.isEnabled = isPlayed && !replayButton.isSelected
+        } else {
+            panGesture.isEnabled = toolBar.playButton.isSelected
+        }
+    }
 }
 
 extension IOSVideoPlayerView: CXCallObserverDelegate {
@@ -275,14 +282,14 @@ extension IOSVideoPlayerView: CXCallObserverDelegate {
 
 extension IOSVideoPlayerView: UIViewControllerTransitioningDelegate {
     public func animationController(forPresented _: UIViewController, presenting _: UIViewController, source _: UIViewController) -> UIViewControllerAnimatedTransitioning? {
-        if let originalSuperView = originalSuperView, let animationView = playerLayer.player?.view {
+        if let originalSuperView = originalSuperView, let animationView = playerLayer?.player.view {
             return PlayerTransitionAnimator(containerView: originalSuperView, animationView: animationView)
         }
         return nil
     }
 
     public func animationController(forDismissed _: UIViewController) -> UIViewControllerAnimatedTransitioning? {
-        if let originalSuperView = originalSuperView, let animationView = playerLayer.player?.view {
+        if let originalSuperView = originalSuperView, let animationView = playerLayer?.player.view {
             return PlayerTransitionAnimator(containerView: originalSuperView, animationView: animationView, isDismiss: true)
         } else {
             return nil
@@ -294,44 +301,20 @@ extension IOSVideoPlayerView: UIViewControllerTransitioningDelegate {
 
 extension IOSVideoPlayerView {
     private func addNotification() {
-        NotificationCenter.default.addObserver(self, selector: #selector(orientationChanged), name: UIApplication.didChangeStatusBarOrientationNotification, object: nil)
+//        NotificationCenter.default.addObserver(self, selector: #selector(orientationChanged), name: UIApplication.didChangeStatusBarOrientationNotification, object: nil)
         NotificationCenter.default.addObserver(self, selector: #selector(routesAvailableDidChange), name: .AVRouteDetectorMultipleRoutesDetectedDidChange, object: nil)
-        NotificationCenter.default.addObserver(self, selector: #selector(wirelessRouteActiveDidChange(notification:)), name: .MPVolumeViewWirelessRouteActiveDidChange, object: nil)
         callCenter.setDelegate(self, queue: DispatchQueue.main)
     }
 
     @objc private func routesAvailableDidChange(notification _: Notification) {
-        routeButton.isHidden = !routeButton.areWirelessRoutesAvailable
-    }
-
-    @objc private func wirelessRouteActiveDidChange(notification: Notification) {
-        guard let volumeView = notification.object as? MPVolumeView, playerLayer.isWirelessRouteActive != volumeView.isWirelessRouteActive else { return }
-        if volumeView.isWirelessRouteActive {
-            if !(playerLayer.player?.allowsExternalPlayback ?? false) {
-                playerLayer.isWirelessRouteActive = true
-            }
-            playerLayer.player?.usesExternalPlaybackWhileExternalScreenIsActive = true
-        }
-        playerLayer.isWirelessRouteActive = volumeView.isWirelessRouteActive
+        routeButton.isHidden = !routeDetector.multipleRoutesDetected
     }
 
     @objc private func orientationChanged(notification _: Notification) {
-        guard let isHorizonal = playerLayer.player?.naturalSize.isHorizonal, isHorizonal else {
+        guard isHorizonal() else {
             return
         }
         updateUI(isFullScreen: UIApplication.isLandscape)
-    }
-
-    private func judgePanGesture() {
-        if landscapeButton.isSelected || UIDevice.current.userInterfaceIdiom == .pad {
-            panGesture.isEnabled = isPlayed && !replayButton.isSelected
-        } else {
-            if KSPlayerManager.enablePortraitGestures {
-                panGesture.isEnabled = toolBar.playButton.isSelected
-            } else {
-                panGesture.isEnabled = false
-            }
-        }
     }
 }
 
@@ -373,17 +356,12 @@ public class AirplayStatusView: UIView {
 
 public extension KSPlayerManager {
     /// func application(_ application: UIApplication, supportedInterfaceOrientationsFor window: UIWindow?) -> UIInterfaceOrientationMask
-    @KSObservable
     static var supportedInterfaceOrientations = UIInterfaceOrientationMask.portrait
 }
 
 extension UIApplication {
     static var isLandscape: Bool {
-        if #available(iOS 13.0, *) {
-            return UIApplication.shared.windows.first?.windowScene?.interfaceOrientation.isLandscape ?? false
-        } else {
-            return UIApplication.shared.statusBarOrientation.isLandscape
-        }
+        UIApplication.shared.windows.first?.windowScene?.interfaceOrientation.isLandscape ?? false
     }
 }
 
@@ -423,7 +401,6 @@ extension IOSVideoPlayerView: UIDocumentPickerDelegate {
 #endif
 
 #if os(iOS)
-@available(iOS 13.0, *)
 public class MenuController {
     public init(with builder: UIMenuBuilder) {
         builder.remove(menu: .format)

@@ -79,14 +79,14 @@ public class PlayerToolBar: UIStackView {
     private func initUI() {
         distribution = .fill
         currentTimeLabel.textColor = UIColor(hex: 0x9B9B9B)
-        currentTimeLabel.font = UIFont(name: "HelveticaNeue-Medium", size: 14)
+        currentTimeLabel.font = UIFont.monospacedDigitSystemFont(ofSize: 14, weight: .regular)
         currentTimeLabel.text = 0.toString(for: timeType)
         totalTimeLabel.textColor = UIColor(hex: 0x9B9B9B)
-        totalTimeLabel.font = UIFont(name: "HelveticaNeue-Medium", size: 14)
+        totalTimeLabel.font = UIFont.monospacedDigitSystemFont(ofSize: 14, weight: .regular)
         totalTimeLabel.text = 0.toString(for: timeType)
         timeLabel.textColor = .white
         timeLabel.textAlignment = .left
-        timeLabel.font = UIFont(name: "HelveticaNeue-Medium", size: 14)
+        timeLabel.font = UIFont.monospacedDigitSystemFont(ofSize: 14, weight: .regular)
         timeLabel.text = "\(0.toString(for: timeType)) / \(0.toString(for: timeType))"
         timeSlider.minimumValue = 0
         timeSlider.maximumTrackTintColor = UIColor.white.withAlphaComponent(0.3)
@@ -110,7 +110,7 @@ public class PlayerToolBar: UIStackView {
         srtButton.titleFont = .systemFont(ofSize: 14, weight: .medium)
         pipButton.tag = PlayerButtonType.pictureInPicture.rawValue
         pipButton.titleFont = .systemFont(ofSize: 14, weight: .medium)
-        if #available(iOS 13.0, tvOS 14.0, macOS 10.15, *) {
+        if #available(tvOS 14.0, *) {
             pipButton.setImage(AVPictureInPictureController.pictureInPictureButtonStartImage, for: .normal)
             pipButton.setImage(AVPictureInPictureController.pictureInPictureButtonStopImage, for: .selected)
         } else {
@@ -151,47 +151,12 @@ public class PlayerToolBar: UIStackView {
     }
 }
 
-public enum TimeType {
-    case min
-    case hour
-    case minOrHour
-    case millisecond
-}
-
-public extension TimeInterval {
-    func toString(for type: TimeType) -> String {
-        var second = ceil(self)
-        var min = floor(second / 60)
-        second -= min * 60
-        switch type {
-        case .min:
-            return String(format: "%02.0f:%02.0f", min, second)
-        case .hour:
-            let hour = floor(min / 60)
-            min -= hour * 60
-            return String(format: "%.0f:%02.0f:%02.0f", hour, min, second)
-        case .minOrHour:
-            let hour = floor(min / 60)
-            if hour > 0 {
-                min -= hour * 60
-                return String(format: "%.0f:%02.0f:%02.0f", hour, min, second)
-            } else {
-                return String(format: "%02.0f:%02.0f", min, second)
-            }
-        case .millisecond:
-            var time = Int(self * 100)
-            let millisecond = time % 100
-            time /= 100
-            let sec = time % 60
-            time /= 60
-            let min = time % 60
-            time /= 60
-            let hour = time % 60
-            if hour > 0 {
-                return String(format: "%d:%02d:%02d.%02d", hour, min, sec, millisecond)
-            } else {
-                return String(format: "%02d:%02d.%02d", min, sec, millisecond)
-            }
-        }
+extension KSPlayerManager {
+    static func image(named: String) -> UIImage? {
+        #if canImport(UIKit)
+        return UIImage(named: named, in: .module, compatibleWith: nil)
+        #else
+        return Bundle.module.image(forResource: named)
+        #endif
     }
 }
