@@ -14,6 +14,17 @@ target '3332323' do
 #pod 'SwiftSignalKit'
  pod 'SnapKit'  ,'~> 5.6.0'
  pod 'Alamofire' ,'~> 5.6.2'
+ pod 'Moya', '~> 15.0.0'
+# pod 'Moya/RxSwift', '~> 15.0'
+ pod 'PKHUD', '~> 5.3.0'
+ pod 'HandyJSON', '~> 5.0.4-beta'
+ # RXSwift
+ pod 'RxSwift',    '~> 6.5.0'
+ pod 'RxCocoa',    '~> 6.5.0'
+ 
+ pod 'PromiseKit', '~> 6.18.1'
+ pod 'DaisyNet'
+ pod 'Cache', '~> 6.0.0'
  pod 'Kingfisher' ,'~> 7.3.2'
 # pod 'OpenSSL-Universal'
 # pod "OpenSSL-Apple"
@@ -97,13 +108,9 @@ pod 'VIMediaCache', '~> 0.4'
  pod 'KakaJSON', '~> 1.1.2'
  
  # crypto
- pod 'CryptoSwift', '~> 1.4.1'
+ pod 'CryptoSwift', '~> 1.6.0'
  
- # RXSwift
- pod 'RxSwift',    '~> 4.0'
- pod 'RxCocoa',    '~> 4.0'
- 
- pod "PromiseKit"
+
  
  
  # local storage
@@ -129,7 +136,7 @@ pod 'VIMediaCache', '~> 0.4'
 ## 输入框跟随键盘弹起 https://github.com/1amageek/Toolbar
 # pod 'Toolbar'
 
-  pod 'Protobuf' , '~> 3.19.4'
+  pod 'Protobuf' , '~> 3.19.6'
 
 #动画效果  适用于各个地方 如：tabbar切换点击时动态响应
 # pod 'lottie-ios'
@@ -180,6 +187,8 @@ pod 'VIMediaCache', '~> 0.4'
 # 如果使用增强版 xcframework 版本 SDK，请您按照如下方式设置 Podfile 文件：
 # pod 'TXIMSDK_Plus_iOS_Bitcode_XCFramework'
 
+# 非标准吐司 一个易于上手又完全可定制化的专业HUD库（内含Toast、Alert、Sheet三件套）
+# https://github.com/xaoxuu/ProHUD
 
 
 #  https://github.com/andrealufino/Luminous 设备各种信息
@@ -203,7 +212,7 @@ end
 post_install do |installer|
   installer.pods_project.targets.each do |target|
     target.build_configurations.each do |config|
-      config.build_settings['IPHONEOS_DEPLOYMENT_TARGET'] = '13.0'
+#      config.build_settings['IPHONEOS_DEPLOYMENT_TARGET'] = '13.0'
       config.build_settings['ONLY_ACTIVE_ARCH'] = 'NO'  # 讓M1晶片的MAC可編譯
       config.build_settings['LD_NO_PIE'] = 'NO'
     end
@@ -211,10 +220,17 @@ post_install do |installer|
 end
 
 
-post_install do |installer_representation|
-  installer_representation.pods_project.targets.each do |target|
-    target.build_configurations.each do |config|
-      config.build_settings['ONLY_ACTIVE_ARCH'] = 'NO' config.build_settings['BUILD_LIBRARY_FOR_DISTRIBUTION'] = 'YES'
-    end
-  end
-end
+
+#post_install do |installer_representation|
+#  installer_representation.pods_project.targets.each do |target|
+#    target.build_configurations.each do |config|
+#      config.build_settings['ONLY_ACTIVE_ARCH'] = 'NO' config.build_settings['BUILD_LIBRARY_FOR_DISTRIBUTION'] = 'YES'
+#    end
+#  end
+#end
+
+
+
+
+
+

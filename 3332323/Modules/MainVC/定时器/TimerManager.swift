@@ -85,14 +85,14 @@ class TimerManager: NSObject {
 
 
 //  缓存时间 如果app进入后台，再次打开 会增加在后台的时间
-class CacheManager: NSObject {
+class CacheTimerManager: NSObject {
 
     private var models = NSMutableDictionary()
     private let semaphore = DispatchSemaphore.init(value: 1)
 
-    static var instance: CacheManager {
+    static var instance: CacheTimerManager {
         struct Static {
-            static let instance: CacheManager = CacheManager()
+            static let instance: CacheTimerManager = CacheTimerManager()
         }
         return Static.instance
     }

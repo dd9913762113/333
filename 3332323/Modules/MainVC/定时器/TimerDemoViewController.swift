@@ -35,15 +35,15 @@ class TimerDemoViewController: UIViewController {
     }
     
     @objc func test() {
-        if CacheManager.instance.hasCachedValue(with: self.theClassName) {
-            if let cacheDate = CacheManager.instance.valueWithCache(key: self.theClassName) as? NSDate {
+        if CacheTimerManager.instance.hasCachedValue(with: self.theClassName) {
+            if let cacheDate = CacheTimerManager.instance.valueWithCache(key: self.theClassName) as? NSDate {
                 if cacheDate.timeIntervalSinceNow < -2 {
                     ///因为时间差是负数 如果是倒计时 就加上时间差 反之则减去时间差
                     self.currentCount -= Int(cacheDate.timeIntervalSinceNow) + 1
                 }
             }
         }
-        CacheManager.instance.cacheData(NSDate(), withKey: self.theClassName)
+        CacheTimerManager.instance.cacheData(NSDate(), withKey: self.theClassName)
 
         currentCount += 1
         print(currentCount)
@@ -51,11 +51,11 @@ class TimerDemoViewController: UIViewController {
     
     
     deinit {
-        self.timer?.invalidate()
-        self.timer = nil
-
-        self.link?.invalidate()
-        self.link = nil
+//        self.timer?.invalidate()
+//        self.timer = nil
+//
+//        self.link?.invalidate()
+//        self.link = nil
 
         self.gcdTimer?.cancel()
 

@@ -9,8 +9,11 @@ import Foundation
 import UIKit
 import KSPlayer
 import XYNav
+import RxSwift
 
 public class SportBaseVC: UIViewController {
+
+    let disposeBag = DisposeBag()
 
     override public var preferredStatusBarStyle: UIStatusBarStyle {
         return .lightContent
@@ -20,7 +23,8 @@ public class SportBaseVC: UIViewController {
         view.backgroundColor = .white
         
 //        self.navigationItem.leftBarButtonItem = UIBarButtonItem(image: UIImage(named: "top_back"), style: .plain, target: self, action: #selector(back))
-
+        
+ 
     }
     
 //    @objc

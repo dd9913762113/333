@@ -9,7 +9,6 @@ import UIKit
 import Foundation
 import Luminous
 
-//import KSPlayer
 
 private class TableViewCell: UITableViewCell {
     var nameLabel: UILabel
@@ -56,13 +55,15 @@ class MainVC: UIViewController,  UITableViewDelegate, UITableViewDataSource {
                       "图文发布", "申请主播","JitsiMeet 音视频在线会议",
                       "EFQRCode 二维码","各大APP新闻页面\"样式\"","视频背景，无限重播",
                       "ping 检查","Traceroute路径","网络下载测速",
-                     "ping和traceroute，域名诊断，收集诊断日志","浏览器上传文件到手机"]
+                      "ping和traceroute，域名诊断，收集诊断日志","浏览器上传文件到手机","网络数据缓存",
+                      "pexels网络图片浏览器"]
         self.arrayVC = [DownLoadTabbar(), MediaCollectionView(), TVListVC(),
                         PreviewController(), SPPermissionsVC(), WXZLPhoto(),
                         PublishPostVC(),MineApplyAnchorVC(),JitsiMeetVC(),
                         EFQRCodeVC(),TheNewsViewController(),DK_BackgroundVideo(),
                         PINGTest(),DK_TracerouteVC(),NetworksSpeedViewController(),
-                        DKNetDiagnoServiceVC(),DK_SGWiFiUploadVC()]
+                        DKNetDiagnoServiceVC(),DK_SGWiFiUploadVC(),CacheLastDataViewController(),
+                        ImageCollectionsVC()]
         tableView.rowHeight = 50
         tableView.register(TableViewCell.self, forCellReuseIdentifier: "Cell")
         tableView.reloadData()

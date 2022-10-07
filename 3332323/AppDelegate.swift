@@ -18,9 +18,9 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
     var window: UIWindow?
     
-    lazy var manager: AppDelegateManager = {
-        return AppDelegateManager.init(delegates: [AppDe.init(window)])
-    }()
+//    lazy var manager: AppDelegateManager = {
+//         return AppDelegateManager.init(delegates: [AppDe.init(window)])
+//     }()
     
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
 
@@ -31,7 +31,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         self.window = window
 //        sleep(30)
         
-        manager.application(application, didFinishLaunchingWithOptions: launchOptions)
+//        manager.application(application, didFinishLaunchingWithOptions: launchOptions)
 
         guard let launchOptions = launchOptions else { return false }
         JitsiMeet.sharedInstance().application(application, didFinishLaunchingWithOptions: launchOptions)
@@ -73,27 +73,27 @@ private enum DownloadFileError {
     case network
 }
 
-//private func downloadHTTPData(url: URL) -> Signal<Data, DownloadFileError> {
-//    return Signal { subscriber in
-//        let completed = Atomic<Bool>(value: false)
-//        let downloadTask = URLSession.shared.downloadTask(with: url, completionHandler: { location, _, error in
-//            let _ = completed.swap(true)
-//            if let location = location, let data = try? Data(contentsOf: location) {
-//                subscriber.putNext(data)
-//                subscriber.putCompletion()
-//            } else {
-//                subscriber.putError(.network)
-//            }
-//        })
-//        downloadTask.resume()
-//
-//        return ActionDisposable {
-//            if !completed.with({ $0 }) {
-//                downloadTask.cancel()
-//            }
-//        }
-//    }
-//}
+private func downloadHTTPData(url: URL) -> Signal<Data, DownloadFileError> {
+    return Signal { subscriber in
+        let completed = Atomic<Bool>(value: false)
+        let downloadTask = URLSession.shared.downloadTask(with: url, completionHandler: { location, _, error in
+            let _ = completed.swap(true)
+            if let location = location, let data = try? Data(contentsOf: location) {
+                subscriber.putNext(data)
+                subscriber.putCompletion()
+            } else {
+                subscriber.putError(.network)
+            }
+        })
+        downloadTask.resume()
+
+        return ActionDisposable {
+            if !completed.with({ $0 }) {
+                downloadTask.cancel()
+            }
+        }
+    }
+}
 
 /**
  

@@ -189,6 +189,17 @@
 		63608E7627BFA9CA00760485 /* UserNotifications.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 63608E7427BFA9CA00760485 /* UserNotifications.framework */; };
 		63608E7827BFA9D500760485 /* CoreTelephony.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 63608E7727BFA9D500760485 /* CoreTelephony.framework */; };
 		63608E7A27BFAD8000760485 /* AppDelegate+VoIP.swift in Sources */ = {isa = PBXBuildFile; fileRef = 63608E7927BFAD8000760485 /* AppDelegate+VoIP.swift */; };
+		63669C1C28EE9D1B00F4C33C /* ImageCollectionsVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 63669C1B28EE9D1B00F4C33C /* ImageCollectionsVC.swift */; };
+		63669C1F28EEB4B500F4C33C /* APIServers.swift in Sources */ = {isa = PBXBuildFile; fileRef = 63669C1E28EEB4B500F4C33C /* APIServers.swift */; };
+		63669C2228EEBAC700F4C33C /* CacheLRU.swift in Sources */ = {isa = PBXBuildFile; fileRef = 63669C2028EEBAC700F4C33C /* CacheLRU.swift */; };
+		63669C2328EEBAC700F4C33C /* Defaults.swift in Sources */ = {isa = PBXBuildFile; fileRef = 63669C2128EEBAC700F4C33C /* Defaults.swift */; };
+		63669C2528EEC42B00F4C33C /* ApiPlugin.swift in Sources */ = {isa = PBXBuildFile; fileRef = 63669C2428EEC42B00F4C33C /* ApiPlugin.swift */; };
+		63669C2C28EECE8A00F4C33C /* HWNetworkingOC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 63669C2728EECE8A00F4C33C /* HWNetworkingOC.swift */; };
+		63669C2D28EECE8A00F4C33C /* HWAPI.swift in Sources */ = {isa = PBXBuildFile; fileRef = 63669C2828EECE8A00F4C33C /* HWAPI.swift */; };
+		63669C2E28EECE8A00F4C33C /* HWMultipartData.swift in Sources */ = {isa = PBXBuildFile; fileRef = 63669C2928EECE8A00F4C33C /* HWMultipartData.swift */; };
+		63669C2F28EECE8A00F4C33C /* HWNetworkingError.swift in Sources */ = {isa = PBXBuildFile; fileRef = 63669C2A28EECE8A00F4C33C /* HWNetworkingError.swift */; };
+		63669C3028EECE8A00F4C33C /* HWNetworking.swift in Sources */ = {isa = PBXBuildFile; fileRef = 63669C2B28EECE8A00F4C33C /* HWNetworking.swift */; };
+		63669C3228EECFA400F4C33C /* APIAlamofire.swift in Sources */ = {isa = PBXBuildFile; fileRef = 63669C3128EECFA400F4C33C /* APIAlamofire.swift */; };
 		6366E05526AFF59F00C40126 /* DownloadManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6366E05426AFF59F00C40126 /* DownloadManager.swift */; };
 		6366E05726B0043D00C40126 /* MTCacheManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6366E05626B0043D00C40126 /* MTCacheManager.swift */; };
 		637BAAF22808154500C7B68C /* DK_SGWiFiUploadVC.m in Sources */ = {isa = PBXBuildFile; fileRef = 637BAAF12808154500C7B68C /* DK_SGWiFiUploadVC.m */; };
@@ -317,6 +328,8 @@
 		63E5F3BA28E57BFA00F6D7E8 /* DLog.swift in Sources */ = {isa = PBXBuildFile; fileRef = 63E5F3B928E57BFA00F6D7E8 /* DLog.swift */; };
 		63E5F3BD28E5828500F6D7E8 /* TimerManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 63E5F3BC28E5828500F6D7E8 /* TimerManager.swift */; };
 		63E5F3BF28E582DC00F6D7E8 /* TimerDemoViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 63E5F3BE28E582DC00F6D7E8 /* TimerDemoViewController.swift */; };
+		63E5F3C228E6D33800F6D7E8 /* DCJokesModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 63E5F3C128E6D33800F6D7E8 /* DCJokesModel.swift */; };
+		63E5F3C628E843DD00F6D7E8 /* CacheLastDataViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 63E5F3C528E843DD00F6D7E8 /* CacheLastDataViewController.swift */; };
 		DE7F6282F76BD3C938CD417C /* Pods_3332323.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 29E360D98108EDF26A267B1B /* Pods_3332323.framework */; };
 /* End PBXBuildFile section */
 
@@ -520,6 +533,17 @@
 		63608E7427BFA9CA00760485 /* UserNotifications.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UserNotifications.framework; path = System/Library/Frameworks/UserNotifications.framework; sourceTree = SDKROOT; };
 		63608E7727BFA9D500760485 /* CoreTelephony.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreTelephony.framework; path = System/Library/Frameworks/CoreTelephony.framework; sourceTree = SDKROOT; };
 		63608E7927BFAD8000760485 /* AppDelegate+VoIP.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "AppDelegate+VoIP.swift"; sourceTree = "<group>"; };
+		63669C1B28EE9D1B00F4C33C /* ImageCollectionsVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImageCollectionsVC.swift; sourceTree = "<group>"; };
+		63669C1E28EEB4B500F4C33C /* APIServers.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = APIServers.swift; sourceTree = "<group>"; };
+		63669C2028EEBAC700F4C33C /* CacheLRU.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CacheLRU.swift; sourceTree = "<group>"; };
+		63669C2128EEBAC700F4C33C /* Defaults.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Defaults.swift; sourceTree = "<group>"; };
+		63669C2428EEC42B00F4C33C /* ApiPlugin.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ApiPlugin.swift; sourceTree = "<group>"; };
+		63669C2728EECE8A00F4C33C /* HWNetworkingOC.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = HWNetworkingOC.swift; sourceTree = "<group>"; };
+		63669C2828EECE8A00F4C33C /* HWAPI.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = HWAPI.swift; sourceTree = "<group>"; };
+		63669C2928EECE8A00F4C33C /* HWMultipartData.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = HWMultipartData.swift; sourceTree = "<group>"; };
+		63669C2A28EECE8A00F4C33C /* HWNetworkingError.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = HWNetworkingError.swift; sourceTree = "<group>"; };
+		63669C2B28EECE8A00F4C33C /* HWNetworking.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = HWNetworking.swift; sourceTree = "<group>"; };
+		63669C3128EECFA400F4C33C /* APIAlamofire.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = APIAlamofire.swift; sourceTree = "<group>"; };
 		6366E05426AFF59F00C40126 /* DownloadManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DownloadManager.swift; sourceTree = "<group>"; };
 		6366E05626B0043D00C40126 /* MTCacheManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MTCacheManager.swift; sourceTree = "<group>"; };
 		637BAAF02808154500C7B68C /* DK_SGWiFiUploadVC.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = DK_SGWiFiUploadVC.h; sourceTree = "<group>"; };
@@ -694,6 +718,8 @@
 		63E5F3B928E57BFA00F6D7E8 /* DLog.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DLog.swift; sourceTree = "<group>"; };
 		63E5F3BC28E5828500F6D7E8 /* TimerManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TimerManager.swift; sourceTree = "<group>"; };
 		63E5F3BE28E582DC00F6D7E8 /* TimerDemoViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TimerDemoViewController.swift; sourceTree = "<group>"; };
+		63E5F3C128E6D33800F6D7E8 /* DCJokesModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DCJokesModel.swift; sourceTree = "<group>"; };
+		63E5F3C528E843DD00F6D7E8 /* CacheLastDataViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CacheLastDataViewController.swift; sourceTree = "<group>"; };
 		6710A95B7957E2C3F73CE041 /* Pods-3332323.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-3332323.release.xcconfig"; path = "Target Support Files/Pods-3332323/Pods-3332323.release.xcconfig"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -960,6 +986,8 @@
 			isa = PBXGroup;
 			children = (
 				63A7739C26A6B5C7000DE05B /* MainVC.swift */,
+				63669C1A28EE9CDA00F4C33C /* 图片浏览 */,
+				63E5F3C428E843AD00F6D7E8 /* 缓存上次数据 */,
 				63E5F3BB28E5827000F6D7E8 /* 定时器 */,
 				637BAAEF280814E700C7B68C /* 上传文件到手机 */,
 				631FF74028054C4B0010392B /* DKiOSTerminal */,
@@ -1041,6 +1069,7 @@
 			isa = PBXGroup;
 			children = (
 				63608DE127BF32A200760485 /* FollowVC.swift */,
+				63E5F3C028E6D2F000F6D7E8 /* Model */,
 			);
 			path = FollowVC;
 			sourceTree = "<group>";
@@ -1267,6 +1296,39 @@
 				63608E2C27BF343E00760485 /* AxiosHandler.swift */,
 			);
 			path = Axios;
+			sourceTree = "<group>";
+		};
+		63669C1A28EE9CDA00F4C33C /* 图片浏览 */ = {
+			isa = PBXGroup;
+			children = (
+				63669C1B28EE9D1B00F4C33C /* ImageCollectionsVC.swift */,
+			);
+			path = "图片浏览";
+			sourceTree = "<group>";
+		};
+		63669C1D28EEA69300F4C33C /* API */ = {
+			isa = PBXGroup;
+			children = (
+				63669C2628EECE8A00F4C33C /* HWNetworking */,
+				63669C1E28EEB4B500F4C33C /* APIServers.swift */,
+				63669C2028EEBAC700F4C33C /* CacheLRU.swift */,
+				63669C2128EEBAC700F4C33C /* Defaults.swift */,
+				63669C2428EEC42B00F4C33C /* ApiPlugin.swift */,
+			);
+			path = API;
+			sourceTree = "<group>";
+		};
+		63669C2628EECE8A00F4C33C /* HWNetworking */ = {
+			isa = PBXGroup;
+			children = (
+				63669C2728EECE8A00F4C33C /* HWNetworkingOC.swift */,
+				63669C2828EECE8A00F4C33C /* HWAPI.swift */,
+				63669C2928EECE8A00F4C33C /* HWMultipartData.swift */,
+				63669C2A28EECE8A00F4C33C /* HWNetworkingError.swift */,
+				63669C2B28EECE8A00F4C33C /* HWNetworking.swift */,
+				63669C3128EECFA400F4C33C /* APIAlamofire.swift */,
+			);
+			path = HWNetworking;
 			sourceTree = "<group>";
 		};
 		637BAAEF280814E700C7B68C /* 上传文件到手机 */ = {
@@ -1699,6 +1761,7 @@
 			isa = PBXGroup;
 			children = (
 				63A6677A269861B4009235A3 /* AppDelegate.swift */,
+				63669C1D28EEA69300F4C33C /* API */,
 				63A1E68E27BE2AB300A7C766 /* BASE */,
 				63A48B8227A00C2500022B9F /* Extensions */,
 				63A48B7927A0085300022B9F /* Global */,
@@ -1818,6 +1881,22 @@
 				63E5F3BE28E582DC00F6D7E8 /* TimerDemoViewController.swift */,
 			);
 			path = "定时器";
+			sourceTree = "<group>";
+		};
+		63E5F3C028E6D2F000F6D7E8 /* Model */ = {
+			isa = PBXGroup;
+			children = (
+				63E5F3C128E6D33800F6D7E8 /* DCJokesModel.swift */,
+			);
+			path = Model;
+			sourceTree = "<group>";
+		};
+		63E5F3C428E843AD00F6D7E8 /* 缓存上次数据 */ = {
+			isa = PBXGroup;
+			children = (
+				63E5F3C528E843DD00F6D7E8 /* CacheLastDataViewController.swift */,
+			);
+			path = "缓存上次数据";
 			sourceTree = "<group>";
 		};
 		7004946E9141D3189BDECF51 /* Pods */ = {
@@ -2065,10 +2144,12 @@
 				63608E5027BF343E00760485 /* WashingtonPostCell.swift in Sources */,
 				6319E36127C0D7F4003497E0 /* Disposable.swift in Sources */,
 				63A48B9027A00C2500022B9F /* UIColor+Extension.swift in Sources */,
+				63669C2F28EECE8A00F4C33C /* HWNetworkingError.swift in Sources */,
 				637BAB60280815A900C7B68C /* DDData.m in Sources */,
 				637BAB4E280815A900C7B68C /* SGHTTPConnection.m in Sources */,
 				631FF70C280439C70010392B /* NetworkTagsCollectionViewCell.m in Sources */,
 				631FF731280515A50010392B /* LDNetPing.m in Sources */,
+				63669C2528EEC42B00F4C33C /* ApiPlugin.swift in Sources */,
 				63608E4127BF343E00760485 /* FacebookNewsHandler.swift in Sources */,
 				63D6155926AC27A400CDBA38 /* BaseTableVC.swift in Sources */,
 				63608E3727BF343E00760485 /* FlipboardHandler.swift in Sources */,
@@ -2091,6 +2172,7 @@
 				631FF70D280439C70010392B /* DK_TracerouteVC.m in Sources */,
 				63A5CB0727F18B1B00DF348A /* DK_NENPingTest.m in Sources */,
 				63B9A0AB26B4F6B9004AC889 /* WXZLPhoto.swift in Sources */,
+				63669C3228EECFA400F4C33C /* APIAlamofire.swift in Sources */,
 				63608E6127BF343E00760485 /* RedditHandler.swift in Sources */,
 				637BAAF22808154500C7B68C /* DK_SGWiFiUploadVC.m in Sources */,
 				63A48B9727A00C2500022B9F /* String+Extension.swift in Sources */,
@@ -2139,6 +2221,7 @@
 				63B9A0C826B52CD8004AC889 /* String+Encryption.swift in Sources */,
 				63B9A0B726B4F74C004AC889 /* ImageCell.swift in Sources */,
 				63A48B8127A00A6D00022B9F /* SportBaseNavController.swift in Sources */,
+				63669C2C28EECE8A00F4C33C /* HWNetworkingOC.swift in Sources */,
 				6319E35C27C0D7F4003497E0 /* Signal_Mapping.swift in Sources */,
 				63A1E69927BE2AF700A7C766 /* XYContentController.swift in Sources */,
 				63D6156726AD0CC400CDBA38 /* MediaCollectionView.swift in Sources */,
@@ -2153,6 +2236,7 @@
 				63A48B7D27A0088E00022B9F /* R.swift in Sources */,
 				63608D6D27BE580C00760485 /* EFQRCodeVC.swift in Sources */,
 				63608E4727BF343E00760485 /* UIKitHandler.swift in Sources */,
+				63669C2E28EECE8A00F4C33C /* HWMultipartData.swift in Sources */,
 				63820BC527C75DE200C02634 /* HttpServer.swift in Sources */,
 				637BAB62280815A900C7B68C /* HTTPServer.m in Sources */,
 				63B9A0D026B52EB2004AC889 /* PublishPostTopicCell.swift in Sources */,
@@ -2187,8 +2271,10 @@
 				637BAB58280815A900C7B68C /* HTTPMessage.m in Sources */,
 				63608E3327BF343E00760485 /* TheNewsApi.swift in Sources */,
 				6359945A27AE675B00CF4A93 /* MineApplyAnchorModel.swift in Sources */,
+				63669C1F28EEB4B500F4C33C /* APIServers.swift in Sources */,
 				63A6677B269861B4009235A3 /* AppDelegate.swift in Sources */,
 				63608E4427BF343E00760485 /* NewsTableHandler.swift in Sources */,
+				63669C2228EEBAC700F4C33C /* CacheLRU.swift in Sources */,
 				6359945527AE56F800CF4A93 /* MineApplyAnchorVC.swift in Sources */,
 				63608E6927BF343E00760485 /* TheNewsUserDefault.swift in Sources */,
 				63820BBF27C7598600C02634 /* LocalStorage.swift in Sources */,
@@ -2204,6 +2290,7 @@
 				63608E6427BF343E00760485 /* AxiosCell.swift in Sources */,
 				63E5F3BA28E57BFA00F6D7E8 /* DLog.swift in Sources */,
 				637BAB59280815A900C7B68C /* HTTPConnection.m in Sources */,
+				63669C1C28EE9D1B00F4C33C /* ImageCollectionsVC.swift in Sources */,
 				63608E6A27BF343E00760485 /* TheNewsImageDownloader.swift in Sources */,
 				63A5CAF827F17E5C00DF348A /* Ping.swift in Sources */,
 				6319E35E27C0D7F4003497E0 /* Timer.swift in Sources */,
@@ -2225,6 +2312,7 @@
 				637BAB6B280815A900C7B68C /* DDFileLogger.m in Sources */,
 				637BAB4C280815A900C7B68C /* SGWiFiViewController.m in Sources */,
 				6319E35927C0D7F4003497E0 /* Signal_Materialize.swift in Sources */,
+				63E5F3C228E6D33800F6D7E8 /* DCJokesModel.swift in Sources */,
 				637BAB5B280815A900C7B68C /* MultipartMessageHeaderField.m in Sources */,
 				6319E36627C0D7F4003497E0 /* Signal_SideEffects.swift in Sources */,
 				63608D7527BE586C00760485 /* GeneratorController.swift in Sources */,
@@ -2245,8 +2333,10 @@
 				63608E4627BF343E00760485 /* BBCCell.swift in Sources */,
 				63608E5827BF343E00760485 /* CNNCell.swift in Sources */,
 				63A48B9B27A00E6600022B9F /* BaseWebController.swift in Sources */,
+				63E5F3C628E843DD00F6D7E8 /* CacheLastDataViewController.swift in Sources */,
 				63A48B6A27A006B300022B9F /* BaseTabbarController.swift in Sources */,
 				63E5F3B828E5783400F6D7E8 /* CustomAlertControllerTransitionAnimation.swift in Sources */,
+				63669C2328EEBAC700F4C33C /* Defaults.swift in Sources */,
 				631FF732280515A50010392B /* LDNetGetAddress.m in Sources */,
 				63D6155B26AC284500CDBA38 /* DownloadTaskCell.swift in Sources */,
 				63B9A0B426B4F74C004AC889 /* PhotoConfigureCNViewController.swift in Sources */,
@@ -2270,11 +2360,13 @@
 				63608E5E27BF343E00760485 /* RobinhoodCell.swift in Sources */,
 				63A48B9127A00C2500022B9F /* UIView+Extension.swift in Sources */,
 				63A5CB0327F188DA00DF348A /* SimplePing.m in Sources */,
+				63669C3028EECE8A00F4C33C /* HWNetworking.swift in Sources */,
 				63608E6527BF343E00760485 /* AxiosHandler.swift in Sources */,
 				637BAB54280815A900C7B68C /* HTTPDynamicFileResponse.m in Sources */,
 				637BAB53280815A900C7B68C /* HTTPDataResponse.m in Sources */,
 				6319E36827C0D7F4003497E0 /* Queue.swift in Sources */,
 				63608E4F27BF343E00760485 /* NewsCell.swift in Sources */,
+				63669C2D28EECE8A00F4C33C /* HWAPI.swift in Sources */,
 				63608E5427BF343E00760485 /* LilNewsHandler.swift in Sources */,
 				631FF7162804598D0010392B /* NetworksSpeedViewController.m in Sources */,
 				631FF735280515A50010392B /* DKNetDiagnoServiceVC.m in Sources */,

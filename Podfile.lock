@@ -1,7 +1,11 @@
 PODS:
   - Alamofire (5.6.2)
   - AttributedString (3.3.3)
-  - CryptoSwift (1.4.3)
+  - Cache (6.0.0)
+  - CryptoSwift (1.6.0)
+  - DaisyNet (1.0.5):
+    - Alamofire (>= 5.0.0)
+    - Cache (>= 6.0.0)
   - Deviice (2.1.0)
   - EFColorPicker (5.2.2)
   - EFFoundation (1.4.12):
@@ -15,6 +19,7 @@ PODS:
   - FFmpeg/FFmpeg (5.1):
     - OpenSSL
   - FSPagerView (0.8.3)
+  - HandyJSON (5.0.4-beta)
   - JitsiMeetSDK (4.1.0)
   - JXSegmentedView (1.3.0)
   - KakaJSON (1.1.2)
@@ -79,6 +84,7 @@ PODS:
   - PINRemoteImage/PINCache (3.0.3):
     - PINCache (~> 3.0.3)
     - PINRemoteImage/Core
+  - PKHUD (5.3.0)
   - PromiseKit (6.18.1):
     - PromiseKit/CorePromise (= 6.18.1)
     - PromiseKit/Foundation (= 6.18.1)
@@ -88,12 +94,15 @@ PODS:
     - PromiseKit/CorePromise
   - PromiseKit/UIKit (6.18.1):
     - PromiseKit/CorePromise
-  - Protobuf (3.19.5)
+  - Protobuf (3.19.6)
   - PureLayout (3.1.9)
   - QuickTableViewController (1.3.1)
-  - RxCocoa (4.5.0):
-    - RxSwift (>= 4.4.2, ~> 4.4)
-  - RxSwift (4.5.0)
+  - RxCocoa (6.5.0):
+    - RxRelay (= 6.5.0)
+    - RxSwift (= 6.5.0)
+  - RxRelay (6.5.0):
+    - RxSwift (= 6.5.0)
+  - RxSwift (6.5.0)
   - SDWebImage (5.13.4):
     - SDWebImage/Core (= 5.13.4)
   - SDWebImage/Core (5.13.4)
@@ -200,13 +209,16 @@ PODS:
 DEPENDENCIES:
   - Alamofire (~> 5.6.2)
   - AttributedString
-  - CryptoSwift (~> 1.4.1)
+  - Cache (~> 6.0.0)
+  - CryptoSwift (~> 1.6.0)
+  - DaisyNet
   - EFColorPicker
   - EFFoundation
   - EFQRCode (~> 6.2.0)
   - FDFullscreenPopGesture (= 1.1)
   - FFmpeg (from `https://github.com/kingslay/KSPlayer.git`, branch `develop`)
   - FSPagerView
+  - HandyJSON (~> 5.0.4-beta)
   - JitsiMeetSDK (~> 4.1.0)
   - JXSegmentedView
   - KakaJSON (~> 1.1.2)
@@ -218,14 +230,16 @@ DEPENDENCIES:
   - Luminous
   - MJRefresh
   - Moya (~> 15.0)
+  - Moya (~> 15.0.0)
   - OpenSSL (from `https://github.com/kingslay/KSPlayer.git`, branch `develop`)
   - PhoneNumberKit (~> 3.3.4)
-  - PromiseKit
-  - Protobuf (~> 3.19.4)
+  - PKHUD (~> 5.3.0)
+  - PromiseKit (~> 6.18.1)
+  - Protobuf (~> 3.19.6)
   - PureLayout
   - QuickTableViewController
-  - RxCocoa (~> 4.0)
-  - RxSwift (~> 4.0)
+  - RxCocoa (~> 6.5.0)
+  - RxSwift (~> 6.5.0)
   - SDWebImage
   - SnapKit (~> 5.6.0)
   - SparrowKit
@@ -272,13 +286,16 @@ SPEC REPOS:
   trunk:
     - Alamofire
     - AttributedString
+    - Cache
     - CryptoSwift
+    - DaisyNet
     - Deviice
     - EFColorPicker
     - EFFoundation
     - EFQRCode
     - FDFullscreenPopGesture
     - FSPagerView
+    - HandyJSON
     - JitsiMeetSDK
     - JXSegmentedView
     - KakaJSON
@@ -293,11 +310,13 @@ SPEC REPOS:
     - PINCache
     - PINOperation
     - PINRemoteImage
+    - PKHUD
     - PromiseKit
     - Protobuf
     - PureLayout
     - QuickTableViewController
     - RxCocoa
+    - RxRelay
     - RxSwift
     - SDWebImage
     - SnapKit
@@ -353,7 +372,9 @@ CHECKOUT OPTIONS:
 SPEC CHECKSUMS:
   Alamofire: d368e1ff8a298e6dde360e35a3e68e6c610e7204
   AttributedString: 41b0d53d596570ec7462c84af3f25e0c02a7bc2c
-  CryptoSwift: a0799ee936271bd2253a006f1e4523df21845000
+  Cache: 4ca7e00363fca5455f26534e5607634c820ffc2d
+  CryptoSwift: 562f8eceb40e80796fffc668b0cad9313284cfa6
+  DaisyNet: 25da1cd555971cdd930160e976fa8bc738a137cc
   Deviice: fe365bee102bcd390e7f5cd055b46f1bd4e20b69
   EFColorPicker: 6a67701ea834bd9b6f4c3e29aa2e78a6d4ea88f4
   EFFoundation: 1928fa7598bd715cce6af3a21e73e3d85b2e389f
@@ -361,6 +382,7 @@ SPEC CHECKSUMS:
   FDFullscreenPopGesture: a8a620179e3d9c40e8e00256dcee1c1a27c6d0f0
   FFmpeg: afdcf31638c1a6a0253eaf9505983e21a3a5d2c1
   FSPagerView: 670405b2f18e2a87fa37f20b00de783e562c25a8
+  HandyJSON: a9c67202df97805a0ba4a00e30b50e9a30ac28f3
   JitsiMeetSDK: 0716f9a49278330a57d8b28304f78c25ae5ab963
   JXSegmentedView: fec0d335355b6e019c494fe2e030bde8a36d2df6
   KakaJSON: cc5ff50a8c1cfbb09413db8496cb709a209e6137
@@ -377,12 +399,14 @@ SPEC CHECKSUMS:
   PINCache: 7a8fc1a691173d21dbddbf86cd515de6efa55086
   PINOperation: 00c935935f1e8cf0d1e2d6b542e75b88fc3e5e20
   PINRemoteImage: f1295b29f8c5e640e25335a1b2bd9d805171bd01
+  PKHUD: 98f3e4bc904b9c916f1c5bb6d765365b5357291b
   PromiseKit: 49d70c53d5d20e346beaea4b276b5dd2ab446bb4
-  Protobuf: 115db93434b829c0eeb11f7ec63e69a281c797ba
+  Protobuf: 02952fdf4b141d192b1351d8ef33749c9a01e034
   PureLayout: 5fb5e5429519627d60d079ccb1eaa7265ce7cf88
   QuickTableViewController: 25e698de1546c2b829c543d91b64ebc6e884acfc
-  RxCocoa: cbf70265dc65a981d4ac982e513c10cf23df24a0
-  RxSwift: f172070dfd1a93d70a9ab97a5a01166206e1c575
+  RxCocoa: 94f817b71c07517321eb4f9ad299112ca8af743b
+  RxRelay: 1de1523e604c72b6c68feadedd1af3b1b4d0ecbd
+  RxSwift: 5710a9e6b17f3c3d6e40d6e559b9fa1e813b2ef8
   SDWebImage: e5cc87bf736e60f49592f307bdf9e157189298a3
   SnapKit: e01d52ebb8ddbc333eefe2132acf85c8227d9c25
   SparrowKit: f66d73beb10b025b699d2dce635e18a1958aab94
@@ -412,6 +436,6 @@ SPEC CHECKSUMS:
   ZLPhotoBrowser: f571bdaec6d0b64ae94a29787e4c7cbd8900d10f
   ZXRequestBlock: 7d9adb43e7de17f1e4d6571c87a08a2859b253ef
 
-PODFILE CHECKSUM: b1a8e2baf90f4e255a0c62ac6e10b53501844b5c
+PODFILE CHECKSUM: dc5a5bdc407a6e852f46865192519df30584af9c
 
 COCOAPODS: 1.11.3
