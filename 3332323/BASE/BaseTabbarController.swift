@@ -75,9 +75,9 @@ public final class BaseTabbarController: UITabBarController, UITabBarControllerD
     private func _addChildVcs() {
         let vcs: [ChildVcType] = [
             (HomeVC(), "首页", "icon_main_selected", "icon_main"),
-            (LiveVC(), "开播", "icon_liveing_selected", "icon_liveing"),
+//            (LiveVC(), "开播", "icon_liveing_selected", "icon_liveing"),
             (FollowVC(), "关注", "icon_follow_selected", "icon_follow"),
-//            (TheNewsViewController(), "新闻", "icon_follow_selected", "icon_follow"),
+            (TheNewsViewController(), "新闻", "icon_follow_selected", "icon_follow"),
             (MainVC(), "分部", "icon_main_selected", "icon_main"),
             (MineVC(), "我的", "icon_mine_selected", "icon_mine")
         ]

@@ -200,6 +200,7 @@
 		63669C2F28EECE8A00F4C33C /* HWNetworkingError.swift in Sources */ = {isa = PBXBuildFile; fileRef = 63669C2A28EECE8A00F4C33C /* HWNetworkingError.swift */; };
 		63669C3028EECE8A00F4C33C /* HWNetworking.swift in Sources */ = {isa = PBXBuildFile; fileRef = 63669C2B28EECE8A00F4C33C /* HWNetworking.swift */; };
 		63669C3228EECFA400F4C33C /* APIAlamofire.swift in Sources */ = {isa = PBXBuildFile; fileRef = 63669C3128EECFA400F4C33C /* APIAlamofire.swift */; };
+		63669C3428EFD76900F4C33C /* DKImagesModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 63669C3328EFD76900F4C33C /* DKImagesModel.swift */; };
 		6366E05526AFF59F00C40126 /* DownloadManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6366E05426AFF59F00C40126 /* DownloadManager.swift */; };
 		6366E05726B0043D00C40126 /* MTCacheManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6366E05626B0043D00C40126 /* MTCacheManager.swift */; };
 		637BAAF22808154500C7B68C /* DK_SGWiFiUploadVC.m in Sources */ = {isa = PBXBuildFile; fileRef = 637BAAF12808154500C7B68C /* DK_SGWiFiUploadVC.m */; };
@@ -544,6 +545,7 @@
 		63669C2A28EECE8A00F4C33C /* HWNetworkingError.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = HWNetworkingError.swift; sourceTree = "<group>"; };
 		63669C2B28EECE8A00F4C33C /* HWNetworking.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = HWNetworking.swift; sourceTree = "<group>"; };
 		63669C3128EECFA400F4C33C /* APIAlamofire.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = APIAlamofire.swift; sourceTree = "<group>"; };
+		63669C3328EFD76900F4C33C /* DKImagesModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DKImagesModel.swift; sourceTree = "<group>"; };
 		6366E05426AFF59F00C40126 /* DownloadManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DownloadManager.swift; sourceTree = "<group>"; };
 		6366E05626B0043D00C40126 /* MTCacheManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MTCacheManager.swift; sourceTree = "<group>"; };
 		637BAAF02808154500C7B68C /* DK_SGWiFiUploadVC.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = DK_SGWiFiUploadVC.h; sourceTree = "<group>"; };
@@ -1302,6 +1304,7 @@
 			isa = PBXGroup;
 			children = (
 				63669C1B28EE9D1B00F4C33C /* ImageCollectionsVC.swift */,
+				63669C3328EFD76900F4C33C /* DKImagesModel.swift */,
 			);
 			path = "图片浏览";
 			sourceTree = "<group>";
@@ -2313,6 +2316,7 @@
 				637BAB4C280815A900C7B68C /* SGWiFiViewController.m in Sources */,
 				6319E35927C0D7F4003497E0 /* Signal_Materialize.swift in Sources */,
 				63E5F3C228E6D33800F6D7E8 /* DCJokesModel.swift in Sources */,
+				63669C3428EFD76900F4C33C /* DKImagesModel.swift in Sources */,
 				637BAB5B280815A900C7B68C /* MultipartMessageHeaderField.m in Sources */,
 				6319E36627C0D7F4003497E0 /* Signal_SideEffects.swift in Sources */,
 				63608D7527BE586C00760485 /* GeneratorController.swift in Sources */,

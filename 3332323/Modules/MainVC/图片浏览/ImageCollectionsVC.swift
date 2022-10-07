@@ -9,6 +9,7 @@
 import Foundation
 import Alamofire
 import DaisyNet
+import HandyJSON
 
 class ImageCollectionsVC: SportBaseVC {
     
@@ -22,23 +23,83 @@ class ImageCollectionsVC: SportBaseVC {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-
+        
+        self.getHeadData()
         self.getHttpData()
        
+    }
+    
+    func getHeadData() {
+        let str = "https://raw.githubusercontent.com/dd9913762113/sources/main/s/api_images"
+        HN.GET(url: str).success { (response) in
+            debugPrint("response = \(response)")
+            guard let data = try? JSONSerialization.data(withJSONObject: response) else {return  }
+
+//            let imagesModel = try? JSONDecoder().decode(ImagesModel.self, from: data)
+//            if (imagesModel?.pageProps?.assets?.count ?? 0 > 0 ) {
+//                debugPrint("imagesModel.pageProps.count \(imagesModel?.pageProps?.assets?.count)")
+//            }
+        }.failed { (error) in
+            debugPrint("failed: \(error)")
+        }
     }
     
     
     func getHttpData () {
         
-        let h = ["Authorization": "563492ad6f9170000100000130b85a0db6a441e9ae2088499c81d876"]
-    
-        HN.GET(url: urlStr, parameters: params, headers: h).success { (response) in
-            debugPrint("success: \(response)")
+//        let h = ["Authorization": "563492ad6f9170000100000130b85a0db6a441e9ae2088499c81d876"]
+//
+//        HN.GET(url: urlStr, parameters: params, headers: h).success { (response) in
+//            debugPrint("success: \(response)")
+//        }.failed { (error) in
+//            debugPrint("failed: \(error)")
+//        }
+/**
+ 
+ https://www.shutterstock.com/zh/search/pretty-girl?sort=random
+ 
+ https://www.shutterstock.com/zh/search/sexy?image_type=photo&page=4
+ 这个网站抓到的请求图片api的地址
+ search
+ https://www.shutterstock.com/_next/data/KGer2kScfnZ-SJdu8tu_8/zh/_shutterstock/search/pretty-girl.json?image_type=photo&term=pretty-girl
+ sort=random
+ https://www.shutterstock.com/_next/data/KGer2kScfnZ-SJdu8tu_8/zh/_shutterstock/search/pretty-girl.json?sort=random&term=pretty-girl
+ https://www.shutterstock.com/_next/data/KGer2kScfnZ-SJdu8tu_8/zh/_shutterstock/search/pretty-girl.json?term=pretty-girl
+ video
+ https://www.shutterstock.com/_next/data/KGer2kScfnZ-SJdu8tu_8/zh/_shutterstock/video/search/pretty-girl.json?term=pretty-girl
+ music
+ https://www.shutterstock.com/_next/data/KGer2kScfnZ-SJdu8tu_8/zh/_shutterstock/music/search/pretty-girl.json?term=pretty-girl
+ editorial
+ https://www.shutterstock.com/_next/data/KGer2kScfnZ-SJdu8tu_8/zh/_shutterstock/editorial/search/pretty-girl.json?term=pretty-girl
+ 
+ */
+        
+//                 https://www.shutterstock.com/_next/data/KGer2kScfnZ-SJdu8tu_8/zh/_shutterstock/search/pretty-girl.json?image_type=photo&term=pretty-girl
+        let str = "https://www.shutterstock.com/_next/data/KGer2kScfnZ-SJdu8tu_8/zh/_shutterstock/search/sexy.json?image_type=photo&page=4&term=sexy"
+        HN.GET(url: str).success { (response) in
+//            debugPrint("success: \(response)")
+            
+            guard let data = try? JSONSerialization.data(withJSONObject: response) else {return  }
+//                let decoder = JSONDecoder()
+//                decoder.nonConformingFloatDecodingStrategy = .convertFromString(positiveInfinity: "+Infinity", negativeInfinity: "-Infinity", nan: "NaN")
+//                return try? decoder.decode(type, from: data)
+            
+            let imagesModel = try? JSONDecoder().decode(ImagesModel.self, from: data)
+            if (imagesModel?.pageProps?.assets?.count ?? 0 > 0 ) {
+                debugPrint("imagesModel.pageProps.count \(imagesModel?.pageProps?.assets?.count)")
+            }
+
+            
+//            pageProps pageProps[]  index.  displays  "260Nw" "600W" "1500W"   "src" "width" "height"
         }.failed { (error) in
             debugPrint("failed: \(error)")
         }
         
     }
+    
+    
+    
+    
     
 }
 
