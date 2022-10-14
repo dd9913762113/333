@@ -4,7 +4,25 @@
 
 有需求可以直接提issue
 
+```swift
+//MARK: - -------------------------- Debug 打印 --------------------------
+func DLog<T>(_ message : T, file : String = #file, funcName : String = #function, lineNum : Int = #line) {
+    #if DEBUG
+    let date = Date()
+    let dateFormter = DateFormatter()
+    dateFormter.dateFormat = "yyyy-MM-dd hh:mm:ss"
+    let dateStr = dateFormter.string(from: date)
+    
+    let file = (file as NSString).lastPathComponent;
+    if let msg = message as? String, msg.contains("=======>") {
+        print(dateStr + "=======\(file):(\(lineNum))--\(message)")
+    }else {
+        print(dateStr + "=======\(file):(\(lineNum))==============>\(message)")
+    }
 
+    #endif
+}
+```
 
 
 ### **根据SwiftLint提示进行代码规范**
