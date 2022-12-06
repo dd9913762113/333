@@ -3,11 +3,12 @@
 #source 'https://github.com/CocoaPods/Specs.git'
 
 platform :ios, '13'
-inhibit_all_warnings!
-use_frameworks!
 
 target '3332323' do
-
+  
+  inhibit_all_warnings!
+  use_frameworks!
+  
 # pod 'LookinServer'
  pod 'Texture' ,'~> 3.1.0'
 # pod 'SwiftSignalKit',:git => 'https://github.com/dd9913762113/SwiftSignalKit', :branch => 'master'
@@ -209,15 +210,27 @@ pod 'VIMediaCache', '~> 0.4'
 end
 
 
+#post_install do |installer|
+#  installer.pods_project.targets.each do |target|
+#    target.build_configurations.each do |config|
+##      config.build_settings['IPHONEOS_DEPLOYMENT_TARGET'] = '13.0'
+#      config.build_settings['ONLY_ACTIVE_ARCH'] = 'NO'  # 讓M1晶片的MAC可編譯
+#      config.build_settings['LD_NO_PIE'] = 'NO'
+#    end
+#  end
+#end
+
 post_install do |installer|
   installer.pods_project.targets.each do |target|
     target.build_configurations.each do |config|
-#      config.build_settings['IPHONEOS_DEPLOYMENT_TARGET'] = '13.0'
+      config.build_settings['IPHONEOS_DEPLOYMENT_TARGET'] = '13.0'
       config.build_settings['ONLY_ACTIVE_ARCH'] = 'NO'  # 讓M1晶片的MAC可編譯
       config.build_settings['LD_NO_PIE'] = 'NO'
+      config.build_settings['CODE_SIGNING_ALLOWED'] = 'NO'
     end
   end
 end
+
 
 
 

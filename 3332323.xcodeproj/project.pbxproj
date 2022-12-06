@@ -8,6 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		6304FA09293F05A80084AD2B /* Date+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6304FA08293F05A80084AD2B /* Date+Extension.swift */; };
+		6304FA10293F2B730084AD2B /* qst_thirdPartyFriendInvite.gif in Resources */ = {isa = PBXBuildFile; fileRef = 6304FA0F293F2B730084AD2B /* qst_thirdPartyFriendInvite.gif */; };
 		6319E2F227C0919B003497E0 /* DK_BackgroundVideo.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6319E2F127C0919B003497E0 /* DK_BackgroundVideo.swift */; };
 		6319E2F427C09207003497E0 /* BackgroundVideo.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6319E2F327C09207003497E0 /* BackgroundVideo.swift */; };
 		6319E31427C09233003497E0 /* vip_up.png in Resources */ = {isa = PBXBuildFile; fileRef = 6319E2F727C09233003497E0 /* vip_up.png */; };
@@ -339,6 +340,7 @@
 		29E360D98108EDF26A267B1B /* Pods_3332323.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_3332323.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		51AE6A2AA0E2E431C2AAC1AF /* Pods-3332323.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-3332323.debug.xcconfig"; path = "Target Support Files/Pods-3332323/Pods-3332323.debug.xcconfig"; sourceTree = "<group>"; };
 		6304FA08293F05A80084AD2B /* Date+Extension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Date+Extension.swift"; sourceTree = "<group>"; };
+		6304FA0F293F2B730084AD2B /* qst_thirdPartyFriendInvite.gif */ = {isa = PBXFileReference; lastKnownFileType = image.gif; path = qst_thirdPartyFriendInvite.gif; sourceTree = "<group>"; };
 		6319E2F127C0919B003497E0 /* DK_BackgroundVideo.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DK_BackgroundVideo.swift; sourceTree = "<group>"; };
 		6319E2F327C09207003497E0 /* BackgroundVideo.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BackgroundVideo.swift; sourceTree = "<group>"; };
 		6319E2F727C09233003497E0 /* vip_up.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = vip_up.png; sourceTree = "<group>"; };
@@ -756,6 +758,46 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		6304FA0A293F2B730084AD2B /* AResouces */ = {
+			isa = PBXGroup;
+			children = (
+				6304FA0B293F2B730084AD2B /* images */,
+				6304FA0C293F2B730084AD2B /* others */,
+				6304FA0D293F2B730084AD2B /* videos */,
+				6304FA0E293F2B730084AD2B /* Gif */,
+			);
+			path = AResouces;
+			sourceTree = "<group>";
+		};
+		6304FA0B293F2B730084AD2B /* images */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			path = images;
+			sourceTree = "<group>";
+		};
+		6304FA0C293F2B730084AD2B /* others */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			path = others;
+			sourceTree = "<group>";
+		};
+		6304FA0D293F2B730084AD2B /* videos */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			path = videos;
+			sourceTree = "<group>";
+		};
+		6304FA0E293F2B730084AD2B /* Gif */ = {
+			isa = PBXGroup;
+			children = (
+				6304FA0F293F2B730084AD2B /* qst_thirdPartyFriendInvite.gif */,
+			);
+			path = Gif;
+			sourceTree = "<group>";
+		};
 		6319E2F027C0912F003497E0 /* 视频背景 */ = {
 			isa = PBXGroup;
 			children = (
@@ -1778,6 +1820,7 @@
 				63A66785269861B5009235A3 /* LaunchScreen.storyboard */,
 				63A66783269861B5009235A3 /* Assets.xcassets */,
 				63A66788269861B5009235A3 /* Info.plist */,
+				6304FA0A293F2B730084AD2B /* AResouces */,
 			);
 			path = 3332323;
 			sourceTree = "<group>";
@@ -1984,7 +2027,7 @@
 				};
 			};
 			buildConfigurationList = 63A66772269861B4009235A3 /* Build configuration list for PBXProject "3332323" */;
-			compatibilityVersion = "Xcode 9.3";
+			compatibilityVersion = "Xcode 10.0";
 			developmentRegion = en;
 			hasScannedForEncodings = 0;
 			knownRegions = (
@@ -2010,6 +2053,7 @@
 				63608E6E27BF6A4C00760485 /* TheNewsApi.json in Resources */,
 				6319E32827C09233003497E0 /* vip_level_1 .png in Resources */,
 				6319E31827C09233003497E0 /* vip_level_1.png in Resources */,
+				6304FA10293F2B730084AD2B /* qst_thirdPartyFriendInvite.gif in Resources */,
 				6328306A26B16FAA0041F5BF /* iosBeta.7a194ab3b377cc61d66f.js in Resources */,
 				6328306926B16FAA0041F5BF /* [...value]_42ee8ae3.72c6e3ef478c2b8b7f37.js in Resources */,
 				6319E32427C09233003497E0 /* vip10@3x.png in Resources */,

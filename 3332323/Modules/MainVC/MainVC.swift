@@ -8,7 +8,9 @@
 import UIKit
 import Foundation
 import Luminous
-
+//import Swiftz
+import RxSwift
+import Kingfisher
 
 private class TableViewCell: UITableViewCell {
     var nameLabel: UILabel
@@ -33,23 +35,13 @@ private class TableViewCell: UITableViewCell {
 class MainVC: UIViewController,  UITableViewDelegate, UITableViewDataSource {
     var array = [String]()
     var arrayVC = [UIViewController]()
-    
+    var disposeBag: DisposeBag = .init()
+
     private var tableView = UITableView()
     override func viewDidLoad() {
         super.viewDidLoad()
 //        self.navigationController?.navigationBar.isHidden = true
 
-        view.addSubview(tableView)
-        tableView.translatesAutoresizingMaskIntoConstraints = false
-        NSLayoutConstraint.activate([
-            tableView.topAnchor.constraint(equalTo: view.topAnchor),
-            tableView.leftAnchor.constraint(equalTo: view.leftAnchor, constant: 0),
-            tableView.rightAnchor.constraint(equalTo: view.rightAnchor),
-            tableView.bottomAnchor.constraint(equalTo: view.bottomAnchor),
-        ])
-        tableView.delegate = self
-        tableView.dataSource = self
-      
         self.array = ["DownLoad", "collectionview", "TVListVC",
                       "天女散花", "各种权限", "图片选择器",
                       "图文发布", "申请主播","JitsiMeet 音视频在线会议",
@@ -64,12 +56,49 @@ class MainVC: UIViewController,  UITableViewDelegate, UITableViewDataSource {
                         PINGTest(),DK_TracerouteVC(),NetworksSpeedViewController(),
                         DKNetDiagnoServiceVC(),DK_SGWiFiUploadVC(),CacheLastDataViewController(),
                         ImageCollectionsVC()]
+       
+        
+        self.setUpUI()
+        
+        self.showDeviceInfos()
+
+    }
+    
+    func setUpUI() {
+        view.addSubview(tableView)
+        tableView.translatesAutoresizingMaskIntoConstraints = false
+        NSLayoutConstraint.activate([
+            tableView.topAnchor.constraint(equalTo: view.topAnchor),
+            tableView.leftAnchor.constraint(equalTo: view.leftAnchor, constant: 0),
+            tableView.rightAnchor.constraint(equalTo: view.rightAnchor),
+            tableView.bottomAnchor.constraint(equalTo: view.bottomAnchor),
+        ])
+        tableView.delegate = self
+        tableView.dataSource = self
         tableView.rowHeight = 50
         tableView.register(TableViewCell.self, forCellReuseIdentifier: "Cell")
         tableView.reloadData()
         
-        self.showDeviceInfos()
+        view.addSubview(thirdPartyReferView)
+        view.addSubview(thirdPartyFriendInviteImageView)
+        view.bringSubviewToFront(thirdPartyFriendInviteImageView)
+       
+        
+        thirdPartyReferView.snp.makeConstraints { (make) in
+            make.top.equalTo(-128)
+            make.left.equalTo(13.7)
+            make.right.equalTo(-13.7)
+            make.bottom.equalTo(view.safeAreaLayoutGuide.snp.bottom)
+        }
+        
+        thirdPartyFriendInviteImageView.snp.makeConstraints { (make) in
+            make.right.equalTo(thirdPartyReferView)
+            make.bottom.equalTo(thirdPartyReferView)
+            make.width.equalTo(109)
+            make.height.equalTo(104)
+        }
     }
+    
 
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
@@ -119,6 +148,95 @@ class MainVC: UIViewController,  UITableViewDelegate, UITableViewDataSource {
 
       
     }
+    
+    
+    // 邀请好友悬浮球滚动范围
+    lazy var thirdPartyReferView: UIView = {
+        let v = UIView()
+        v.isUserInteractionEnabled = false
+        return v
+    }()
+    /// 邀请好友悬浮球
+    private lazy var thirdPartyFriendInviteImageView: UIImageView = {
+        let im = UIImageView()
+        im.isUserInteractionEnabled = true
+        if let path = Bundle.main.path(forResource:"qst_thirdPartyFriendInvite", ofType:"gif") {
+            let url = URL(fileURLWithPath: path)
+            let provider = LocalFileImageDataProvider(fileURL: url)
+            im.kf.setImage(with: provider)
+        }
+        
+        let longTap = UIPanGestureRecognizer()
+        im.addGestureRecognizer(longTap)
+        
+        longTap.rx.event.bind { [weak self] re in
+           // 普通状态才可拖动
+            guard let self = self else { return }
+            
+            let point = re.location(in: self.thirdPartyReferView)
+            
+            var endPointX: CGFloat = point.x
+
+            var endPointY: CGFloat = point.y
+            
+            let half_width = im.frame.size.width/2
+            
+            let half_height = im.frame.size.height/2
+
+            if re.state == .changed {
+
+                if point.x < half_width {
+                    endPointX = half_width
+                }else if point.x > self.thirdPartyReferView.width - half_width {
+                    endPointX = self.thirdPartyReferView.width - half_width
+                }else {
+                    endPointX = point.x
+                }
+                
+                if point.y < half_height {
+                    endPointY = half_height
+                }else if point.y > self.thirdPartyReferView.height - half_height {
+                    endPointY = self.thirdPartyReferView.height - half_height
+                }else {
+                    endPointY = point.y
+                }
+
+                im.snp.remakeConstraints({ make in
+                    make.width.equalTo(109)
+                    make.height.equalTo(104)
+                    make.centerX.equalTo(endPointX+self.thirdPartyReferView.frame.minX)
+                    make.centerY.equalTo(endPointY+self.thirdPartyReferView.frame.minY)
+                })
+            }
+            
+        }.disposed(by: disposeBag)
+        
+        let tap = UITapGestureRecognizer()
+        im.addGestureRecognizer(tap)
+        tap.rx.event.bind { [weak self] _ in
+            guard let self = self else { return }
+//            self.show_friendInviteWeb()
+            DLog("悬浮球 点击了")
+        }.disposed(by: self.disposeBag)
+        return im
+    }()
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
     
     
     func showDNSInfos ()

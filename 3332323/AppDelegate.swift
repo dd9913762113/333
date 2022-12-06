@@ -35,8 +35,6 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
         guard let launchOptions = launchOptions else { return false }
         JitsiMeet.sharedInstance().application(application, didFinishLaunchingWithOptions: launchOptions)
-        
-        
         self.voipRegistration()
 
         return true
