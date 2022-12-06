@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		6304FA09293F05A80084AD2B /* Date+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6304FA08293F05A80084AD2B /* Date+Extension.swift */; };
 		6319E2F227C0919B003497E0 /* DK_BackgroundVideo.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6319E2F127C0919B003497E0 /* DK_BackgroundVideo.swift */; };
 		6319E2F427C09207003497E0 /* BackgroundVideo.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6319E2F327C09207003497E0 /* BackgroundVideo.swift */; };
 		6319E31427C09233003497E0 /* vip_up.png in Resources */ = {isa = PBXBuildFile; fileRef = 6319E2F727C09233003497E0 /* vip_up.png */; };
@@ -337,6 +338,7 @@
 /* Begin PBXFileReference section */
 		29E360D98108EDF26A267B1B /* Pods_3332323.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_3332323.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		51AE6A2AA0E2E431C2AAC1AF /* Pods-3332323.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-3332323.debug.xcconfig"; path = "Target Support Files/Pods-3332323/Pods-3332323.debug.xcconfig"; sourceTree = "<group>"; };
+		6304FA08293F05A80084AD2B /* Date+Extension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Date+Extension.swift"; sourceTree = "<group>"; };
 		6319E2F127C0919B003497E0 /* DK_BackgroundVideo.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DK_BackgroundVideo.swift; sourceTree = "<group>"; };
 		6319E2F327C09207003497E0 /* BackgroundVideo.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BackgroundVideo.swift; sourceTree = "<group>"; };
 		6319E2F727C09233003497E0 /* vip_up.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = vip_up.png; sourceTree = "<group>"; };
@@ -1687,6 +1689,7 @@
 				63A48B8B27A00C2500022B9F /* NonIntegerNumber+Extension.swift */,
 				63A48B8C27A00C2500022B9F /* String+Extension.swift */,
 				63A48B8D27A00C2500022B9F /* Array+Extension.swift */,
+				6304FA08293F05A80084AD2B /* Date+Extension.swift */,
 			);
 			path = Foundation;
 			sourceTree = "<group>";
@@ -2305,6 +2308,7 @@
 				63A5CAFA27F17E5C00DF348A /* PingManager.swift in Sources */,
 				63A5CB0427F188DA00DF348A /* NENPingManager.m in Sources */,
 				63A1E69A27BE2AF700A7C766 /* XYNavigationController.swift in Sources */,
+				6304FA09293F05A80084AD2B /* Date+Extension.swift in Sources */,
 				6319E36227C0D7F4003497E0 /* Multicast.swift in Sources */,
 				63608E3827BF343E00760485 /* FlipboardCell.swift in Sources */,
 				63608E5627BF343E00760485 /* NewsCollectionHandler.swift in Sources */,

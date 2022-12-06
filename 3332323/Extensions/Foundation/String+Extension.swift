@@ -588,3 +588,52 @@ extension String {
 
 }
 
+
+
+extension String {
+    // 时间戳转成字符串
+    static func timeIntervalChangeToTimeStr(timeInterval: Double, _ dateFormat:String? = "yyyy-MM-dd HH:mm:ss") -> String {
+        let date:Date = Date.init(timeIntervalSince1970: timeInterval)
+        let formatter = DateFormatter.init()
+        if dateFormat == nil {
+            formatter.dateFormat = "yyyy-MM-dd HH:mm:ss"
+        }else{
+            formatter.dateFormat = dateFormat
+        }
+        return formatter.string(from: date as Date)
+    }
+    // 字符串转时间戳
+    func timeStrChangeTotimeInterval(_ dateFormat: String? = "yyyy-MM-dd HH:mm:ss") -> String {
+        if self.isEmpty {
+            return ""
+        }
+        let format = DateFormatter.init()
+        format.dateStyle = .medium
+        format.timeStyle = .short
+        if dateFormat == nil {
+            format.dateFormat = "yyyy-MM-dd HH:mm:ss"
+        }else{
+            format.dateFormat = dateFormat
+        }
+        let date = format.date(from: self)
+        return String(date!.timeIntervalSince1970)
+    }
+    
+    // 字符串转时间戳
+    func timeStrChangeTotimeInterval11(_ dateFormat: String? = "yyyy年MM月dd日") -> String {
+        if self.isEmpty {
+            return ""
+        }
+        let format = DateFormatter.init()
+        format.dateStyle = .medium
+        format.timeStyle = .short
+        if dateFormat == nil {
+            format.dateFormat = "yyyy年MM月dd日"
+        }else{
+            format.dateFormat = dateFormat
+        }
+        let date = format.date(from: self)
+        return String(date!.timeIntervalSince1970*1000)
+    }
+}
+
