@@ -413,3 +413,20 @@ public struct isFollowModel: Convertible {
     /// 1关注 0-取消
     var type = ""
 }
+
+
+
+///// model 转 dic
+///// 更新赔率信息时需要的参数数据： wagerSelectionInfos
+//var wagerSelectionInfo_dic: [String : Any] {
+//    get {
+//        let encoder = JSONEncoder()
+//        if let data = try? encoder.encode(self) {
+//            if let jsonObj = try? JSONSerialization.jsonObject(with: data, options: .allowFragments), let json = jsonObj as? [String : Any] {
+//                return json
+//            }
+//        }
+//
+//        return [:]
+//    }
+//}

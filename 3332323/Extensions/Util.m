@@ -27,7 +27,7 @@ UIViewController* getVisibleViewControllerFrom(UIViewController *vc){
     }
 }
 
-UIViewController* currViewController(){
+UIViewController* currViewController() {
     UIViewController *rootViewController = [[UIApplication sharedApplication] delegate].window.rootViewController;
     if (rootViewController.presentedViewController) {
         return getVisibleViewControllerFrom(rootViewController.presentedViewController);
@@ -35,7 +35,7 @@ UIViewController* currViewController(){
     return getVisibleViewControllerFrom(rootViewController);
 }
 
-UINavigationController* currNavigationController(){
+UINavigationController* currNavigationController() {
     return currViewController().navigationController;
 }
 
