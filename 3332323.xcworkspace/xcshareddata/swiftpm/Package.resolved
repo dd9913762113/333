@@ -1,0 +1,14 @@
+{
+  "pins" : [
+    {
+      "identity" : "v2exapi",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/isaced/V2exAPI.git",
+      "state" : {
+        "branch" : "main",
+        "revision" : "3eb17298b252f1492c3dbf52882550fd16d3d9b9"
+      }
+    }
+  ],
+  "version" : 2
+}

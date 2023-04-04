@@ -21,6 +21,15 @@ extension String {
 //        }
 //        return String(data: data, encoding: .utf8)
 //    }
+    func base64Decoded() -> String? {
+        
+        var st = self;
+        if (self.count % 4 <= 2){
+            st += String(repeating: "=", count: (self.count % 4))
+        }
+        guard let data = Data(base64Encoded: st) else { return nil }
+        return String(data: data, encoding: .utf8)
+    }
 }
 
 
@@ -222,6 +231,10 @@ extension String{
         return replacingOccurrences(of: ",", with: "")
     }
     
+    mutating func replace(_ originalString: String, with newString: String) {
+        
+        self = self.replacingOccurrences(of: originalString, with: newString)
+    }
 }
 
 extension String {

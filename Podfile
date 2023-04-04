@@ -139,6 +139,9 @@ pod 'VIMediaCache', '~> 0.4'
 
   pod 'Protobuf' , '~> 3.19.6'
 
+#  v2ex api https://github.com/isaced/V2exAPI
+#  pod 'V2exAPI', '~> 1.0.0'
+
 #动画效果  适用于各个地方 如：tabbar切换点击时动态响应
 # pod 'lottie-ios'
  

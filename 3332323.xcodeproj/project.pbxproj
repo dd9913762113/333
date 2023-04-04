@@ -3,7 +3,7 @@
 	archiveVersion = 1;
 	classes = {
 	};
-	objectVersion = 51;
+	objectVersion = 52;
 	objects = {
 
 /* Begin PBXBuildFile section */
@@ -116,6 +116,7 @@
 		6328307926B296120041F5BF /* DelegateMediator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6328307826B296120041F5BF /* DelegateMediator.swift */; };
 		6328308026B2B0B10041F5BF /* PreviewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6328307F26B2B0B10041F5BF /* PreviewController.swift */; };
 		6328308326B2BD750041F5BF /* SPPermissionsVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6328308226B2BD750041F5BF /* SPPermissionsVC.swift */; };
+		63298B90295ACDCF007D7FCB /* V2exAPI in Frameworks */ = {isa = PBXBuildFile; productRef = 63298B8F295ACDCF007D7FCB /* V2exAPI */; };
 		6359945527AE56F800CF4A93 /* MineApplyAnchorVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6359945427AE56F800CF4A93 /* MineApplyAnchorVC.swift */; };
 		6359945A27AE675B00CF4A93 /* MineApplyAnchorModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6359945927AE675B00CF4A93 /* MineApplyAnchorModel.swift */; };
 		6359945E27AE711400CF4A93 /* MineApplyAnchorData.json in Resources */ = {isa = PBXBuildFile; fileRef = 6359945D27AE711400CF4A93 /* MineApplyAnchorData.json */; };
@@ -740,6 +741,7 @@
 				63E5F3B328E56EAD00F6D7E8 /* Foundation.framework in Frameworks */,
 				631FF73B28051DC10010392B /* Accelerate.framework in Frameworks */,
 				63608E7527BFA9CA00760485 /* NotificationCenter.framework in Frameworks */,
+				63298B90295ACDCF007D7FCB /* V2exAPI in Frameworks */,
 				63E5F3B228E56EAC00F6D7E8 /* CoreFoundation.framework in Frameworks */,
 				63D615DD26AD13FA00CDBA38 /* VideoToolbox.framework in Frameworks */,
 				6328303226B1060F0041F5BF /* MetalKit.framework in Frameworks */,
@@ -2005,6 +2007,9 @@
 			dependencies = (
 			);
 			name = 3332323;
+			packageProductDependencies = (
+				63298B8F295ACDCF007D7FCB /* V2exAPI */,
+			);
 			productName = 3332323;
 			productReference = 63A66777269861B4009235A3 /* 3332323.app */;
 			productType = "com.apple.product-type.application";
@@ -2035,6 +2040,9 @@
 				Base,
 			);
 			mainGroup = 63A6676E269861B4009235A3;
+			packageReferences = (
+				63298B8E295ACDCF007D7FCB /* XCRemoteSwiftPackageReference "V2exAPI" */,
+			);
 			productRefGroup = 63A66778269861B4009235A3 /* Products */;
 			projectDirPath = "";
 			projectRoot = "";
@@ -2683,6 +2691,25 @@
 			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
+
+/* Begin XCRemoteSwiftPackageReference section */
+		63298B8E295ACDCF007D7FCB /* XCRemoteSwiftPackageReference "V2exAPI" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/isaced/V2exAPI.git";
+			requirement = {
+				branch = main;
+				kind = branch;
+			};
+		};
+/* End XCRemoteSwiftPackageReference section */
+
+/* Begin XCSwiftPackageProductDependency section */
+		63298B8F295ACDCF007D7FCB /* V2exAPI */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 63298B8E295ACDCF007D7FCB /* XCRemoteSwiftPackageReference "V2exAPI" */;
+			productName = V2exAPI;
+		};
+/* End XCSwiftPackageProductDependency section */
 	};
 	rootObject = 63A6676F269861B4009235A3 /* Project object */;
 }
