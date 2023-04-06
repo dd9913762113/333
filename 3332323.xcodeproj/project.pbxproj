@@ -3,7 +3,7 @@
 	archiveVersion = 1;
 	classes = {
 	};
-	objectVersion = 52;
+	objectVersion = 53;
 	objects = {
 
 /* Begin PBXBuildFile section */
@@ -81,7 +81,6 @@
 		631FF735280515A50010392B /* DKNetDiagnoServiceVC.m in Sources */ = {isa = PBXBuildFile; fileRef = 631FF72C280515A50010392B /* DKNetDiagnoServiceVC.m */; };
 		631FF73728051D920010392B /* SystemConfiguration.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 631FF73628051D920010392B /* SystemConfiguration.framework */; };
 		631FF73928051DAF0010392B /* libc++.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = 631FF73828051DA80010392B /* libc++.tbd */; };
-		631FF73B28051DC10010392B /* Accelerate.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 631FF73A28051DC10010392B /* Accelerate.framework */; };
 		6328303226B1060F0041F5BF /* MetalKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 6328303126B1060F0041F5BF /* MetalKit.framework */; };
 		6328303526B125210041F5BF /* TVListVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6328303426B125210041F5BF /* TVListVC.swift */; };
 		6328303E26B127100041F5BF /* cn.m3u in Resources */ = {isa = PBXBuildFile; fileRef = 6328303D26B127100041F5BF /* cn.m3u */; };
@@ -247,6 +246,8 @@
 		63820BBF27C7598600C02634 /* LocalStorage.swift in Sources */ = {isa = PBXBuildFile; fileRef = 63820BBE27C7598600C02634 /* LocalStorage.swift */; };
 		63820BC227C759F500C02634 /* MainModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 63820BC127C759F500C02634 /* MainModel.swift */; };
 		63820BC527C75DE200C02634 /* HttpServer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 63820BC427C75DE200C02634 /* HttpServer.swift */; };
+		638EDB7A29DE958100E50368 /* cd-redpack.json in Resources */ = {isa = PBXBuildFile; fileRef = 638EDB7929DE958100E50368 /* cd-redpack.json */; };
+		638EDB7D29DE969900E50368 /* DK_LottieTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = 638EDB7C29DE969900E50368 /* DK_LottieTest.swift */; };
 		63A1E68D27BE13A900A7C766 /* JitsiMeetVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 63A1E68C27BE13A900A7C766 /* JitsiMeetVC.swift */; };
 		63A1E69827BE2AF700A7C766 /* XYContentNavController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 63A1E69527BE2AF700A7C766 /* XYContentNavController.swift */; };
 		63A1E69927BE2AF700A7C766 /* XYContentController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 63A1E69627BE2AF700A7C766 /* XYContentController.swift */; };
@@ -628,6 +629,8 @@
 		63820BBE27C7598600C02634 /* LocalStorage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocalStorage.swift; sourceTree = "<group>"; };
 		63820BC127C759F500C02634 /* MainModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainModel.swift; sourceTree = "<group>"; };
 		63820BC427C75DE200C02634 /* HttpServer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HttpServer.swift; sourceTree = "<group>"; };
+		638EDB7929DE958100E50368 /* cd-redpack.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = "cd-redpack.json"; sourceTree = "<group>"; };
+		638EDB7C29DE969900E50368 /* DK_LottieTest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DK_LottieTest.swift; sourceTree = "<group>"; };
 		63A1E68C27BE13A900A7C766 /* JitsiMeetVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = JitsiMeetVC.swift; sourceTree = "<group>"; };
 		63A1E69527BE2AF700A7C766 /* XYContentNavController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = XYContentNavController.swift; sourceTree = "<group>"; };
 		63A1E69627BE2AF700A7C766 /* XYContentController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = XYContentController.swift; sourceTree = "<group>"; };
@@ -739,7 +742,6 @@
 				63E5F3AC28E56DC100F6D7E8 /* Accelerate.framework in Frameworks */,
 				63E5F3B428E56EAE00F6D7E8 /* AVFoundation.framework in Frameworks */,
 				63E5F3B328E56EAD00F6D7E8 /* Foundation.framework in Frameworks */,
-				631FF73B28051DC10010392B /* Accelerate.framework in Frameworks */,
 				63608E7527BFA9CA00760485 /* NotificationCenter.framework in Frameworks */,
 				63298B90295ACDCF007D7FCB /* V2exAPI in Frameworks */,
 				63E5F3B228E56EAC00F6D7E8 /* CoreFoundation.framework in Frameworks */,
@@ -1034,6 +1036,7 @@
 			isa = PBXGroup;
 			children = (
 				63A7739C26A6B5C7000DE05B /* MainVC.swift */,
+				638EDB7B29DE966500E50368 /* lottie-动画 */,
 				63669C1A28EE9CDA00F4C33C /* 图片浏览 */,
 				63E5F3C428E843AD00F6D7E8 /* 缓存上次数据 */,
 				63E5F3BB28E5827000F6D7E8 /* 定时器 */,
@@ -1611,6 +1614,22 @@
 			path = Servers;
 			sourceTree = "<group>";
 		};
+		638EDB7829DE958100E50368 /* lottie */ = {
+			isa = PBXGroup;
+			children = (
+				638EDB7929DE958100E50368 /* cd-redpack.json */,
+			);
+			path = lottie;
+			sourceTree = "<group>";
+		};
+		638EDB7B29DE966500E50368 /* lottie-动画 */ = {
+			isa = PBXGroup;
+			children = (
+				638EDB7C29DE969900E50368 /* DK_LottieTest.swift */,
+			);
+			path = "lottie-动画";
+			sourceTree = "<group>";
+		};
 		63A1E68B27BE137B00A7C766 /* Jitsi Meet */ = {
 			isa = PBXGroup;
 			children = (
@@ -1837,6 +1856,7 @@
 		63B3154526A431E200F5D180 /* TestJson */ = {
 			isa = PBXGroup;
 			children = (
+				638EDB7829DE958100E50368 /* lottie */,
 				63B3154626A431E200F5D180 /* 333333.json */,
 				63B3154726A431E200F5D180 /* 444444.json */,
 				63B3154826A431E200F5D180 /* 1111111111.json */,
@@ -2020,9 +2040,10 @@
 		63A6676F269861B4009235A3 /* Project object */ = {
 			isa = PBXProject;
 			attributes = {
+				BuildIndependentTargetsInParallel = YES;
 				CLASSPREFIX = DK_;
 				LastSwiftUpdateCheck = 1250;
-				LastUpgradeCheck = 1250;
+				LastUpgradeCheck = 1430;
 				ORGANIZATIONNAME = XJW;
 				TargetAttributes = {
 					63A66776269861B4009235A3 = {
@@ -2076,6 +2097,7 @@
 				637BAB4A280815A900C7B68C /* upload.html in Resources */,
 				6328306026B16FAA0041F5BF /* [index].2fb4b723.chunk.css in Resources */,
 				6328307226B16FAA0041F5BF /* _app-e363bf75d54d7fadad3c.js in Resources */,
+				638EDB7A29DE958100E50368 /* cd-redpack.json in Resources */,
 				637BAB4F280815A900C7B68C /* SGWiFiUpload.bundle in Resources */,
 				6328305F26B16FAA0041F5BF /* images_8a6e68f1.6451261237807196528b.js in Resources */,
 				6328307026B16FAA0041F5BF /* 4.0cc446367404be6415d2.js in Resources */,
@@ -2285,6 +2307,7 @@
 				63D6156726AD0CC400CDBA38 /* MediaCollectionView.swift in Sources */,
 				63A48B9527A00C2500022B9F /* Collection+Extension.swift in Sources */,
 				637BAB64280815A900C7B68C /* DDASLLogger.m in Sources */,
+				638EDB7D29DE969900E50368 /* DK_LottieTest.swift in Sources */,
 				63A48B7227A007E300022B9F /* HomeVC.swift in Sources */,
 				631FF70B280439C70010392B /* TracerouteTagsDataSources.m in Sources */,
 				6328308326B2BD750041F5BF /* SPPermissionsVC.swift in Sources */,
@@ -2575,8 +2598,9 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CLANG_ENABLE_MODULES = YES;
-				CODE_SIGN_STYLE = Manual;
-				DEVELOPMENT_TEAM = "";
+				CODE_SIGN_IDENTITY = "Apple Development";
+				CODE_SIGN_STYLE = Automatic;
+				DEVELOPMENT_TEAM = TYK6LPV78P;
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
 					"\"${PODS_CONFIGURATION_BUILD_DIR}/LookinServer\"",
@@ -2599,6 +2623,7 @@
 					"\"${PODS_CONFIGURATION_BUILD_DIR}/Texture/AsyncDisplayKit.framework/Headers\"",
 				);
 				INFOPLIST_FILE = 3332323/Info.plist;
+				INFOPLIST_KEY_CFBundleDisplayName = "Swift Test";
 				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.developer-tools";
 				IPHONEOS_DEPLOYMENT_TARGET = 13.0;
 				LD_RUNPATH_SEARCH_PATHS = (
@@ -2609,7 +2634,7 @@
 					"$(inherited)",
 					"$(PROJECT_DIR)/3332323/Thirds/FFmpeg-iOS4.1/lib",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = com.332323;
+				PRODUCT_BUNDLE_IDENTIFIER = com.dd.v2ex;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "";
 				SWIFT_OBJC_BRIDGING_HEADER = "3332323/Extensions/3332323-Bridging-Header.h";
@@ -2626,8 +2651,9 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CLANG_ENABLE_MODULES = YES;
-				CODE_SIGN_STYLE = Manual;
-				DEVELOPMENT_TEAM = "";
+				CODE_SIGN_IDENTITY = "Apple Development";
+				CODE_SIGN_STYLE = Automatic;
+				DEVELOPMENT_TEAM = TYK6LPV78P;
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
 					"\"${PODS_CONFIGURATION_BUILD_DIR}/LookinServer\"",
@@ -2650,6 +2676,7 @@
 					"\"${PODS_CONFIGURATION_BUILD_DIR}/Texture/AsyncDisplayKit.framework/Headers\"",
 				);
 				INFOPLIST_FILE = 3332323/Info.plist;
+				INFOPLIST_KEY_CFBundleDisplayName = "Swift Test";
 				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.developer-tools";
 				IPHONEOS_DEPLOYMENT_TARGET = 13.0;
 				LD_RUNPATH_SEARCH_PATHS = (
@@ -2660,7 +2687,7 @@
 					"$(inherited)",
 					"$(PROJECT_DIR)/3332323/Thirds/FFmpeg-iOS4.1/lib",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = com.332323;
+				PRODUCT_BUNDLE_IDENTIFIER = com.dd.v2ex;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "";
 				SWIFT_OBJC_BRIDGING_HEADER = "3332323/Extensions/3332323-Bridging-Header.h";

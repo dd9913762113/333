@@ -15,7 +15,7 @@ target '3332323' do
 #pod 'SwiftSignalKit'
  pod 'SnapKit'  ,'~> 5.6.0'
  pod 'Alamofire' ,'~> 5.6.2'
- pod 'Moya', '~> 15.0.0'
+# pod 'Moya', '~> 15.0.0'
 # pod 'Moya/RxSwift', '~> 15.0'
  pod 'PKHUD', '~> 5.3.0'
  pod 'HandyJSON', '~> 5.0.4-beta'
@@ -26,7 +26,7 @@ target '3332323' do
  pod 'PromiseKit', '~> 6.18.1'
  pod 'DaisyNet'
  pod 'Cache', '~> 6.0.0'
- pod 'Kingfisher' ,'~> 7.3.2'
+ pod 'Kingfisher' ,'~> 7.6.2'
 # pod 'OpenSSL-Universal'
 # pod "OpenSSL-Apple"
  pod 'PhoneNumberKit','~> 3.3.4'
@@ -143,7 +143,7 @@ pod 'VIMediaCache', '~> 0.4'
 #  pod 'V2exAPI', '~> 1.0.0'
 
 #动画效果  适用于各个地方 如：tabbar切换点击时动态响应
-# pod 'lottie-ios'
+ pod 'lottie-ios'
  
 #时间线表格cell
 # pod 'TimelineTableViewCell'
@@ -233,7 +233,6 @@ post_install do |installer|
     end
   end
 end
-
 
 
 

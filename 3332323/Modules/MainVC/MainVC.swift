@@ -44,18 +44,18 @@ class MainVC: UIViewController,  UITableViewDelegate, UITableViewDataSource {
 
         self.array = ["DownLoad", "collectionview", "TVListVC",
                       "天女散花", "各种权限", "图片选择器",
-                      "图文发布", "申请主播","JitsiMeet 音视频在线会议",
-                      "EFQRCode 二维码","各大APP新闻页面\"样式\"","视频背景，无限重播",
-                      "ping 检查","Traceroute路径","网络下载测速",
-                      "ping和traceroute，域名诊断，收集诊断日志","浏览器上传文件到手机","网络数据缓存",
-                      "pexels网络图片浏览器"]
+                      "图文发布", "申请主播", "JitsiMeet 音视频在线会议",
+                      "EFQRCode 二维码", "各大APP新闻页面\"样式\"", "视频背景，无限重播",
+                      "ping 检查", "Traceroute路径", "网络下载测速",
+                      "ping和traceroute，域名诊断，收集诊断日志", "浏览器上传文件到手机","网络数据缓存",
+                      "pexels网络图片浏览器", "lottie-ios"]
         self.arrayVC = [DownLoadTabbar(), MediaCollectionView(), TVListVC(),
                         PreviewController(), SPPermissionsVC(), WXZLPhoto(),
-                        PublishPostVC(),MineApplyAnchorVC(),JitsiMeetVC(),
-                        EFQRCodeVC(),TheNewsViewController(),DK_BackgroundVideo(),
-                        PINGTest(),DK_TracerouteVC(),NetworksSpeedViewController(),
-                        DKNetDiagnoServiceVC(),DK_SGWiFiUploadVC(),CacheLastDataViewController(),
-                        ImageCollectionsVC()]
+                        PublishPostVC(), MineApplyAnchorVC(), JitsiMeetVC(),
+                        EFQRCodeVC(), TheNewsViewController(), DK_BackgroundVideo(),
+                        PINGTest(), DK_TracerouteVC(), NetworksSpeedViewController(),
+                        DKNetDiagnoServiceVC(), DK_SGWiFiUploadVC(), CacheLastDataViewController(),
+                        ImageCollectionsVC(), DK_LottieTest()]
        
         
         self.setUpUI()
