@@ -308,6 +308,7 @@
 		63B9A0CE26B52DFF004AC889 /* PublishPostAddPicView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 63B9A0CD26B52DFF004AC889 /* PublishPostAddPicView.swift */; };
 		63B9A0D026B52EB2004AC889 /* PublishPostTopicCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 63B9A0CF26B52EB2004AC889 /* PublishPostTopicCell.swift */; };
 		63B9A0D226B530DC004AC889 /* UIDevice+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 63B9A0D126B530DC004AC889 /* UIDevice+Extension.swift */; };
+		63C1DD1D2A57CEA900D478A8 /* DK_SwiftDate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 63C1DD1C2A57CEA900D478A8 /* DK_SwiftDate.swift */; };
 		63D6155526AC220C00CDBA38 /* AppDelegate+Download.swift in Sources */ = {isa = PBXBuildFile; fileRef = 63D6155426AC220C00CDBA38 /* AppDelegate+Download.swift */; };
 		63D6155726AC253800CDBA38 /* DownLoadVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 63D6155626AC253800CDBA38 /* DownLoadVC.swift */; };
 		63D6155926AC27A400CDBA38 /* BaseTableVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 63D6155826AC27A400CDBA38 /* BaseTableVC.swift */; };
@@ -703,6 +704,7 @@
 		63B9A0CD26B52DFF004AC889 /* PublishPostAddPicView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PublishPostAddPicView.swift; sourceTree = "<group>"; };
 		63B9A0CF26B52EB2004AC889 /* PublishPostTopicCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PublishPostTopicCell.swift; sourceTree = "<group>"; };
 		63B9A0D126B530DC004AC889 /* UIDevice+Extension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIDevice+Extension.swift"; sourceTree = "<group>"; };
+		63C1DD1C2A57CEA900D478A8 /* DK_SwiftDate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DK_SwiftDate.swift; sourceTree = "<group>"; };
 		63D6155426AC220C00CDBA38 /* AppDelegate+Download.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "AppDelegate+Download.swift"; sourceTree = "<group>"; };
 		63D6155626AC253800CDBA38 /* DownLoadVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DownLoadVC.swift; sourceTree = "<group>"; };
 		63D6155826AC27A400CDBA38 /* BaseTableVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BaseTableVC.swift; sourceTree = "<group>"; };
@@ -1036,6 +1038,7 @@
 			isa = PBXGroup;
 			children = (
 				63A7739C26A6B5C7000DE05B /* MainVC.swift */,
+				63C1DD1B2A57CE8300D478A8 /* SwiftDate */,
 				638EDB7B29DE966500E50368 /* lottie-动画 */,
 				63669C1A28EE9CDA00F4C33C /* 图片浏览 */,
 				63E5F3C428E843AD00F6D7E8 /* 缓存上次数据 */,
@@ -1919,6 +1922,14 @@
 			path = UIKit;
 			sourceTree = "<group>";
 		};
+		63C1DD1B2A57CE8300D478A8 /* SwiftDate */ = {
+			isa = PBXGroup;
+			children = (
+				63C1DD1C2A57CEA900D478A8 /* DK_SwiftDate.swift */,
+			);
+			path = SwiftDate;
+			sourceTree = "<group>";
+		};
 		63D6155126AC205200CDBA38 /* DownLoad */ = {
 			isa = PBXGroup;
 			children = (
@@ -2337,6 +2348,7 @@
 				637BAB4D280815A900C7B68C /* SGWiFiView.m in Sources */,
 				6319E36F27C0D7F4003497E0 /* Signal_Meta.swift in Sources */,
 				63D6155526AC220C00CDBA38 /* AppDelegate+Download.swift in Sources */,
+				63C1DD1D2A57CEA900D478A8 /* DK_SwiftDate.swift in Sources */,
 				63608E6827BF343E00760485 /* TheNewsExtension.swift in Sources */,
 				63A48B9F27A00F0900022B9F /* Util.m in Sources */,
 				6366E05726B0043D00C40126 /* MTCacheManager.swift in Sources */,

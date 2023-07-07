@@ -27,6 +27,10 @@ public class SportBaseVC: UIViewController {
  
     }
     
+    public override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+    }
+    
 //    @objc
 //    func back() {
 //        self.navigationController?.popViewController(animated: true)

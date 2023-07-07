@@ -17,11 +17,11 @@ RSYNC_PROTECT_TMP_FILES=(--filter "P .*.??????")
 variant_for_slice()
 {
   case "$1" in
-  "JitsiMeetSDK.xcframework/ios-x86_64-simulator")
-    echo "simulator"
-    ;;
   "JitsiMeetSDK.xcframework/ios-arm64")
     echo ""
+    ;;
+  "JitsiMeetSDK.xcframework/ios-x86_64-simulator")
+    echo "simulator"
     ;;
   "WebRTC.xcframework/ios-arm64")
     echo ""
@@ -38,11 +38,11 @@ variant_for_slice()
 archs_for_slice()
 {
   case "$1" in
-  "JitsiMeetSDK.xcframework/ios-x86_64-simulator")
-    echo "x86_64"
-    ;;
   "JitsiMeetSDK.xcframework/ios-arm64")
     echo "arm64"
+    ;;
+  "JitsiMeetSDK.xcframework/ios-x86_64-simulator")
+    echo "x86_64"
     ;;
   "WebRTC.xcframework/ios-arm64")
     echo "arm64"
@@ -135,6 +135,6 @@ install_xcframework() {
   echo "Copied $source to $destination"
 }
 
-install_xcframework "${PODS_ROOT}/JitsiMeetSDK/Frameworks/JitsiMeetSDK.xcframework" "JitsiMeetSDK" "framework" "ios-x86_64-simulator" "ios-arm64"
+install_xcframework "${PODS_ROOT}/JitsiMeetSDK/Frameworks/JitsiMeetSDK.xcframework" "JitsiMeetSDK" "framework" "ios-arm64" "ios-x86_64-simulator"
 install_xcframework "${PODS_ROOT}/JitsiMeetSDK/Frameworks/WebRTC.xcframework" "JitsiMeetSDK" "framework" "ios-arm64" "ios-arm64_x86_64-simulator"
 
