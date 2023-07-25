@@ -26,18 +26,20 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
         let window = UIWindow(frame: UIScreen.main.bounds)
         window.rootViewController = BaseTabbarController()
-        window.backgroundColor = .white
-        window.makeKeyAndVisible()
-        self.window = window
+     
 //        sleep(30)
         
 //        manager.application(application, didFinishLaunchingWithOptions: launchOptions)
 
+       
+        self.voipRegistration()        
+        window.backgroundColor = .white
+        window.makeKeyAndVisible()
+        self.window = window
+        return true
+
         guard let launchOptions = launchOptions else { return false }
         JitsiMeet.sharedInstance().application(application, didFinishLaunchingWithOptions: launchOptions)
-        self.voipRegistration()
-
-        return true
     }
     
     
@@ -48,22 +50,16 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         }
     }
 
+    // MARK: - Linking delegate methods
+    func application(_ application: UIApplication,
+                     continue userActivity: NSUserActivity,
+                     restorationHandler: @escaping ([UIUserActivityRestoring]?) -> Void) -> Bool {
+        return JitsiMeet.sharedInstance().application(application, continue: userActivity, restorationHandler: restorationHandler)
+    }
 
-   
-}
-
-
-
-// MARK: - Linking delegate methods
-
-func application(_ application: UIApplication,
-                 continue userActivity: NSUserActivity,
-                 restorationHandler: @escaping ([UIUserActivityRestoring]?) -> Void) -> Bool {
-    return JitsiMeet.sharedInstance().application(application, continue: userActivity, restorationHandler: restorationHandler)
-}
-
-func application(_ app: UIApplication, open url: URL, options: [UIApplication.OpenURLOptionsKey : Any] = [:]) -> Bool {
-    return JitsiMeet.sharedInstance().application(app, open: url, options: options)
+    func application(_ app: UIApplication, open url: URL, options: [UIApplication.OpenURLOptionsKey : Any] = [:]) -> Bool {
+        return JitsiMeet.sharedInstance().application(app, open: url, options: options)
+    }
 }
 
 
@@ -92,6 +88,10 @@ private func downloadHTTPData(url: URL) -> Signal<Data, DownloadFileError> {
         }
     }
 }
+
+
+
+
 
 /**
  

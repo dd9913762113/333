@@ -2699,6 +2699,7 @@
 					"$(inherited)",
 					"$(PROJECT_DIR)/3332323/Thirds/FFmpeg-iOS4.1/lib",
 				);
+				ONLY_ACTIVE_ARCH = YES;
 				PRODUCT_BUNDLE_IDENTIFIER = com.dd.v2ex;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "";

@@ -11,6 +11,7 @@ import Luminous
 //import Swiftz
 import RxSwift
 import Kingfisher
+import PhoneNumberKit
 
 private class TableViewCell: UITableViewCell {
     var nameLabel: UILabel
@@ -248,122 +249,171 @@ class MainVC: UIViewController,  UITableViewDelegate, UITableViewDataSource {
     }
     
     
-    func showDeviceInfos ()
-    {
+//    手机号码 和 国际区号 校验
+    func isValidPhoneNumber(phoneNumber: String, countrieCodes: String) -> Bool {
+           let phoneNumberKit = PhoneNumberKit()
+           let countries = ["CN", "VN", "BR"]
+   //        let countrieCodes = ["86", "84", "55"]
+           let string = countrieCodes + phoneNumber
+           for index in countries {
+               do {
+                   let phoneNumber4 = try phoneNumberKit.parse(string, withRegion: index)
+   //                print("111111 \(phoneNumber4)")
+                   print("111111 \(phoneNumber4.countryCode)")
+                   if phoneNumber4.countryCode > 0  {
+                       return true
+                   } else {
+                       return false
+                   }
+               }catch{
+                   print("User creation failed with error: \(error)")
+                   break
+               }
+           }
+         return false
+       }
+    
+    
+    func showDeviceInfos() {
+        
+        let phoneNumber3 = "13987654321"
+//            let phoneNumber3 = "936771362"
+        let phoneNumber4 = "586072996" //越南
+        
+        let phoneNumber5 = "74772686"  //巴西
+      
+        let bool1 = self.isValidPhoneNumber(phoneNumber: phoneNumber3, countrieCodes: "86")
+        print("111111111 bool1 = \(bool1)")
+        let bool2 = self.isValidPhoneNumber(phoneNumber: phoneNumber3, countrieCodes: "84")
+        print("111111111 bool2 = \(bool2)")
+                                        
+        let bool3 = self.isValidPhoneNumber(phoneNumber: phoneNumber4, countrieCodes: "+86")
+        print("111111222 bool3 = \(bool3)")
+        let bool4 = self.isValidPhoneNumber(phoneNumber: phoneNumber4, countrieCodes: "+84")
+        print("111111222 bool4 = \(bool4)")
+        
+        let bool5 = self.isValidPhoneNumber(phoneNumber: phoneNumber5, countrieCodes: "+86")
+        print("111111333 bool5 = \(bool5)")
+        let bool6 = self.isValidPhoneNumber(phoneNumber: phoneNumber5, countrieCodes: "+84")
+        print("111111333 bool6 = \(bool6)")
+        let bool7 = self.isValidPhoneNumber(phoneNumber: phoneNumber5, countrieCodes: "55")
+        print("111111333 bool7 = \(bool7)")
+        
+        
         // MARK: Network
         
-//        print("------------\nNetwork\n------------")
-//        print("isConnectedViaCellular: \(Luminous.Network.isConnectedViaCellular)")
-//        print("isConnectedViaWiFi: \(Luminous.Network.isConnectedViaWiFi)")
-//        print("SSID: \(Luminous.Network.SSID)")
-//        
-//        
-//        // MARK: Locale
-//        
-//        print("------------\nLocale\n------------")
-//        print("currentCountry: \(Luminous.Locale.currentCountry)")
-//        print("currentCurrency: \(Luminous.Locale.currentCurrency ?? "-")")
-//        print("currentCurrencySymbol: \(Luminous.Locale.currentCurrencySymbol ?? "-")")
-//        print("currentLanguage: \(Luminous.Locale.currentLanguage)")
-//        print("currentTimeZone: \(Luminous.Locale.currentTimeZone)")
-//        print("currentTimeZoneName: \(Luminous.Locale.currentTimeZoneName)")
-//        print("decimalSeparator: \(Luminous.Locale.decimalSeparator ?? "-")")
-//        print("usesMetricSystem: \(Luminous.Locale.usesMetricSystem)")
-//        
-//        
-//        // MARK: Carrier
-//        
-//        print("------------\nCarrier\n------------")
-//        print("allowsVOIP: \(Luminous.Carrier.isVoipAllowed ?? false)")
-//        print("ISOCountryCode: \(Luminous.Carrier.ISOCountryCode ?? "-")")
-//        print("mobileCountryCode: \(Luminous.Carrier.mobileCountryCode ?? "-")")
-//        print("name: \(Luminous.Carrier.name ?? "-")")
-//        print("networkCountryCode: \(Luminous.Carrier.mobileNetworkCode ?? "-")")
-//        
-//        
-//        // MARK: Hardware
-//        
-//        print("------------\nHardware\n------------")
-//        print("bootTime: \(Luminous.Hardware.bootTime)")
-//        print("bootTime: \(Luminous.Hardware.physicalMemory(with: Luminous.MeasureUnit.megabytes))")
-//        print("processorsNumber: \(Luminous.Hardware.processorsNumber)")
-//        print("systemName: \(Luminous.Hardware.systemName)")
-//        print("systemVersion: \(Luminous.Hardware.systemVersion)")
-//        if #available(iOS 9.0, *) {
-//            print("isLowPowerModeEnabled: \(Luminous.Hardware.isLowPowerModeEnabled)")
-//        }
-//        
-//        
-//        // MARK: Hardware - Screen
-//        
-//        print("------------\nScreen\n------------")
-//        print("bounds: \(Luminous.Hardware.Screen.bounds)")
-//        print("brightness: \(Luminous.Hardware.Screen.brightness)")
-//        print("isScreenMirrored: \(Luminous.Hardware.Screen.isScreenMirrored)")
-//        print("nativeBounds: \(Luminous.Hardware.Screen.nativeBounds)")
-//        print("nativeScale: \(Luminous.Hardware.Screen.nativeScale)")
-//        print("bounds: \(Luminous.Hardware.Screen.scale)")
-////        print("snapshotOfCurrentView: \(Luminous.Hardware.Screen.snapshotOfCurrentView())")
-//        
-//        
-//        // MARK: Hardware - Device
-//        
-//        print("------------\nDevice\n------------")
-//        print("current: \(Luminous.Hardware.Device.current)")
-//        print("identifierForVendor: \(Luminous.Hardware.Device.identifierForVendor ?? "-")")
-//        print("orientation: \(Luminous.Hardware.Device.orientation)")
-//        
-//        
-//        // MARK: Hardware - Accessory
-//        
-//        print("------------\nAccessory\n------------")
-//        print("connectedAccessories: \(Luminous.Hardware.Accessory.connectedAccessories)")
-//        print("connectedAccessoriesNames: \(Luminous.Hardware.Accessory.connectedAccessoriesNames)")
-//        print("count: \(Luminous.Hardware.Accessory.count)")
-//        print("isHeadsetPluggedIn: \(Luminous.Hardware.Accessory.isHeadsetPluggedIn)")
-//        
-//        
-//        // MARK: Hardware - Sensors
-//        
-//        print("------------\nSensors\n------------")
-//        print("isAccelerometerAvailable : \(Luminous.Hardware.Sensors.isAccelerometerAvailable)")
-//        print("isGyroAvailable : \(Luminous.Hardware.Sensors.isGyroAvailable)")
-//        print("isMagnetometerAvailable : \(Luminous.Hardware.Sensors.isMagnetometerAvailable)")
-//        print("isDeviceMotionAvailable : \(Luminous.Hardware.Sensors.isDeviceMotionAvailable)")
-//        
-//        
-//        // MARK: Audio
-//        
-//        print("------------\nAudio\n------------")
-//        print("currentAudioOutputVolume : \(Luminous.Audio.currentAudioOutputVolume ?? -1.0)")
-//        print("secondaryAudioShouldBeSilencedHint : \(Luminous.Audio.secondaryAudioShouldBeSilencedHint)")
-//        
-//        
-//        // MARK: Disk
-//        
-//        print("------------\nDisk\n------------")
-//        print("freeSpace: \(Luminous.Disk.freeSpace)")
-//        print("freeSpaceInBytes: \(Luminous.Disk.freeSpaceInBytes)")
-//        print("totalSpace: \(Luminous.Disk.totalSpace)")
-//        print("totalSpaceInBytes: \(Luminous.Disk.totalSpaceInBytes)")
-//        print("usedSpace: \(Luminous.Disk.usedSpace)")
-//        print("usedSpaceInBytes: \(Luminous.Disk.usedSpaceInBytes)")
-//        print("freeSpaceInPercentage: \(Luminous.Disk.freeSpaceInPercentage)%")
-//        print("usedSpaceInPercentage: \(Luminous.Disk.usedSpaceInPercentage)%")
-//        
-//        
-//        // MARK: Battery
-//        
-//        print("------------\nBattery\n------------")
-//        print("level: \(Luminous.Battery.level ?? -1)")
-//        print("state: \(Luminous.Battery.state)")
-//        
-//        
-//        // MARK: Application
-//        
-//        print("------------\nApplication\n------------")
-//        print("clipboardString: \(Luminous.Application.clipboardString ?? "-")")
-//        print("version: \(Luminous.Application.version)")
+        print("------------\nNetwork\n------------")
+        print("isConnectedViaCellular: \(Luminous.Network.isConnectedViaCellular)")
+        print("isConnectedViaWiFi: \(Luminous.Network.isConnectedViaWiFi)")
+        print("SSID: \(Luminous.Network.SSID)")
+        
+        
+        // MARK: Locale
+        
+        print("------------\nLocale\n------------")
+        print("currentCountry: \(Luminous.Locale.currentCountry)")
+        print("currentCurrency: \(Luminous.Locale.currentCurrency ?? "-")")
+        print("currentCurrencySymbol: \(Luminous.Locale.currentCurrencySymbol ?? "-")")
+        print("currentLanguage: \(Luminous.Locale.currentLanguage)")
+        print("currentTimeZone: \(Luminous.Locale.currentTimeZone)")
+        print("currentTimeZoneName: \(Luminous.Locale.currentTimeZoneName)")
+        print("decimalSeparator: \(Luminous.Locale.decimalSeparator ?? "-")")
+        print("usesMetricSystem: \(Luminous.Locale.usesMetricSystem)")
+        
+        
+        // MARK: Carrier
+        
+        print("------------\nCarrier\n------------")
+        print("allowsVOIP: \(Luminous.Carrier.isVoipAllowed ?? false)")
+        print("ISOCountryCode: \(Luminous.Carrier.ISOCountryCode ?? "-")")
+        print("mobileCountryCode: \(Luminous.Carrier.mobileCountryCode ?? "-")")
+        print("name: \(Luminous.Carrier.name ?? "-")")
+        print("networkCountryCode: \(Luminous.Carrier.mobileNetworkCode ?? "-")")
+        
+        
+        // MARK: Hardware
+        
+        print("------------\nHardware\n------------")
+        print("bootTime: \(Luminous.Hardware.bootTime)")
+        print("bootTime: \(Luminous.Hardware.physicalMemory(with: Luminous.MeasureUnit.megabytes))")
+        print("processorsNumber: \(Luminous.Hardware.processorsNumber)")
+        print("systemName: \(Luminous.Hardware.systemName)")
+        print("systemVersion: \(Luminous.Hardware.systemVersion)")
+        if #available(iOS 9.0, *) {
+            print("isLowPowerModeEnabled: \(Luminous.Hardware.isLowPowerModeEnabled)")
+        }
+        
+        
+        // MARK: Hardware - Screen
+        
+        print("------------\nScreen\n------------")
+        print("bounds: \(Luminous.Hardware.Screen.bounds)")
+        print("brightness: \(Luminous.Hardware.Screen.brightness)")
+        print("isScreenMirrored: \(Luminous.Hardware.Screen.isScreenMirrored)")
+        print("nativeBounds: \(Luminous.Hardware.Screen.nativeBounds)")
+        print("nativeScale: \(Luminous.Hardware.Screen.nativeScale)")
+        print("bounds: \(Luminous.Hardware.Screen.scale)")
+//        print("snapshotOfCurrentView: \(Luminous.Hardware.Screen.snapshotOfCurrentView())")
+        
+        
+        // MARK: Hardware - Device
+        
+        print("------------\nDevice\n------------")
+        print("current: \(Luminous.Hardware.Device.identifierForVendor)")
+        print("identifierForVendor: \(Luminous.Hardware.Device.identifierForVendor ?? "-")")
+        print("orientation: \(Luminous.Hardware.Device.orientation)")
+        
+        
+        // MARK: Hardware - Accessory
+        
+        print("------------\nAccessory\n------------")
+        print("connectedAccessories: \(Luminous.Hardware.Accessory.connectedAccessories)")
+        print("connectedAccessoriesNames: \(Luminous.Hardware.Accessory.connectedAccessoriesNames)")
+        print("count: \(Luminous.Hardware.Accessory.count)")
+        print("isHeadsetPluggedIn: \(Luminous.Hardware.Accessory.isHeadsetPluggedIn)")
+        
+        
+        // MARK: Hardware - Sensors
+        
+        print("------------\nSensors\n------------")
+        print("isAccelerometerAvailable : \(Luminous.Hardware.Sensors.isAccelerometerAvailable)")
+        print("isGyroAvailable : \(Luminous.Hardware.Sensors.isGyroAvailable)")
+        print("isMagnetometerAvailable : \(Luminous.Hardware.Sensors.isMagnetometerAvailable)")
+        print("isDeviceMotionAvailable : \(Luminous.Hardware.Sensors.isDeviceMotionAvailable)")
+        
+        
+        // MARK: Audio
+        
+        print("------------\nAudio\n------------")
+        print("currentAudioOutputVolume : \(Luminous.Audio.currentAudioOutputVolume ?? -1.0)")
+        print("secondaryAudioShouldBeSilencedHint : \(Luminous.Audio.secondaryAudioShouldBeSilencedHint)")
+        
+        
+        // MARK: Disk
+        
+        print("------------\nDisk\n------------")
+        print("freeSpace: \(Luminous.Disk.freeSpace)")
+        print("freeSpaceInBytes: \(Luminous.Disk.freeSpaceInBytes)")
+        print("totalSpace: \(Luminous.Disk.totalSpace)")
+        print("totalSpaceInBytes: \(Luminous.Disk.totalSpaceInBytes)")
+        print("usedSpace: \(Luminous.Disk.usedSpace)")
+        print("usedSpaceInBytes: \(Luminous.Disk.usedSpaceInBytes)")
+        print("freeSpaceInPercentage: \(Luminous.Disk.freeSpaceInPercentage)%")
+        print("usedSpaceInPercentage: \(Luminous.Disk.usedSpaceInPercentage)%")
+        
+        
+        // MARK: Battery
+        
+        print("------------\nBattery\n------------")
+        print("level: \(Luminous.Battery.level ?? -1)")
+        print("state: \(Luminous.Battery.state)")
+        
+        
+        // MARK: Application
+        
+        print("------------\nApplication\n------------")
+        print("clipboardString: \(Luminous.Application.clipboardString ?? "-")")
+        print("version: \(Luminous.Application.version)")
     }
     
     

@@ -29,8 +29,8 @@ target '3332323' do
  pod 'Kingfisher' ,'~> 7.6.2'
 # pod 'OpenSSL-Universal'
 # pod "OpenSSL-Apple"
- pod 'PhoneNumberKit','~> 3.3.4'
- pod 'SwiftyJSON' ,'~> 5.0.1'
+ pod 'PhoneNumberKit', '3.6.3'
+ pod 'SwiftyJSON' , '5.0.1'
 
 # 微信图片框架
 pod 'ZLPhotoBrowser', '~> 4.3.7'
@@ -123,8 +123,9 @@ pod 'VIMediaCache', '~> 0.4'
  pod 'PureLayout'
 
 # 语音视频 https://github.com/orgs/jitsi/repositories
- pod 'JitsiMeetSDK', '~> 4.1.0'
- 
+# pod 'JitsiMeetSDK', '~> 4.1.0'
+pod 'JitsiMeetSDK', '~> 8.1.2'
+
 #  https://swiftobc.com/repo/xiaoyouPrince-XYNav-swift-navigation-bar
 #  https://github.com/xiaoyouPrince/XYNav
  pod 'XYNav'
@@ -196,7 +197,8 @@ pod 'VIMediaCache', '~> 0.4'
 
 
 #  https://github.com/andrealufino/Luminous 设备各种信息
- pod 'Luminous'
+# pod 'Luminous'
+ pod 'Luminous', '~> 2.2.0'
 
 # https://github.com/Yewenyu/PingManager
 # pod 'PingManager'
