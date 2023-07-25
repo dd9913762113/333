@@ -249,7 +249,7 @@ class MainVC: UIViewController,  UITableViewDelegate, UITableViewDataSource {
     }
     
     
-//    手机号码 和 国际区号 校验
+//    手机号码 和 国际区号 校验  手机号码和国际区号匹配
     func isValidPhoneNumber(phoneNumber: String, countrieCodes: String) -> Bool {
            let phoneNumberKit = PhoneNumberKit()
            let countries = ["CN", "VN", "BR"]
