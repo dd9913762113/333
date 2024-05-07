@@ -4,9 +4,10 @@
 //
 //  Created by kintan on 2021/8/20.
 //
-#if canImport(UIKit) && os(iOS)
+#if canImport(UIKit) && !os(tvOS)
 
 import UIKit
+
 protocol PlayerViewFullScreenDelegate: AnyObject {
     func player(isMaskShow: Bool, isFullScreen: Bool)
 }
@@ -26,7 +27,7 @@ class PlayerFullScreenViewController: UIViewController {
 
     override func viewDidLoad() {
         super.viewDidLoad()
-        KSPlayerManager.supportedInterfaceOrientations = isHorizonal ? .landscapeRight : .portrait
+        KSOptions.supportedInterfaceOrientations = isHorizonal ? .landscapeRight : .portrait
     }
 
     override func viewWillAppear(_ animated: Bool) {
@@ -36,7 +37,7 @@ class PlayerFullScreenViewController: UIViewController {
     }
 
     override var shouldAutorotate: Bool {
-        KSPlayerManager.supportedInterfaceOrientations == .all
+        KSOptions.supportedInterfaceOrientations == .all
     }
 
     override var supportedInterfaceOrientations: UIInterfaceOrientationMask {

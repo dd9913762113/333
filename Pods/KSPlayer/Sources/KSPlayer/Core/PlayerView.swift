@@ -1,5 +1,5 @@
 //
-//  PlayerController.swift
+//  PlayerView.swift
 //  VoiceNote
 //
 //  Created by kintan on 2018/8/16.
@@ -33,8 +33,9 @@ public protocol PlayerControllerDelegate: AnyObject {
     func playerController(finish error: Error?)
     func playerController(maskShow: Bool)
     func playerController(action: PlayerButtonType)
-    // bufferedCount: 0代表首次加载
+    // `bufferedCount: 0` indicates first time loading
     func playerController(bufferedCount: Int, consumeTime: TimeInterval)
+    func playerController(seek: TimeInterval)
 }
 
 open class PlayerView: UIView, KSPlayerLayerDelegate, KSSliderDelegate {
@@ -47,22 +48,20 @@ open class PlayerView: UIView, KSPlayerLayerDelegate, KSSliderDelegate {
 
     public weak var delegate: ControllerDelegate?
     public let toolBar = PlayerToolBar()
-    // Closure fired when play time changed
+    public let srtControl = SubtitleModel()
+    // Listen to play time change
     public var playTimeDidChange: ((TimeInterval, TimeInterval) -> Void)?
     public var backBlock: (() -> Void)?
     public convenience init() {
         #if os(macOS)
         self.init(frame: .zero)
         #else
-        self.init(frame: UIScreen.main.bounds)
+        self.init(frame: CGRect(origin: .zero, size: KSOptions.sceneSize))
         #endif
     }
 
     override public init(frame: CGRect) {
         super.init(frame: frame)
-        #if !os(macOS)
-        NotificationCenter.default.addObserver(self, selector: #selector(audioInterrupted), name: AVAudioSession.interruptionNotification, object: nil)
-        #endif
         toolBar.timeSlider.delegate = self
         toolBar.addTarget(self, action: #selector(onButtonPressed(_:)))
     }
@@ -74,7 +73,25 @@ open class PlayerView: UIView, KSPlayerLayerDelegate, KSSliderDelegate {
 
     @objc func onButtonPressed(_ button: UIButton) {
         guard let type = PlayerButtonType(rawValue: button.tag) else { return }
+
+        #if os(macOS)
+        if let menu = button.menu,
+           let item = button.menu?.items.first(where: { $0.state == .on })
+        {
+            menu.popUp(positioning: item,
+                       at: button.frame.origin,
+                       in: self)
+        } else {
+            onButtonPressed(type: type, button: button)
+        }
+        #elseif os(tvOS)
         onButtonPressed(type: type, button: button)
+        #else
+        if #available(iOS 14.0, *), button.menu != nil {
+            return
+        }
+        onButtonPressed(type: type, button: button)
+        #endif
     }
 
     open func onButtonPressed(type: PlayerButtonType, button: UIButton) {
@@ -95,17 +112,34 @@ open class PlayerView: UIView, KSPlayerLayerDelegate, KSSliderDelegate {
         delegate?.playerController(action: type)
     }
 
+    #if canImport(UIKit)
+    override open func pressesBegan(_ presses: Set<UIPress>, with event: UIPressesEvent?) {
+        guard let presse = presses.first else {
+            return
+        }
+        switch presse.type {
+        case .playPause:
+            if let playerLayer, playerLayer.state.isPlaying {
+                pause()
+            } else {
+                play()
+            }
+        default: super.pressesBegan(presses, with: event)
+        }
+    }
+    #endif
     open func play() {
         becomeFirstResponder()
         playerLayer?.play()
+        toolBar.playButton.isSelected = true
     }
 
     open func pause() {
         playerLayer?.pause()
     }
 
-    open func seek(time: TimeInterval) async -> Bool {
-        await playerLayer?.seek(time: time, autoPlay: KSOptions.isSeekedAutoPlay) ?? false
+    open func seek(time: TimeInterval, completion: @escaping ((Bool) -> Void)) {
+        playerLayer?.seek(time: time, autoPlay: KSOptions.isSeekedAutoPlay, completion: completion)
     }
 
     open func resetPlayer() {
@@ -114,6 +148,7 @@ open class PlayerView: UIView, KSPlayerLayerDelegate, KSSliderDelegate {
     }
 
     open func set(url: URL, options: KSOptions) {
+        srtControl.url = url
         toolBar.currentTime = 0
         totalTime = 0
         playerLayer = KSPlayerLayer(url: url, options: options)
@@ -125,8 +160,8 @@ open class PlayerView: UIView, KSPlayerLayerDelegate, KSSliderDelegate {
         if event == .valueChanged {
             toolBar.currentTime = value
         } else if event == .touchUpInside {
-            Task {
-                await seek(time: value)
+            seek(time: value) { [weak self] _ in
+                self?.delegate?.playerController(seek: value)
             }
         }
     }
@@ -137,10 +172,10 @@ open class PlayerView: UIView, KSPlayerLayerDelegate, KSSliderDelegate {
         delegate?.playerController(state: state)
         if state == .readyToPlay {
             totalTime = layer.player.duration
+            toolBar.isSeekable = layer.player.seekable
+            toolBar.playButton.isSelected = true
         } else if state == .playedToTheEnd || state == .paused || state == .error {
             toolBar.playButton.isSelected = false
-        } else if state.isPlaying {
-            toolBar.playButton.isSelected = true
         }
     }
 
@@ -160,21 +195,13 @@ open class PlayerView: UIView, KSPlayerLayerDelegate, KSSliderDelegate {
     }
 }
 
-extension PlayerView {
-    public var totalTime: TimeInterval {
+public extension PlayerView {
+    var totalTime: TimeInterval {
         get {
             toolBar.totalTime
         }
         set {
             toolBar.totalTime = newValue
-        }
-    }
-
-    @objc private func audioInterrupted(notification: Notification) {
-        if let callBegin = notification.userInfo?[AVAudioSessionInterruptionTypeKey] as? Bool {
-            if callBegin {
-                pause()
-            }
         }
     }
 }

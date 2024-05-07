@@ -1,8 +1,8 @@
 //
-//  MetalRenderer.swift
+//  MetalRender.swift
 //  KSPlayer-iOS
 //
-//  Created by wangjinbian on 2020/1/11.
+//  Created by kintan on 2020/1/11.
 //
 import Accelerate
 import CoreVideo
@@ -10,10 +10,7 @@ import Foundation
 import Metal
 import QuartzCore
 import simd
-import VideoToolbox
-// swiftlint:disable identifier_name
-private let kvImage_YpCbCrToARGBMatrix_ITU_R_2020 = vImage_YpCbCrToARGBMatrix(Yp: 1, Cr_R: 1.4746, Cr_G: -0.57135, Cb_G: -0.16455, Cb_B: 1.8814)
-// swiftlint:enable identifier_name
+
 class MetalRender {
     static let device = MTLCreateSystemDefaultDevice()!
     static let library: MTLLibrary = {
@@ -42,7 +39,11 @@ class MetalRender {
 
     private lazy var colorConversion709FullRangeMatrixBuffer: MTLBuffer? = kvImage_YpCbCrToARGBMatrix_ITU_R_709_2.pointee.buffer
 
-    private lazy var colorConversion2020MatrixBuffer: MTLBuffer? = kvImage_YpCbCrToARGBMatrix_ITU_R_2020.videoRange.buffer
+    private lazy var colorConversionSMPTE240MVideoRangeMatrixBuffer: MTLBuffer? = kvImage_YpCbCrToARGBMatrix_SMPTE_240M_1995.videoRange.buffer
+
+    private lazy var colorConversionSMPTE240MFullRangeMatrixBuffer: MTLBuffer? = kvImage_YpCbCrToARGBMatrix_SMPTE_240M_1995.buffer
+
+    private lazy var colorConversion2020VideoRangeMatrixBuffer: MTLBuffer? = kvImage_YpCbCrToARGBMatrix_ITU_R_2020.videoRange.buffer
 
     private lazy var colorConversion2020FullRangeMatrixBuffer: MTLBuffer? = kvImage_YpCbCrToARGBMatrix_ITU_R_2020.buffer
 
@@ -60,7 +61,21 @@ class MetalRender {
         return buffer
     }()
 
-    func clear(drawable: CAMetalDrawable, renderPassDescriptor: MTLRenderPassDescriptor) {
+    private lazy var leftShiftMatrixBuffer: MTLBuffer? = {
+        var firstColumn = SIMD3<UInt8>(1, 1, 1)
+        let buffer = MetalRender.device.makeBuffer(bytes: &firstColumn, length: MemoryLayout<SIMD3<UInt8>>.size)
+        buffer?.label = "leftShit"
+        return buffer
+    }()
+
+    private lazy var leftShiftSixMatrixBuffer: MTLBuffer? = {
+        var firstColumn = SIMD3<UInt8>(64, 64, 64)
+        let buffer = MetalRender.device.makeBuffer(bytes: &firstColumn, length: MemoryLayout<SIMD3<UInt8>>.size)
+        buffer?.label = "leftShit"
+        return buffer
+    }()
+
+    func clear(drawable: MTLDrawable) {
         renderPassDescriptor.colorAttachments[0].clearColor = MTLClearColor(red: 0, green: 0, blue: 0, alpha: 0)
         renderPassDescriptor.colorAttachments[0].loadAction = .clear
         guard let commandBuffer = commandQueue?.makeCommandBuffer(),
@@ -74,10 +89,11 @@ class MetalRender {
         commandBuffer.waitUntilCompleted()
     }
 
-    func draw(pixelBuffer: CVPixelBuffer, display: DisplayEnum = .plane, drawable: CAMetalDrawable) {
+    @MainActor
+    func draw(pixelBuffer: PixelBufferProtocol, display: DisplayEnum = .plane, drawable: CAMetalDrawable) {
         let inputTextures = pixelBuffer.textures()
         renderPassDescriptor.colorAttachments[0].texture = drawable.texture
-        guard inputTextures.count > 0, let commandBuffer = commandQueue?.makeCommandBuffer(), let encoder = commandBuffer.makeRenderCommandEncoder(descriptor: renderPassDescriptor) else {
+        guard !inputTextures.isEmpty, let commandBuffer = commandQueue?.makeCommandBuffer(), let encoder = commandBuffer.makeRenderCommandEncoder(descriptor: renderPassDescriptor) else {
             return
         }
         encoder.pushDebugGroup("RenderFrame")
@@ -97,21 +113,25 @@ class MetalRender {
         commandBuffer.waitUntilCompleted()
     }
 
-    private func setFragmentBuffer(pixelBuffer: CVPixelBuffer, encoder: MTLRenderCommandEncoder) {
+    private func setFragmentBuffer(pixelBuffer: PixelBufferProtocol, encoder: MTLRenderCommandEncoder) {
         if pixelBuffer.planeCount > 1 {
             let buffer: MTLBuffer?
             let yCbCrMatrix = pixelBuffer.yCbCrMatrix
             let isFullRangeVideo = pixelBuffer.isFullRangeVideo
             if yCbCrMatrix == kCVImageBufferYCbCrMatrix_ITU_R_709_2 {
                 buffer = isFullRangeVideo ? colorConversion709FullRangeMatrixBuffer : colorConversion709VideoRangeMatrixBuffer
+            } else if yCbCrMatrix == kCVImageBufferYCbCrMatrix_SMPTE_240M_1995 {
+                buffer = isFullRangeVideo ? colorConversionSMPTE240MFullRangeMatrixBuffer : colorConversionSMPTE240MVideoRangeMatrixBuffer
             } else if yCbCrMatrix == kCVImageBufferYCbCrMatrix_ITU_R_2020 {
-                buffer = isFullRangeVideo ? colorConversion2020FullRangeMatrixBuffer : colorConversion2020MatrixBuffer
+                buffer = isFullRangeVideo ? colorConversion2020FullRangeMatrixBuffer : colorConversion2020VideoRangeMatrixBuffer
             } else {
                 buffer = isFullRangeVideo ? colorConversion601FullRangeMatrixBuffer : colorConversion601VideoRangeMatrixBuffer
             }
             encoder.setFragmentBuffer(buffer, offset: 0, index: 0)
             let colorOffset = isFullRangeVideo ? colorOffsetFullRangeMatrixBuffer : colorOffsetVideoRangeMatrixBuffer
             encoder.setFragmentBuffer(colorOffset, offset: 0, index: 1)
+            let leftShift = pixelBuffer.leftShift == 0 ? leftShiftMatrixBuffer : leftShiftSixMatrixBuffer
+            encoder.setFragmentBuffer(leftShift, offset: 0, index: 2)
         }
     }
 
@@ -139,18 +159,7 @@ class MetalRender {
         guard let iosurface = CVPixelBufferGetIOSurface(pixelBuffer)?.takeUnretainedValue() else {
             return []
         }
-        let formats: [MTLPixelFormat]
-        if pixelBuffer.planeCount == 3 {
-            formats = [.r8Unorm, .r8Unorm, .r8Unorm]
-        } else if pixelBuffer.planeCount == 2 {
-            if pixelBuffer.bitDepth > 8 {
-                formats = [.r16Unorm, .rg16Unorm]
-            } else {
-                formats = [.r8Unorm, .rg8Unorm]
-            }
-        } else {
-            formats = [.bgra8Unorm]
-        }
+        let formats = KSOptions.pixelFormat(planeCount: pixelBuffer.planeCount, bitDepth: pixelBuffer.bitDepth)
         return (0 ..< pixelBuffer.planeCount).compactMap { index in
             let width = pixelBuffer.widthOfPlane(at: index)
             let height = pixelBuffer.heightOfPlane(at: index)
@@ -171,7 +180,25 @@ class MetalRender {
     }
 }
 
+// swiftlint:disable identifier_name
+// private let kvImage_YpCbCrToARGBMatrix_ITU_R_601_4 = vImage_YpCbCrToARGBMatrix(Kr: 0.299, Kb: 0.114)
+// private let kvImage_YpCbCrToARGBMatrix_ITU_R_709_2 = vImage_YpCbCrToARGBMatrix(Kr: 0.2126, Kb: 0.0722)
+private let kvImage_YpCbCrToARGBMatrix_SMPTE_240M_1995 = vImage_YpCbCrToARGBMatrix(Kr: 0.212, Kb: 0.087)
+private let kvImage_YpCbCrToARGBMatrix_ITU_R_2020 = vImage_YpCbCrToARGBMatrix(Kr: 0.2627, Kb: 0.0593)
 extension vImage_YpCbCrToARGBMatrix {
+    /**
+     https://en.wikipedia.org/wiki/YCbCr
+     @textblock
+            | R |    | 1    0                                                            2-2Kr |   | Y' |
+            | G | = | 1   -Kb * (2 - 2 * Kb) / Kg   -Kr * (2 - 2 * Kr) / Kg |  | Cb |
+            | B |    | 1   2 - 2 * Kb                                                     0  |  | Cr |
+     @/textblock
+     */
+    init(Kr: Float, Kb: Float) {
+        let Kg = 1 - Kr - Kb
+        self.init(Yp: 1, Cr_R: 2 - 2 * Kr, Cr_G: -Kr * (2 - 2 * Kr) / Kg, Cb_G: -Kb * (2 - 2 * Kb) / Kg, Cb_B: 2 - 2 * Kb)
+    }
+
     var videoRange: vImage_YpCbCrToARGBMatrix {
         vImage_YpCbCrToARGBMatrix(Yp: 255 / 219 * Yp, Cr_R: 255 / 224 * Cr_R, Cr_G: 255 / 224 * Cr_G, Cb_G: 255 / 224 * Cb_G, Cb_B: 255 / 224 * Cb_B)
     }
@@ -183,3 +210,5 @@ extension vImage_YpCbCrToARGBMatrix {
         return buffer
     }
 }
+
+// swiftlint:enable identifier_name

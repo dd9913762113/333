@@ -1,5 +1,5 @@
 //
-//  AudioOutput.swift
+//  AudioEnginePlayer.swift
 //  KSPlayer
 //
 //  Created by kintan on 2018/3/11.
@@ -8,89 +8,111 @@
 import AVFoundation
 import CoreAudio
 
-protocol AudioPlayer: AnyObject {
+public protocol AudioOutput: FrameOutput {
     var playbackRate: Float { get set }
     var volume: Float { get set }
     var isMuted: Bool { get set }
-    var isPaused: Bool { get set }
-    var attackTime: Float { get set }
-    var releaseTime: Float { get set }
-    var threshold: Float { get set }
-    var expansionRatio: Float { get set }
-    var overallGain: Float { get set }
+    init()
+    func prepare(audioFormat: AVAudioFormat)
 }
 
-public final class AudioEnginePlayer: AudioPlayer, FrameOutput {
-    public var attackTime: Float {
+public protocol AudioDynamicsProcessor {
+    var audioUnitForDynamicsProcessor: AudioUnit { get }
+}
+
+public extension AudioDynamicsProcessor {
+    var attackTime: Float {
         get {
             var value = AudioUnitParameterValue(1.0)
-            AudioUnitGetParameter(dynamicsProcessor.audioUnit, kDynamicsProcessorParam_AttackTime, kAudioUnitScope_Global, 0, &value)
+            AudioUnitGetParameter(audioUnitForDynamicsProcessor, kDynamicsProcessorParam_AttackTime, kAudioUnitScope_Global, 0, &value)
             return value
         }
         set {
-            AudioUnitSetParameter(dynamicsProcessor.audioUnit, kDynamicsProcessorParam_AttackTime, kAudioUnitScope_Global, 0, AudioUnitParameterValue(newValue), 0)
+            AudioUnitSetParameter(audioUnitForDynamicsProcessor, kDynamicsProcessorParam_AttackTime, kAudioUnitScope_Global, 0, AudioUnitParameterValue(newValue), 0)
         }
     }
 
-    public var releaseTime: Float {
+    var releaseTime: Float {
         get {
             var value = AudioUnitParameterValue(1.0)
-            AudioUnitGetParameter(dynamicsProcessor.audioUnit, kDynamicsProcessorParam_ReleaseTime, kAudioUnitScope_Global, 0, &value)
+            AudioUnitGetParameter(audioUnitForDynamicsProcessor, kDynamicsProcessorParam_ReleaseTime, kAudioUnitScope_Global, 0, &value)
             return value
         }
         set {
-            AudioUnitSetParameter(dynamicsProcessor.audioUnit, kDynamicsProcessorParam_ReleaseTime, kAudioUnitScope_Global, 0, AudioUnitParameterValue(newValue), 0)
+            AudioUnitSetParameter(audioUnitForDynamicsProcessor, kDynamicsProcessorParam_ReleaseTime, kAudioUnitScope_Global, 0, AudioUnitParameterValue(newValue), 0)
         }
     }
 
-    public var threshold: Float {
+    var threshold: Float {
         get {
             var value = AudioUnitParameterValue(1.0)
-            AudioUnitGetParameter(dynamicsProcessor.audioUnit, kDynamicsProcessorParam_Threshold, kAudioUnitScope_Global, 0, &value)
+            AudioUnitGetParameter(audioUnitForDynamicsProcessor, kDynamicsProcessorParam_Threshold, kAudioUnitScope_Global, 0, &value)
             return value
         }
         set {
-            AudioUnitSetParameter(dynamicsProcessor.audioUnit, kDynamicsProcessorParam_Threshold, kAudioUnitScope_Global, 0, AudioUnitParameterValue(newValue), 0)
+            AudioUnitSetParameter(audioUnitForDynamicsProcessor, kDynamicsProcessorParam_Threshold, kAudioUnitScope_Global, 0, AudioUnitParameterValue(newValue), 0)
         }
     }
 
-    public var expansionRatio: Float {
+    var expansionRatio: Float {
         get {
             var value = AudioUnitParameterValue(1.0)
-            AudioUnitGetParameter(dynamicsProcessor.audioUnit, kDynamicsProcessorParam_ExpansionRatio, kAudioUnitScope_Global, 0, &value)
+            AudioUnitGetParameter(audioUnitForDynamicsProcessor, kDynamicsProcessorParam_ExpansionRatio, kAudioUnitScope_Global, 0, &value)
             return value
         }
         set {
-            AudioUnitSetParameter(dynamicsProcessor.audioUnit, kDynamicsProcessorParam_ExpansionRatio, kAudioUnitScope_Global, 0, AudioUnitParameterValue(newValue), 0)
+            AudioUnitSetParameter(audioUnitForDynamicsProcessor, kDynamicsProcessorParam_ExpansionRatio, kAudioUnitScope_Global, 0, AudioUnitParameterValue(newValue), 0)
         }
     }
 
-    public var overallGain: Float {
+    var overallGain: Float {
         get {
             var value = AudioUnitParameterValue(1.0)
-            AudioUnitGetParameter(dynamicsProcessor.audioUnit, kDynamicsProcessorParam_OverallGain, kAudioUnitScope_Global, 0, &value)
+            AudioUnitGetParameter(audioUnitForDynamicsProcessor, kDynamicsProcessorParam_OverallGain, kAudioUnitScope_Global, 0, &value)
             return value
         }
         set {
-            AudioUnitSetParameter(dynamicsProcessor.audioUnit, kDynamicsProcessorParam_OverallGain, kAudioUnitScope_Global, 0, AudioUnitParameterValue(newValue), 0)
+            AudioUnitSetParameter(audioUnitForDynamicsProcessor, kDynamicsProcessorParam_OverallGain, kAudioUnitScope_Global, 0, AudioUnitParameterValue(newValue), 0)
         }
     }
+}
 
-    private let engine = AVAudioEngine()
-
-//    private let reverb = AVAudioUnitReverb()
-//    private let nbandEQ = AVAudioUnitEQ()
-//    private let distortion = AVAudioUnitDistortion()
-//    private let delay = AVAudioUnitDelay()
-    private let playback = AVAudioUnitVarispeed()
+public final class AudioEngineDynamicsPlayer: AudioEnginePlayer, AudioDynamicsProcessor {
     private let dynamicsProcessor = AVAudioUnitEffect(audioComponentDescription:
         AudioComponentDescription(componentType: kAudioUnitType_Effect,
                                   componentSubType: kAudioUnitSubType_DynamicsProcessor,
                                   componentManufacturer: kAudioUnitManufacturer_Apple,
                                   componentFlags: 0,
                                   componentFlagsMask: 0))
-    private var currentRenderReadOffset = 0
-    weak var renderSource: OutputRenderSourceDelegate?
+    public var audioUnitForDynamicsProcessor: AudioUnit {
+        dynamicsProcessor.audioUnit
+    }
+
+    override func audioNodes() -> [AVAudioNode] {
+        var nodes: [AVAudioNode] = [dynamicsProcessor]
+        nodes.append(contentsOf: super.audioNodes())
+        return nodes
+    }
+
+    public required init() {
+        super.init()
+        engine.attach(dynamicsProcessor)
+    }
+}
+
+public class AudioEnginePlayer: AudioOutput {
+    public let engine = AVAudioEngine()
+    private var sourceNode: AVAudioSourceNode?
+    private var sourceNodeAudioFormat: AVAudioFormat?
+
+//    private let reverb = AVAudioUnitReverb()
+//    private let nbandEQ = AVAudioUnitEQ()
+//    private let distortion = AVAudioUnitDistortion()
+//    private let delay = AVAudioUnitDelay()
+    private let timePitch = AVAudioUnitTimePitch()
+    private var sampleSize = UInt32(MemoryLayout<Float>.size)
+    private var currentRenderReadOffset = UInt32(0)
+    public weak var renderSource: OutputRenderSourceDelegate?
     private var currentRender: AudioFrame? {
         didSet {
             if currentRender == nil {
@@ -99,36 +121,21 @@ public final class AudioEnginePlayer: AudioPlayer, FrameOutput {
         }
     }
 
-    var isPaused: Bool {
+    public var playbackRate: Float {
         get {
-            engine.isRunning
+            timePitch.rate
         }
         set {
-            if newValue {
-                engine.pause()
-            } else {
-                if !engine.isRunning {
-                    try? engine.start()
-                }
-            }
+            timePitch.rate = min(32, max(1 / 32, newValue))
         }
     }
 
-    var playbackRate: Float {
+    public var volume: Float {
         get {
-            playback.rate
+            sourceNode?.volume ?? 1
         }
         set {
-            playback.rate = min(2, max(0.5, newValue))
-        }
-    }
-
-    var volume: Float {
-        get {
-            engine.mainMixerNode.volume
-        }
-        set {
-            engine.mainMixerNode.volume = newValue
+            sourceNode?.volume = newValue
         }
     }
 
@@ -141,29 +148,81 @@ public final class AudioEnginePlayer: AudioPlayer, FrameOutput {
         }
     }
 
-    init() {
-        KSPlayerManager.setAudioSession()
-        engine.attach(dynamicsProcessor)
-        var format = engine.outputNode.outputFormat(forBus: 0)
-        KSPlayerManager.audioPlayerSampleRate = Int32(format.sampleRate)
-        if let channelLayout = format.channelLayout, KSPlayerManager.channelLayout != channelLayout {
-            format = AVAudioFormat(commonFormat: format.commonFormat, sampleRate: format.sampleRate, interleaved: format.isInterleaved, channelLayout: KSPlayerManager.channelLayout)
-        }
-//        engine.attach(nbandEQ)
-//        engine.attach(distortion)
-//        engine.attach(delay)
-        let sourceNode = AVAudioSourceNode(format: format) { [weak self] _, _, frameCount, audioBufferList in
-            self?.audioPlayerShouldInputData(ioData: UnsafeMutableAudioBufferListPointer(audioBufferList), numberOfFrames: frameCount)
-            return noErr
-        }
-        engine.attach(sourceNode)
-        engine.attach(playback)
-        engine.connect(nodes: [sourceNode, dynamicsProcessor, playback, engine.mainMixerNode, engine.outputNode], format: format)
-
+    public required init() {
+        engine.attach(timePitch)
         if let audioUnit = engine.outputNode.audioUnit {
             addRenderNotify(audioUnit: audioUnit)
         }
+    }
+
+    public func prepare(audioFormat: AVAudioFormat) {
+        if sourceNodeAudioFormat == audioFormat {
+            return
+        }
+        sourceNodeAudioFormat = audioFormat
+        #if !os(macOS)
+        try? AVAudioSession.sharedInstance().setPreferredOutputNumberOfChannels(Int(audioFormat.channelCount))
+        KSLog("[audio] set preferredOutputNumberOfChannels: \(audioFormat.channelCount)")
+        #endif
+        KSLog("[audio] outputFormat AudioFormat: \(audioFormat)")
+        if let channelLayout = audioFormat.channelLayout {
+            KSLog("[audio] outputFormat channelLayout \(channelLayout.channelDescriptions)")
+        }
+        let isRunning = engine.isRunning
+        engine.stop()
+        engine.reset()
+        sourceNode = AVAudioSourceNode(format: audioFormat) { [weak self] _, timestamp, frameCount, audioBufferList in
+            if timestamp.pointee.mSampleTime == 0 {
+                return noErr
+            }
+            self?.audioPlayerShouldInputData(ioData: UnsafeMutableAudioBufferListPointer(audioBufferList), numberOfFrames: frameCount)
+            return noErr
+        }
+        guard let sourceNode else {
+            return
+        }
+        KSLog("[audio] new sourceNode inputFormat: \(sourceNode.inputFormat(forBus: 0))")
+        sampleSize = audioFormat.sampleSize
+        engine.attach(sourceNode)
+        var nodes: [AVAudioNode] = [sourceNode]
+        nodes.append(contentsOf: audioNodes())
+        if audioFormat.channelCount > 2 {
+            nodes.append(engine.outputNode)
+        }
+        // 一定要传入format，这样多音轨音响才不会有问题。
+        engine.connect(nodes: nodes, format: audioFormat)
         engine.prepare()
+        if isRunning {
+            try? engine.start()
+            // 从多声道切换到2声道马上调用start会不生效。需要异步主线程才可以
+            DispatchQueue.main.async { [weak self] in
+                self?.play()
+            }
+        }
+    }
+
+    func audioNodes() -> [AVAudioNode] {
+        [timePitch, engine.mainMixerNode]
+    }
+
+    public func play() {
+        if !engine.isRunning {
+            do {
+                try engine.start()
+            } catch {
+                KSLog(error)
+            }
+        }
+    }
+
+    public func pause() {
+        if engine.isRunning {
+            engine.pause()
+        }
+    }
+
+    public func flush() {
+        currentRender = nil
     }
 
     private func addRenderNotify(audioUnit: AudioUnit) {
@@ -178,34 +237,34 @@ public final class AudioEnginePlayer: AudioPlayer, FrameOutput {
         }, Unmanaged.passUnretained(self).toOpaque())
     }
 
-    private func addRenderCallback(audioUnit: AudioUnit, streamDescription: UnsafePointer<AudioStreamBasicDescription>) {
-        _ = AudioUnitSetProperty(audioUnit,
-                                 kAudioUnitProperty_StreamFormat,
-                                 kAudioUnitScope_Input,
-                                 0,
-                                 streamDescription,
-                                 UInt32(MemoryLayout<AudioStreamBasicDescription>.size))
-        var inputCallbackStruct = AURenderCallbackStruct()
-        inputCallbackStruct.inputProcRefCon = Unmanaged.passUnretained(self).toOpaque()
-        inputCallbackStruct.inputProc = { refCon, _, _, _, inNumberFrames, ioData in
-            guard let ioData = ioData else {
-                return noErr
-            }
-            let `self` = Unmanaged<AudioEnginePlayer>.fromOpaque(refCon).takeUnretainedValue()
-            self.audioPlayerShouldInputData(ioData: UnsafeMutableAudioBufferListPointer(ioData), numberOfFrames: inNumberFrames)
-            return noErr
-        }
-        _ = AudioUnitSetProperty(audioUnit, kAudioUnitProperty_SetRenderCallback, kAudioUnitScope_Input, 0, &inputCallbackStruct, UInt32(MemoryLayout<AURenderCallbackStruct>.size))
-    }
+//    private func addRenderCallback(audioUnit: AudioUnit, streamDescription: UnsafePointer<AudioStreamBasicDescription>) {
+//        _ = AudioUnitSetProperty(audioUnit,
+//                                 kAudioUnitProperty_StreamFormat,
+//                                 kAudioUnitScope_Input,
+//                                 0,
+//                                 streamDescription,
+//                                 UInt32(MemoryLayout<AudioStreamBasicDescription>.size))
+//        var inputCallbackStruct = AURenderCallbackStruct()
+//        inputCallbackStruct.inputProcRefCon = Unmanaged.passUnretained(self).toOpaque()
+//        inputCallbackStruct.inputProc = { refCon, _, _, _, inNumberFrames, ioData in
+//            guard let ioData else {
+//                return noErr
+//            }
+//            let `self` = Unmanaged<AudioEnginePlayer>.fromOpaque(refCon).takeUnretainedValue()
+//            self.audioPlayerShouldInputData(ioData: UnsafeMutableAudioBufferListPointer(ioData), numberOfFrames: inNumberFrames)
+//            return noErr
+//        }
+//        _ = AudioUnitSetProperty(audioUnit, kAudioUnitProperty_SetRenderCallback, kAudioUnitScope_Input, 0, &inputCallbackStruct, UInt32(MemoryLayout<AURenderCallbackStruct>.size))
+//    }
 
     private func audioPlayerShouldInputData(ioData: UnsafeMutableAudioBufferListPointer, numberOfFrames: UInt32) {
         var ioDataWriteOffset = 0
-        var numberOfSamples = Int(numberOfFrames)
+        var numberOfSamples = numberOfFrames
         while numberOfSamples > 0 {
             if currentRender == nil {
                 currentRender = renderSource?.getAudioOutputRender()
             }
-            guard let currentRender = currentRender else {
+            guard let currentRender else {
                 break
             }
             let residueLinesize = currentRender.numberOfSamples - currentRenderReadOffset
@@ -213,30 +272,46 @@ public final class AudioEnginePlayer: AudioPlayer, FrameOutput {
                 self.currentRender = nil
                 continue
             }
+            if sourceNodeAudioFormat != currentRender.audioFormat {
+                runOnMainThread { [weak self] in
+                    guard let self else {
+                        return
+                    }
+                    self.prepare(audioFormat: currentRender.audioFormat)
+                }
+                return
+            }
             let framesToCopy = min(numberOfSamples, residueLinesize)
-            let bytesToCopy = framesToCopy * MemoryLayout<Float>.size
-            let offset = currentRenderReadOffset * MemoryLayout<Float>.size
-            for i in 0 ..< min(ioData.count, currentRender.dataWrap.data.count) {
-                (ioData[i].mData! + ioDataWriteOffset).copyMemory(from: currentRender.dataWrap.data[i]! + offset, byteCount: bytesToCopy)
+            let bytesToCopy = Int(framesToCopy * sampleSize)
+            let offset = Int(currentRenderReadOffset * sampleSize)
+            for i in 0 ..< min(ioData.count, currentRender.data.count) {
+                if let source = currentRender.data[i], let destination = ioData[i].mData {
+                    (destination + ioDataWriteOffset).copyMemory(from: source + offset, byteCount: bytesToCopy)
+                }
             }
             numberOfSamples -= framesToCopy
             ioDataWriteOffset += bytesToCopy
             currentRenderReadOffset += framesToCopy
         }
-        let sizeCopied = (Int(numberOfFrames) - numberOfSamples) * MemoryLayout<Float>.size
+        let sizeCopied = (numberOfFrames - numberOfSamples) * sampleSize
         for i in 0 ..< ioData.count {
-            let sizeLeft = Int(ioData[i].mDataByteSize) - sizeCopied
+            let sizeLeft = Int(ioData[i].mDataByteSize - sizeCopied)
             if sizeLeft > 0 {
-                memset(ioData[i].mData! + sizeCopied, 0, sizeLeft)
+                memset(ioData[i].mData! + Int(sizeCopied), 0, sizeLeft)
             }
         }
     }
 
     private func audioPlayerDidRenderSample(sampleTimestamp _: AudioTimeStamp) {
-        if let currentRender = currentRender {
-            let currentPreparePosition = currentRender.position + currentRender.duration * Int64(currentRenderReadOffset) / Int64(currentRender.numberOfSamples)
+        if let currentRender {
+            let currentPreparePosition = currentRender.timestamp + currentRender.duration * Int64(currentRenderReadOffset) / Int64(currentRender.numberOfSamples)
             if currentPreparePosition > 0 {
-                renderSource?.setAudio(time: currentRender.timebase.cmtime(for: currentPreparePosition))
+                var time = currentRender.timebase.cmtime(for: currentPreparePosition)
+                #if !os(macOS)
+                // AVSampleBufferAudioRenderer不需要处理outputLatency，其他音频输出的都要处理，没有蓝牙的话，outputLatency为0.015，有蓝牙耳机的话为0.176
+                time = time - CMTime(seconds: AVAudioSession.sharedInstance().outputLatency, preferredTimescale: time.timescale)
+                #endif
+                renderSource?.setAudio(time: time, position: currentRender.position)
             }
         }
     }
@@ -250,20 +325,5 @@ extension AVAudioEngine {
         for i in 0 ..< nodes.count - 1 {
             connect(nodes[i], to: nodes[i + 1], format: format)
         }
-    }
-}
-
-extension AVAudioFormat {
-    func toPCMBuffer(frame: AudioFrame) -> AVAudioPCMBuffer? {
-        guard let pcmBuffer = AVAudioPCMBuffer(pcmFormat: self, frameCapacity: UInt32(frame.dataWrap.size[0]) / streamDescription.pointee.mBytesPerFrame) else {
-            return nil
-        }
-        pcmBuffer.frameLength = pcmBuffer.frameCapacity
-        for i in 0 ..< min(Int(pcmBuffer.format.channelCount), frame.dataWrap.size.count) {
-            frame.dataWrap.data[i]?.withMemoryRebound(to: Float.self, capacity: Int(pcmBuffer.frameCapacity)) { srcFloatsForChannel in
-                pcmBuffer.floatChannelData?[i].assign(from: srcFloatsForChannel, count: Int(pcmBuffer.frameCapacity))
-            }
-        }
-        return pcmBuffer
     }
 }

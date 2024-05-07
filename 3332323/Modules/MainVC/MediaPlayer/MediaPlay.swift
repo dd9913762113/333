@@ -12,6 +12,7 @@ import UIKit
 import VIMediaCache
 
 class MediaPlay : UIViewController, PlayerControllerDelegate {
+  
 
     override var preferredStatusBarStyle: UIStatusBarStyle {
         .lightContent
@@ -90,8 +91,8 @@ class MediaPlay : UIViewController, PlayerControllerDelegate {
     private func initKSplayer()
     {
 //        KSPlayerManager.canBackgroundPlay = true
-        KSPlayerManager.logLevel = .error
-        KSPlayerManager.firstPlayerType = KSMEPlayer.self
+//        KSPlayerManager.logLevel = .error
+//        KSPlayerManager.firstPlayerType = KSMEPlayer.self
         KSOptions.isAutoPlay = true
         KSOptions.isSecondOpen = true
         KSOptions.isAccurateSeek = true
@@ -117,6 +118,10 @@ class MediaPlay : UIViewController, PlayerControllerDelegate {
 
 
 extension MediaPlay {
+    func playerController(seek: TimeInterval) {
+        DLog("")
+    }
+    
     func playerController(state: KSPlayerState) {
 
     }

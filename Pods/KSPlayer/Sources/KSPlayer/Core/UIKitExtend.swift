@@ -21,7 +21,7 @@ public class KSSlider: UXSlider {
         addGestureRecognizer(panGesture)
         addTarget(self, action: #selector(progressSliderTouchBegan(_:)), for: .touchDown)
         addTarget(self, action: #selector(progressSliderValueChanged(_:)), for: .valueChanged)
-        addTarget(self, action: #selector(progressSliderTouchEnded(_:)), for: [.touchUpInside, .touchCancel, .touchUpOutside])
+        addTarget(self, action: #selector(progressSliderTouchEnded(_:)), for: [.touchUpInside, .touchCancel, .touchUpOutside, .primaryActionTriggered])
     }
 
     @available(*, unavailable)
@@ -91,9 +91,7 @@ public class KSSlider: UXSlider {
     }
 }
 
-#if !os(tvOS)
-public typealias UXSlider = UISlider
-#else
+#if os(tvOS)
 public class UXSlider: UIProgressView {
     @IBInspectable public var value: Float {
         get {
@@ -162,9 +160,18 @@ public class UXSlider: UIProgressView {
         bounds
     }
 }
+#else
+public typealias UXSlider = UISlider
 #endif
+
 public typealias UIViewContentMode = UIView.ContentMode
-internal extension UIButton {
+extension UIButton {
+    func fillImage() {
+        contentMode = .scaleAspectFill
+        contentHorizontalAlignment = .fill
+        contentVerticalAlignment = .fill
+    }
+
     var titleFont: UIFont? {
         get {
             titleLabel?.font

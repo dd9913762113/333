@@ -6,6 +6,7 @@
 //
 
 import CoreGraphics
+import Foundation
 
 #if os(iOS)
 import UIKit
@@ -18,6 +19,8 @@ public extension CGFloat {
     static let screenHeight: CGFloat = UIScreen.main.bounds.size.height
     static let screenMinEdge: CGFloat = Swift.min(screenWidth, screenHeight)
     #endif
-
-    static let navigationBarHeight: CGFloat = 44
+    
+    var nsNumber: NSNumber {
+        return NSNumber(value: self)
+    }
 }

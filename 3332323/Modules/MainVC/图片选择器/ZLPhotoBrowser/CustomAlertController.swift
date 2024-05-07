@@ -1,10 +1,10 @@
 //
 //  CustomAlertController.swift
-//  3332323
+//  Example
 //
-//  Created by dd on 29/9/2022.
-//  Copyright © 2022 XJW. All rights reserved.
+//  Created by long on 2022/7/1.
 //
+
 import UIKit
 import ZLPhotoBrowser
 
@@ -13,9 +13,8 @@ class CustomAlertController: UIViewController {
     
     private let separatorHeight: CGFloat = 1 / UIScreen.main.scale
     
-//    private let separatorColor = UIColor.color(hexRGB: 0xEEEEEE)
-    private let separatorColor = UIColor(hex: "EEEEEE")
-
+    private let separatorColor = UIColor.color(hexRGB: 0xEEEEEE)
+    
     private let actionHeight: CGFloat = 50
     
     private let alertTitle: String?
@@ -34,9 +33,7 @@ class CustomAlertController: UIViewController {
     
     private lazy var titleLabel: UILabel = {
         let label = UILabel()
-//        label.textColor = UIColor.color(hexRGB: 0x171717)
-        label.textColor = UIColor(hex: "0x171717")
-
+        label.textColor = UIColor.color(hexRGB: 0x171717)
         label.font = UIFont.systemFont(ofSize: 16)
         label.textAlignment = .center
         label.numberOfLines = 0
@@ -137,7 +134,7 @@ class CustomAlertController: UIViewController {
                 string: message,
                 attributes: [
                     .font: UIFont.systemFont(ofSize: 16),
-                    .foregroundColor: UIColor(hex: "787878"),
+                    .foregroundColor: UIColor.color(hexRGB: 0x787878),
                     .paragraphStyle: attriMessageStyle
                 ]
             )
@@ -190,7 +187,7 @@ class CustomAlertController: UIViewController {
         }
         // actionSheet最下方取消按钮
         let marginLine = UIView()
-        marginLine.backgroundColor = UIColor(hex: "0xF0F0F0")
+        marginLine.backgroundColor = UIColor.color(hexRGB: 0xF0F0F0)
         container.addSubview(marginLine)
         marginLine.snp.makeConstraints { make in
             make.top.equalTo(actionStackView.snp.bottom)
@@ -290,15 +287,33 @@ extension CustomAlertController: ZLCustomAlertProtocol {
     }
 }
 
+
 extension ZLCustomAlertAction.Style {
     var color: UIColor {
         switch self {
         case .default, .cancel:
-            return UIColor(hex: "0x171717")
+            return UIColor.color(hexRGB: 0x171717)
         case .tint:
-            return UIColor(hex: "0x4F638E")
+            return UIColor.color(hexRGB: 0x4F638E)
         case .destructive:
-            return UIColor(hex: "0xEB2F58")
+            return UIColor.color(hexRGB: 0xEB2F58)
         }
+    }
+}
+
+extension UIColor {
+    class func color(hexRGB: Int64, alpha: CGFloat = 1.0) -> UIColor {
+        let r: Int64 = (hexRGB & 0xFF0000) >> 16
+        let g: Int64 = (hexRGB & 0xFF00) >> 8
+        let b: Int64 = (hexRGB & 0xFF)
+        
+        let color = UIColor(
+            red: CGFloat(r) / 255.0,
+            green: CGFloat(g) / 255.0,
+            blue: CGFloat(b) / 255.0,
+            alpha: alpha
+        )
+
+        return color
     }
 }

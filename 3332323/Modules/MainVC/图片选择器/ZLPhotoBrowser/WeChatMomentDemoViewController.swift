@@ -65,31 +65,23 @@ class WeChatMomentDemoViewController: UIViewController {
         config.cropVideoAfterSelectThumbnail = true
         config.allowEditVideo = true
         config.allowMixSelect = false
-        config.maxSelectCount = 9
+        config.maxSelectCount = 9 - images.count
         config.maxEditVideoTime = 15
-        config.showCaptureImageOnTakePhotoBtn = true
-//        拍照后左下角有个编辑按钮
-        config.allowEditImage = true
+        
         // You can provide the selected assets so as not to repeat selection.
         // Like this 'let photoPicker = ZLPhotoPreviewSheet(selectedAssets: assets)'
-        let photoPicker = ZLPhotoPreviewSheet(selectedAssets:self.assets)
+        let photoPicker = ZLPhotoPreviewSheet()
         
-//        photoPicker.selectImageBlock = { [weak self] (images, assets, _) in
-//            self?.hasSelectVideo = assets.first?.mediaType == .video
-//            self?.images = images
-//            self?.assets = assets
-//            self?.collectionView.reloadData()
-//        }
-//        photoPicker.cancelBlock = {
-//            debugPrint("cancel select")
-//        }
-//        photoPicker.selectImageRequestErrorBlock = { (errorAssets, errorIndexs) in
-//            debugPrint("fetch error assets: \(errorAssets), error indexs: \(errorIndexs)")
-//        }
-////    显示预览 和 拍照 相册 取消
-//        photoPicker.showPreview(animate: true, sender: self)
-////      直接显示相册
-////        photoPicker.showPhotoLibrary(sender: self)
+        photoPicker.selectImageBlock = { [weak self] (results, _) in
+            let images = results.map { $0.image }
+            let assets = results.map { $0.asset }
+            self?.hasSelectVideo = assets.first?.mediaType == .video
+            self?.images.append(contentsOf: images)
+            self?.assets.append(contentsOf: assets)
+            self?.collectionView.reloadData()
+        }
+        
+        photoPicker.showPhotoLibrary(sender: self)
     }
     
 }

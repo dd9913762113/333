@@ -19,7 +19,7 @@ pod 'ZXRequestBlock'
 
 ## 注意
 
-### 不支持WKWebView！！
+### 对`WKWebView`内的请求无效！！
 
 ***
 
@@ -28,14 +28,31 @@ pod 'ZXRequestBlock'
 ### 拦截全局请求
 ```objective-c
 [ZXRequestBlock handleRequest:^NSURLRequest *(NSURLRequest *request) {
-        //拦截回调在异步线程
-        NSLog(@"拦截到请求-%@",request);
-        dispatch_async(dispatch_get_main_queue(), ^{
-            self.blockTv.text = [self.blockTv.text stringByAppendingString:[NSString stringWithFormat:@"拦截到请求--%@\n",request]];
-        });
-        //在这里可以将request赋值给可变的NSURLRequest，进行一些修改（例如根据request的url过滤单独对一些请求的请求体进行修改等）然后再return，达到修改request的目的。
-        return request;
+    //拦截回调在异步线程
+    NSLog(@"拦截到请求-%@",request);
+    dispatch_async(dispatch_get_main_queue(), ^{
+        self.blockTv.text = [self.blockTv.text stringByAppendingString:[NSString stringWithFormat:@"拦截到请求--%@\n",request]];
+    });
+    //在这里可以将request赋值给可变的NSURLRequest，进行一些修改（例如根据request的url过滤单独对一些请求的请求体进行修改等）然后再return，达到修改request的目的。
+    return request;
 }];
+```
+
+### 拦截全局请求与响应
+```objc
+[ZXRequestBlock handleRequest:^NSURLRequest *(NSURLRequest *request) {
+    //拦截请求处理
+    return request;
+} responseBlock:^NSData *(NSURLResponse *response, NSData *data) {
+    //拦截响应数据
+    //如果为http请求，则响应为NSHTTPURLResponse，可进行强制转换
+    NSHTTPURLResponse *httpResponse = (NSHTTPURLResponse *)response;
+    NSLog(@"拦截到响应url-%@", httpResponse.URL);
+    NSLog(@"拦截到响应数据-%@", [[NSString alloc] initWithData:data encoding:NSUTF8StringEncoding]);
+    //这里返回的data就是最终的响应数据，可以自行修改
+    //可以通过[str dataUsingEncoding:NSUTF8StringEncoding];来将字符串转NSData
+    return data;
+}];   
 ```
 *** 
 ### 防代理抓包

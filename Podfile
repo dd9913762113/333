@@ -2,7 +2,7 @@
  
 #source 'https://github.com/CocoaPods/Specs.git'
 
-platform :ios, '13'
+platform :ios, '14.0'
 
 target '3332323' do
   
@@ -14,26 +14,26 @@ target '3332323' do
 # pod 'SwiftSignalKit',:git => 'https://github.com/dd9913762113/SwiftSignalKit', :branch => 'master'
 #pod 'SwiftSignalKit'
  pod 'SnapKit'  ,'~> 5.6.0'
- pod 'Alamofire' ,'~> 5.6.2'
+ pod 'Alamofire' ,'~> 5.6.4'
 # pod 'Moya', '~> 15.0.0'
 # pod 'Moya/RxSwift', '~> 15.0'
  pod 'PKHUD', '~> 5.3.0'
  pod 'HandyJSON', '~> 5.0.4-beta'
  # RXSwift
- pod 'RxSwift',    '~> 6.5.0'
- pod 'RxCocoa',    '~> 6.5.0'
+ pod 'RxSwift',    '~> 6.7.1'
+ pod 'RxCocoa',    '~> 6.7.1'
  
  pod 'PromiseKit', '~> 6.18.1'
- pod 'DaisyNet'
+ pod 'DaisyNet', '~> 1.0.6'
  pod 'Cache', '~> 6.0.0'
- pod 'Kingfisher' ,'~> 7.6.2'
+ pod 'Kingfisher' ,'~> 7.11.0'
 # pod 'OpenSSL-Universal'
 # pod "OpenSSL-Apple"
  pod 'PhoneNumberKit', '3.6.3'
  pod 'SwiftyJSON' , '5.0.1'
 
 # 微信图片框架
-pod 'ZLPhotoBrowser', '~> 4.3.7'
+pod 'ZLPhotoBrowser', '~> 4.5.2'
 
 # pod 'mobile-ffmpeg-full', '4.4'
 
@@ -46,11 +46,11 @@ pod 'VIMediaCache', '~> 0.4'
 
 # pod 'ImagePicker', '~> 3.2.0'
 # 播放器
- pod 'SwiftLint' 
- pod 'KSPlayer',:git => 'https://github.com/kingslay/KSPlayer.git', :branch => 'develop'
- pod 'FFmpeg',:git => 'https://github.com/kingslay/KSPlayer.git', :branch => 'develop'
- pod 'OpenSSL',:git => 'https://github.com/kingslay/KSPlayer.git', :branch => 'develop'
- 
+ pod 'SwiftLint'
+ pod 'KSPlayer',:git => 'https://github.com/kingslay/KSPlayer.git', :branch => 'main'
+ pod 'DisplayCriteria',:git => 'https://github.com/kingslay/KSPlayer.git', :branch => 'main'
+ pod 'FFmpegKit',:git => 'https://github.com/kingslay/FFmpegKit.git', :branch => 'main'
+ pod 'Libass',:git => 'https://github.com/kingslay/FFmpegKit.git', :branch => 'main'
 # 天女散花动画
  pod 'SPConfetti'
  pod 'SparrowKit'
@@ -97,7 +97,7 @@ pod 'VIMediaCache', '~> 0.4'
  pod 'Toast-Swift'
 #  pod 'MarqueeLabel/Swift'
  pod 'TXScrollLabelView'
- pod 'AttributedString'
+ pod 'AttributedString', '~> 3.4.1'
  pod 'FDFullscreenPopGesture', '1.1'
  pod 'FSPagerView'
  pod 'JXSegmentedView'
@@ -109,7 +109,7 @@ pod 'VIMediaCache', '~> 0.4'
  pod 'KakaJSON', '~> 1.1.2'
  
  # crypto
- pod 'CryptoSwift', '~> 1.6.0'
+ pod 'CryptoSwift', '~> 1.8.2'
  
 
  
@@ -124,27 +124,24 @@ pod 'VIMediaCache', '~> 0.4'
 
 # 语音视频 https://github.com/orgs/jitsi/repositories
 # pod 'JitsiMeetSDK', '~> 4.1.0'
-pod 'JitsiMeetSDK', '~> 8.1.2'
+pod 'JitsiMeetSDK', '~> 9.2.2'
 
 #  https://swiftobc.com/repo/xiaoyouPrince-XYNav-swift-navigation-bar
 #  https://github.com/xiaoyouPrince/XYNav
- pod 'XYNav'
+ pod 'XYNav', '~> 1.3.4'
 
  
 # https://github.com/EFPrefix/EFQRCode
  pod 'EFQRCode', '~> 6.2.0'
- pod 'EFFoundation'
+ pod 'EFFoundation', '~> 1.7.1'
  pod 'EFColorPicker'
 ## 输入框跟随键盘弹起 https://github.com/1amageek/Toolbar
 # pod 'Toolbar'
 
   pod 'Protobuf' , '~> 3.19.6'
 
-#  v2ex api https://github.com/isaced/V2exAPI
-#  pod 'V2exAPI', '~> 1.0.0'
-
 #动画效果  适用于各个地方 如：tabbar切换点击时动态响应
- pod 'lottie-ios'
+ pod 'lottie-ios', '~> 4.4.3'
  
 #时间线表格cell
 # pod 'TimelineTableViewCell'
@@ -207,10 +204,12 @@ pod 'JitsiMeetSDK', '~> 8.1.2'
 # pod 'SwiftSH'
 
 # 基于NSURLProtocol一句话实现iOS应用底层所有网络请求拦截(含网页ajax请求拦截【不支持WKWebView】)
- pod 'ZXRequestBlock'
+ pod 'ZXRequestBlock', '~> 1.0.4'
 
- 
- 
+ # 一个 V2ex API 的 Swift 封装，支持 iOS/macOS，支持 SPM 引入和 async/await 方式调用。
+ # https://github.com/isaced/V2exAPI
+# pod 'V2exAPI', '~> 1.0.0'
+
  
 end
 
@@ -228,7 +227,7 @@ end
 post_install do |installer|
   installer.pods_project.targets.each do |target|
     target.build_configurations.each do |config|
-      config.build_settings['IPHONEOS_DEPLOYMENT_TARGET'] = '13.0'
+      config.build_settings['IPHONEOS_DEPLOYMENT_TARGET'] = '14.0'
       config.build_settings['ONLY_ACTIVE_ARCH'] = 'NO'  # 讓M1晶片的MAC可編譯
       config.build_settings['LD_NO_PIE'] = 'NO'
       config.build_settings['CODE_SIGNING_ALLOWED'] = 'NO'

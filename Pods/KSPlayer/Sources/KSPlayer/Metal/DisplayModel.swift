@@ -2,7 +2,7 @@
 //  DisplayModel.swift
 //  KSPlayer-iOS
 //
-//  Created by wangjinbian on 2020/1/11.
+//  Created by kintan on 2020/1/11.
 //
 
 import Foundation
@@ -39,7 +39,6 @@ extension DisplayEnum {
         }
     }
 
-    #if canImport(UIKit)
     func touchesMoved(touch: UITouch) {
         switch self {
         case .vr:
@@ -50,7 +49,6 @@ extension DisplayEnum {
             break
         }
     }
-    #endif
 }
 
 private class PlaneDisplayModel {
@@ -121,6 +119,7 @@ private class PlaneDisplayModel {
     }
 }
 
+@MainActor
 private class SphereDisplayModel {
     private lazy var yuv = MetalRender.makePipelineState(fragmentFunction: "displayYUVTexture", isSphere: true)
     private lazy var yuvp010LE = MetalRender.makePipelineState(fragmentFunction: "displayYUVTexture", isSphere: true, bitDepth: 10)
@@ -136,7 +135,7 @@ private class SphereDisplayModel {
     let indexBuffer: MTLBuffer
     let posBuffer: MTLBuffer?
     let uvBuffer: MTLBuffer?
-
+    @MainActor
     fileprivate init() {
         let (indices, positions, uvs) = SphereDisplayModel.genSphere()
         let device = MetalRender.device
@@ -145,7 +144,7 @@ private class SphereDisplayModel {
         posBuffer = device.makeBuffer(bytes: positions, length: MemoryLayout<simd_float4>.size * positions.count)
         uvBuffer = device.makeBuffer(bytes: uvs, length: MemoryLayout<simd_float2>.size * uvs.count)
         #if canImport(UIKit) && canImport(CoreMotion)
-        if KSPlayerManager.enableSensor {
+        if KSOptions.enableSensor {
             MotionSensor.shared.start()
         }
         #endif
@@ -156,23 +155,28 @@ private class SphereDisplayModel {
         encoder.setVertexBuffer(posBuffer, offset: 0, index: 0)
         encoder.setVertexBuffer(uvBuffer, offset: 0, index: 1)
         #if canImport(UIKit) && canImport(CoreMotion)
-        if KSPlayerManager.enableSensor, let matrix = MotionSensor.shared.matrix() {
+        if KSOptions.enableSensor, let matrix = MotionSensor.shared.matrix() {
             modelViewMatrix = matrix
         }
         #endif
     }
 
-    #if canImport(UIKit)
+    @MainActor
     func touchesMoved(touch: UITouch) {
-        var distX = Float(touch.location(in: touch.view).x - touch.previousLocation(in: touch.view).x)
-        var distY = Float(touch.location(in: touch.view).y - touch.previousLocation(in: touch.view).y)
+        #if canImport(UIKit)
+        let view = touch.view
+        #else
+        let view: UIView? = nil
+        #endif
+        var distX = Float(touch.location(in: view).x - touch.previousLocation(in: view).x)
+        var distY = Float(touch.location(in: view).y - touch.previousLocation(in: view).y)
         distX *= 0.005
         distY *= 0.005
         fingerRotationX -= distY * 60 / 100
         fingerRotationY -= distX * 60 / 100
         modelViewMatrix = matrix_identity_float4x4.rotateX(radians: fingerRotationX).rotateY(radians: fingerRotationY)
     }
-    #endif
+
     func reset() {
         fingerRotationX = 0
         fingerRotationY = 0
@@ -246,8 +250,9 @@ private class SphereDisplayModel {
 
 private class VRDisplayModel: SphereDisplayModel {
     private let modelViewProjectionMatrix: simd_float4x4
+
     override required init() {
-        let size = UIScreen.size
+        let size = KSOptions.sceneSize
         let aspect = Float(size.width / size.height)
         let projectionMatrix = simd_float4x4(perspective: Float.pi / 3, aspect: aspect, nearZ: 0.1, farZ: 400.0)
         let viewMatrix = simd_float4x4(lookAt: SIMD3<Float>.zero, center: [0, 0, -1000], up: [0, 1, 0])
@@ -268,7 +273,7 @@ private class VRBoxDisplayModel: SphereDisplayModel {
     private let modelViewProjectionMatrixLeft: simd_float4x4
     private let modelViewProjectionMatrixRight: simd_float4x4
     override required init() {
-        let size = UIScreen.size
+        let size = KSOptions.sceneSize
         let aspect = Float(size.width / size.height) / 2
         let viewMatrixLeft = simd_float4x4(lookAt: [-0.012, 0, 0], center: [0, 0, -1000], up: [0, 1, 0])
         let viewMatrixRight = simd_float4x4(lookAt: [0.012, 0, 0], center: [0, 0, -1000], up: [0, 1, 0])
@@ -280,7 +285,7 @@ private class VRBoxDisplayModel: SphereDisplayModel {
 
     override func set(encoder: MTLRenderCommandEncoder) {
         super.set(encoder: encoder)
-        let layerSize = UIScreen.size
+        let layerSize = KSOptions.sceneSize
         let width = Double(layerSize.width / 2)
         [(modelViewProjectionMatrixLeft, MTLViewport(originX: 0, originY: 0, width: width, height: Double(layerSize.height), znear: 0, zfar: 0)),
          (modelViewProjectionMatrixRight, MTLViewport(originX: width, originY: 0, width: width, height: Double(layerSize.height), znear: 0, zfar: 0))].forEach { modelViewProjectionMatrix, viewport in

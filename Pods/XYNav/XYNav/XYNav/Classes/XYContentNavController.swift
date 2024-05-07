@@ -11,6 +11,7 @@ class XYContentNavController: UINavigationController {
     
     /// 上级 nav
     weak var superNav: XYNavigationController?
+    private var statusBar = CustomStatusBar(frame: CGRect.init(origin: .zero, size: CGSize.init(width: UIScreen.main.bounds.width, height: 10)))
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -19,6 +20,21 @@ class XYContentNavController: UINavigationController {
             appearance.backgroundColor = UIColor.systemBackground
             navigationBar.scrollEdgeAppearance = appearance
         } else {}
+        
+        navigationBar.addSubview(statusBar)
+        
+        if let globalBarTintColor = XYNavigationController.navBarDefaultColor {
+            navigationBar.barTintColor = globalBarTintColor
+        }
+    }
+    
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        #if DEBUG
+        if let vc = topViewController, XYNavigationController.showClassNameInNavBar {
+            statusBar.setMsg(with: vc)
+        }
+        #endif
     }
 
     override func pushViewController(_ viewController: UIViewController, animated: Bool) {
@@ -104,7 +120,14 @@ class XYNavBar: UINavigationBar {
                 let appearance = UINavigationBarAppearance()
                 appearance.backgroundColor = barTintColor
                 self.standardAppearance = appearance
+                self.compactAppearance = appearance
                 self.scrollEdgeAppearance = appearance
+                
+                if #available(iOS 15.0, *) {
+                    let appearance = UINavigationBarAppearance()
+                    appearance.backgroundColor = barTintColor
+                    self.compactScrollEdgeAppearance = appearance
+                }
             } else {}
         }
     }
@@ -115,5 +138,29 @@ class XYNavBar: UINavigationBar {
                 barTintColor = barTintColor ?? .systemBackground
             } else {}
         }
+    }
+}
+
+class CustomStatusBar: UIView {
+    private var messageLabel = UILabel()
+    
+    override init(frame: CGRect) {
+        super.init(frame: frame)
+        addSubview(messageLabel)
+        messageLabel.font = UIFont.systemFont(ofSize: 10)
+        messageLabel.textAlignment = .center
+    }
+    
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
+    
+    func setMsg(with vc: UIViewController) {
+        messageLabel.text = type(of: vc).description()
+    }
+    
+    override func layoutSubviews() {
+        super.layoutSubviews()
+        messageLabel.frame = bounds
     }
 }

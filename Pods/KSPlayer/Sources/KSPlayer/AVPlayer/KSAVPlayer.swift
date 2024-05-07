@@ -4,10 +4,12 @@ import AVKit
 import UIKit
 #else
 import AppKit
+
 public typealias UIImage = NSImage
 #endif
 import Combine
 import CoreGraphics
+
 public final class KSAVPlayerView: UIView {
     public let player = AVQueuePlayer()
     override public init(frame: CGRect) {
@@ -63,6 +65,7 @@ public final class KSAVPlayerView: UIView {
     }
 }
 
+@MainActor
 public class KSAVPlayer {
     private var cancellable: AnyCancellable?
     private var options: KSOptions {
@@ -86,23 +89,31 @@ public class KSAVPlayer {
     private var itemObservation: NSKeyValueObservation?
     private var loopCountObservation: NSKeyValueObservation?
     private var loopStatusObservation: NSKeyValueObservation?
+    private var mediaPlayerTracks = [AVMediaPlayerTrack]()
     private var error: Error? {
         didSet {
-            if let error = error {
+            if let error {
                 delegate?.finish(player: self, error: error)
             }
         }
     }
 
-    @available(tvOS 14.0, *)
-    public func pipController() -> AVPictureInPictureController? {
+    private lazy var _pipController: Any? = {
         if #available(tvOS 14.0, *) {
-            return AVPictureInPictureController(playerLayer: self.playerView.playerLayer)
+            let pip = KSPictureInPictureController(playerLayer: playerView.playerLayer)
+            return pip
         } else {
             return nil
         }
+    }()
+
+    @available(tvOS 14.0, *)
+    public var pipController: KSPictureInPictureController? {
+        _pipController as? KSPictureInPictureController
     }
 
+    public var naturalSize: CGSize = .zero
+    public let dynamicInfo: DynamicInfo? = nil
     @available(macOS 12.0, iOS 15.0, tvOS 15.0, *)
     public var playbackCoordinator: AVPlaybackCoordinator {
         playerView.player.playbackCoordinator
@@ -116,8 +127,9 @@ public class KSAVPlayer {
 
     public weak var delegate: MediaPlayerDelegate?
     public private(set) var duration: TimeInterval = 0
+    public private(set) var fileSize: Double = 0
     public private(set) var playableTime: TimeInterval = 0
-
+    public let chapters: [Chapter] = []
     public var playbackRate: Float = 1 {
         didSet {
             if playbackState == .playing {
@@ -167,12 +179,44 @@ public class KSAVPlayer {
         }
     }
 
+    #if os(xrOS)
+    public var allowsExternalPlayback = false
+    public var usesExternalPlaybackWhileExternalScreenIsActive = false
+    public let isExternalPlaybackActive = false
+    #else
+    public var allowsExternalPlayback: Bool {
+        get {
+            player.allowsExternalPlayback
+        }
+        set {
+            player.allowsExternalPlayback = newValue
+        }
+    }
+
+    #if os(macOS)
+    public var usesExternalPlaybackWhileExternalScreenIsActive = false
+    #else
+    public var usesExternalPlaybackWhileExternalScreenIsActive: Bool {
+        get {
+            player.usesExternalPlaybackWhileExternalScreenIsActive
+        }
+        set {
+            player.usesExternalPlaybackWhileExternalScreenIsActive = newValue
+        }
+    }
+    #endif
+
+    public var isExternalPlaybackActive: Bool {
+        player.isExternalPlaybackActive
+    }
+    #endif
+
     public required init(url: URL, options: KSOptions) {
-        KSPlayerManager.setAudioSession()
+        KSOptions.setAudioSession()
         urlAsset = AVURLAsset(url: url, options: options.avOptions)
         self.options = options
         itemObservation = player.observe(\.currentItem) { [weak self] player, _ in
-            guard let self = self else { return }
+            guard let self else { return }
             self.observer(playerItem: player.currentItem)
         }
     }
@@ -204,14 +248,23 @@ extension KSAVPlayer {
     private func updateStatus(item: AVPlayerItem) {
         if item.status == .readyToPlay {
             options.findTime = CACurrentMediaTime()
-            let videoTracks = item.tracks.filter { $0.assetTrack?.mediaType.rawValue == AVMediaType.video.rawValue }
-            if videoTracks.isEmpty || videoTracks.allSatisfy({ $0.assetTrack?.isPlayable == false }) {
+            mediaPlayerTracks = item.tracks.map {
+                AVMediaPlayerTrack(track: $0)
+            }
+            let playableVideo = mediaPlayerTracks.first {
+                $0.mediaType == .video && $0.isPlayable
+            }
+            if let playableVideo {
+                naturalSize = playableVideo.naturalSize
+            } else {
                 error = NSError(errorCode: .videoTracksUnplayable)
                 return
             }
             // 默认选择第一个声道
             item.tracks.filter { $0.assetTrack?.mediaType.rawValue == AVMediaType.audio.rawValue }.dropFirst().forEach { $0.isEnabled = false }
             duration = item.duration.seconds
+            let estimatedDataRates = item.tracks.compactMap { $0.assetTrack?.estimatedDataRate }
+            fileSize = Double(estimatedDataRates.reduce(0, +)) * duration / 8
             isReadyToPlay = true
         } else if item.status == .failed {
             error = item.error
@@ -220,7 +273,7 @@ extension KSAVPlayer {
 
     private func updatePlayableDuration(item: AVPlayerItem) {
         let first = item.loadedTimeRanges.first { CMTimeRangeContainsTime($0.timeRangeValue, time: item.currentTime()) }
-        if let first = first {
+        if let first {
             playableTime = first.timeRangeValue.end.seconds
             guard playableTime > 0 else { return }
             let loadedTime = playableTime - currentPlaybackTime
@@ -250,17 +303,17 @@ extension KSAVPlayer {
             loopCountObservation?.invalidate()
             loopStatusObservation?.invalidate()
             playerLooper?.disableLooping()
-            guard let playerItem = playerItem else {
+            guard let playerItem else {
                 playerLooper = nil
                 return
             }
             playerLooper = AVPlayerLooper(player: player, templateItem: playerItem)
             loopCountObservation = playerLooper?.observe(\.loopCount) { [weak self] playerLooper, _ in
-                guard let self = self else { return }
+                guard let self else { return }
                 self.delegate?.playBack(player: self, loopCount: playerLooper.loopCount)
             }
             loopStatusObservation = playerLooper?.observe(\.status) { [weak self] playerLooper, _ in
-                guard let self = self else { return }
+                guard let self else { return }
                 if playerLooper.status == .failed {
                     self.error = playerLooper.error
                 }
@@ -278,21 +331,21 @@ extension KSAVPlayer {
         bufferEmptyObservation?.invalidate()
         likelyToKeepUpObservation?.invalidate()
         bufferFullObservation?.invalidate()
-        guard let playerItem = playerItem else { return }
+        guard let playerItem else { return }
         NotificationCenter.default.addObserver(self, selector: #selector(moviePlayDidEnd), name: .AVPlayerItemDidPlayToEndTime, object: playerItem)
         NotificationCenter.default.addObserver(self, selector: #selector(playerItemFailedToPlayToEndTime), name: .AVPlayerItemFailedToPlayToEndTime, object: playerItem)
         statusObservation = playerItem.observe(\.status) { [weak self] item, _ in
-            guard let self = self else { return }
+            guard let self else { return }
             self.updateStatus(item: item)
         }
         loadedTimeRangesObservation = playerItem.observe(\.loadedTimeRanges) { [weak self] item, _ in
-            guard let self = self else { return }
+            guard let self else { return }
             // 计算缓冲进度
             self.updatePlayableDuration(item: item)
         }
 
         let changeHandler: (AVPlayerItem, NSKeyValueObservedChange<Bool>) -> Void = { [weak self] _, _ in
-            guard let self = self else { return }
+            guard let self else { return }
             // 在主线程更新进度
             if playerItem.isPlaybackBufferEmpty {
                 self.loadState = .loading
@@ -310,36 +363,6 @@ extension KSAVPlayer: MediaPlayerProtocol {
     public var subtitleDataSouce: SubtitleDataSouce? { nil }
     public var isPlaying: Bool { player.rate > 0 ? true : playbackState == .playing }
     public var view: UIView? { playerView }
-    public var allowsExternalPlayback: Bool {
-        get {
-            player.allowsExternalPlayback
-        }
-        set {
-            player.allowsExternalPlayback = newValue
-        }
-    }
-
-    public var usesExternalPlaybackWhileExternalScreenIsActive: Bool {
-        get {
-            #if os(macOS)
-            return false
-            #else
-            return player.usesExternalPlaybackWhileExternalScreenIsActive
-            #endif
-        }
-        set {
-            #if !os(macOS)
-            player.usesExternalPlaybackWhileExternalScreenIsActive = newValue
-            #endif
-        }
-    }
-
-    public var isExternalPlaybackActive: Bool { player.isExternalPlaybackActive }
-
-    public var naturalSize: CGSize {
-        urlAsset.tracks(withMediaType: .video).first { $0.isEnabled }?.naturalSize ?? .zero
-    }
-
     public var currentPlaybackTime: TimeInterval {
         get {
             if shouldSeekTo > 0 {
@@ -350,8 +373,7 @@ extension KSAVPlayer: MediaPlayerProtocol {
             }
         }
         set {
-            Task {
-                _ = await seek(time: newValue)
+            seek(time: newValue) { _ in
             }
         }
     }
@@ -363,7 +385,7 @@ extension KSAVPlayer: MediaPlayerProtocol {
         return event.numberOfBytesTransferred
     }
 
-    public func thumbnailImageAtCurrentTime() async -> UIImage? {
+    public func thumbnailImageAtCurrentTime() async -> CGImage? {
         guard let playerItem = player.currentItem, isReadyToPlay else {
             return nil
         }
@@ -374,24 +396,27 @@ extension KSAVPlayer: MediaPlayerProtocol {
         }
     }
 
-    public func seek(time: TimeInterval) async -> Bool {
-        guard time >= 0 else { return false }
+    public func seek(time: TimeInterval, completion: @escaping ((Bool) -> Void)) {
+        let time = max(time, 0)
         shouldSeekTo = time
         playbackState = .seeking
-        runInMainqueue { [weak self] in
+        runOnMainThread { [weak self] in
             self?.bufferingProgress = 0
         }
         let tolerance: CMTime = options.isAccurateSeek ? .zero : .positiveInfinity
-        let finished = await player.seek(to: CMTime(seconds: time, preferredTimescale: Int32(NSEC_PER_SEC)), toleranceBefore: tolerance, toleranceAfter: tolerance)
-        shouldSeekTo = 0
-        return finished
+        player.seek(to: CMTime(seconds: time), toleranceBefore: tolerance, toleranceAfter: tolerance) {
+            [weak self] finished in
+            guard let self else { return }
+            self.shouldSeekTo = 0
+            completion(finished)
+        }
     }
 
     public func prepareToPlay() {
         KSLog("prepareToPlay \(self)")
         options.prepareTime = CACurrentMediaTime()
-        runInMainqueue { [weak self] in
-            guard let self = self else { return }
+        runOnMainThread { [weak self] in
+            guard let self else { return }
             self.bufferingProgress = 0
             let playerItem = AVPlayerItem(asset: self.urlAsset)
             self.options.openTime = CACurrentMediaTime()
@@ -457,17 +482,17 @@ extension KSAVPlayer: MediaPlayerProtocol {
         }
     }
 
-    public func tracks(mediaType: AVMediaType) -> [MediaPlayerTrack] {
+    public func tracks(mediaType: AVFoundation.AVMediaType) -> [MediaPlayerTrack] {
         player.currentItem?.tracks.filter { $0.assetTrack?.mediaType == mediaType }.map { AVMediaPlayerTrack(track: $0) } ?? []
     }
 
-    public func select(track: MediaPlayerTrack) {
+    public func select(track: some MediaPlayerTrack) {
         player.currentItem?.tracks.filter { $0.assetTrack?.mediaType == track.mediaType }.forEach { $0.isEnabled = false }
-        track.setIsEnabled(true)
+        track.isEnabled = true
     }
 }
 
-extension AVMediaType {
+extension AVFoundation.AVMediaType {
     var mediaCharacteristic: AVMediaCharacteristic {
         switch self {
         case .video:
@@ -482,26 +507,27 @@ extension AVMediaType {
     }
 }
 
-struct AVMediaPlayerTrack: MediaPlayerTrack {
+extension AVAssetTrack {
+    func toMediaPlayerTrack() {}
+}
+
+class AVMediaPlayerTrack: MediaPlayerTrack {
+    let formatDescription: CMFormatDescription?
     let description: String
     private let track: AVPlayerItemTrack
-    let nominalFrameRate: Float
+    var nominalFrameRate: Float
     let trackID: Int32
-    let mediaSubType: CMFormatDescription.MediaSubType
-    let rotation: Double = 0
+    let rotation: Int16 = 0
+    let bitDepth: Int32
     let bitRate: Int64
-    let naturalSize: CGSize
     let name: String
-    let language: String?
-    let mediaType: AVMediaType
-    let depth: Int32
-    let fullRangeVideo: Bool
-    let colorSpace: String?
-    let colorPrimaries: String?
-    let transferFunction: String?
-    let yCbCrMatrix: String?
+    let languageCode: String?
+    let mediaType: AVFoundation.AVMediaType
+    let isImageSubtitle = false
     var dovi: DOVIDecoderConfigurationRecord?
-    var audioStreamBasicDescription: AudioStreamBasicDescription?
+    let fieldOrder: FFmpegFieldOrder = .unknown
+    var isPlayable: Bool
+    @MainActor
     var isEnabled: Bool {
         get {
             track.isEnabled
@@ -516,39 +542,31 @@ struct AVMediaPlayerTrack: MediaPlayerTrack {
         trackID = track.assetTrack?.trackID ?? 0
         mediaType = track.assetTrack?.mediaType ?? .video
         name = track.assetTrack?.languageCode ?? ""
-        language = track.assetTrack?.extendedLanguageTag
+        languageCode = track.assetTrack?.languageCode
         nominalFrameRate = track.assetTrack?.nominalFrameRate ?? 24.0
-        naturalSize = track.assetTrack?.naturalSize ?? .zero
         bitRate = Int64(track.assetTrack?.estimatedDataRate ?? 0)
-        if let formatDescription = track.assetTrack?.formatDescriptions.first {
-            // swiftlint:disable force_cast
-            let desc = formatDescription as! CMFormatDescription
-            // swiftlint:enable force_cast
-            mediaSubType = desc.mediaSubType
-            audioStreamBasicDescription = desc.audioStreamBasicDescription
-            let dictionary = CMFormatDescriptionGetExtensions(desc) as NSDictionary?
-            colorSpace = dictionary?[kCVImageBufferCGColorSpaceKey] as? String
-            colorPrimaries = dictionary?[kCVImageBufferColorPrimariesKey] as? String
-            transferFunction = dictionary?[kCVImageBufferTransferFunctionKey] as? String
-            yCbCrMatrix = dictionary?[kCVImageBufferYCbCrMatrixKey] as? String
-            fullRangeVideo = (dictionary?[kCMFormatDescriptionExtension_FullRangeVideo] as? Int32 ?? 0) == 1
-            depth = dictionary?[kCMFormatDescriptionExtension_Depth] as? Int32 ?? 24
-            description = mediaSubType.rawValue.string
+        #if os(xrOS)
+        isPlayable = false
+        #else
+        isPlayable = track.assetTrack?.isPlayable ?? false
+        #endif
+        // swiftlint:disable force_cast
+        if let first = track.assetTrack?.formatDescriptions.first {
+            formatDescription = first as! CMFormatDescription
         } else {
-            depth = 24
-            colorPrimaries = nil
-            transferFunction = nil
-            yCbCrMatrix = nil
-            colorSpace = nil
-            mediaSubType = CMFormatDescription.MediaSubType(string: "")
-            fullRangeVideo = false
-            description = ""
+            formatDescription = nil
         }
+        bitDepth = formatDescription?.bitDepth ?? 0
+        // swiftlint:enable force_cast
+        description = (formatDescription?.mediaSubType ?? .boxed).rawValue.string
+        #if os(xrOS)
+        Task {
+            isPlayable = await (try? track.assetTrack?.load(.isPlayable)) ?? false
+        }
+        #endif
     }
 
-    func setIsEnabled(_ isEnabled: Bool) {
-        track.isEnabled = isEnabled
-    }
+    func load() {}
 }
 
 public extension AVAsset {
@@ -559,44 +577,16 @@ public extension AVAsset {
         return imageGenerator
     }
 
-    func thumbnailImage(currentTime: CMTime, handler: @escaping (UIImage?) -> Void) {
+    func thumbnailImage(currentTime: CMTime, handler: @escaping (CGImage?) -> Void) {
         let imageGenerator = ceateImageGenerator()
         imageGenerator.requestedTimeToleranceBefore = .zero
         imageGenerator.requestedTimeToleranceAfter = .zero
         imageGenerator.generateCGImagesAsynchronously(forTimes: [NSValue(time: currentTime)]) { _, cgImage, _, _, _ in
-            if let cgImage = cgImage {
-                handler(UIImage(cgImage: cgImage))
+            if let cgImage {
+                handler(cgImage)
             } else {
                 handler(nil)
             }
         }
-    }
-}
-
-extension CGImage {
-    static func combine(images: [(CGRect, CGImage)]) -> CGImage? {
-        if images.isEmpty {
-            return nil
-        }
-        if images.count == 1 {
-            return images[0].1
-        }
-        var width = 0
-        var height = 0
-        for (rect, _) in images {
-            width = max(width, Int(rect.maxX))
-            height = max(height, Int(rect.maxY))
-        }
-        let bitsPerComponent = 8
-        // RGBA(的bytes) * bitsPerComponent *width
-        let bytesPerRow = 4 * 8 * bitsPerComponent * width
-        let context = CGContext(data: nil, width: width, height: height, bitsPerComponent: bitsPerComponent, bytesPerRow: bytesPerRow, space: CGColorSpaceCreateDeviceRGB(), bitmapInfo: CGImageAlphaInfo.premultipliedLast.rawValue)
-        guard let context = context else {
-            return nil
-        }
-        for (rect, cgImage) in images {
-            context.draw(cgImage, in: CGRect(x: rect.origin.x, y: CGFloat(height) - rect.origin.y, width: rect.width, height: rect.height))
-        }
-        return context.makeImage()
     }
 }

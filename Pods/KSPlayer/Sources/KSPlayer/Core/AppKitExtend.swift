@@ -1,14 +1,18 @@
 //
-//  File.swift
+//  AppKitExtend.swift
 //  KSPlayer
 //
 //  Created by kintan on 2018/3/9.
 //
+
+/// 'NSWindow' is unavailable in Mac Catalyst
 #if !canImport(UIKit)
 import AppKit
 import CoreMedia
 import IOKit.pwr_mgt
 
+public typealias UIApplicationDelegate = NSApplicationDelegate
+public typealias UIApplication = NSApplication
 public typealias UIWindow = NSWindow
 public typealias UIViewController = NSViewController
 public typealias UIColor = NSColor
@@ -18,18 +22,22 @@ public typealias UIGestureRecognizer = NSGestureRecognizer
 public typealias UIGestureRecognizerDelegate = NSGestureRecognizerDelegate
 public typealias UIViewContentMode = ContentMode
 public typealias UIFont = NSFont
+public typealias UIFontDescriptor = NSFontDescriptor
 public typealias UIControl = NSControl
 public typealias UITextField = NSTextField
 public typealias UIImageView = NSImageView
 public typealias UITapGestureRecognizer = NSClickGestureRecognizer
 public typealias UXSlider = NSSlider
-public typealias UIApplication = NSApplication
 public typealias UITableView = NSTableView
 public typealias UITableViewDelegate = NSTableViewDelegate
 public typealias UITableViewDataSource = NSTableViewDataSource
 public typealias UITouch = NSTouch
 public typealias UIEvent = NSEvent
 public typealias UIButton = KSButton
+public extension UIFontDescriptor.SymbolicTraits {
+    static var traitItalic = italic
+    static var traitBold = bold
+}
 
 extension NSScreen {
     var scale: CGFloat {
@@ -101,7 +109,7 @@ public extension NSView {
 
     var backgroundColor: UIColor? {
         get {
-            if let layer = layer, let cgColor = layer.backgroundColor {
+            if let layer, let cgColor = layer.backgroundColor {
                 return UIColor(cgColor: cgColor)
             } else {
                 return nil
@@ -114,7 +122,7 @@ public extension NSView {
 
     var clipsToBounds: Bool {
         get {
-            if let layer = layer {
+            if let layer {
                 return layer.masksToBounds
             } else {
                 return false
@@ -140,21 +148,24 @@ public extension NSView {
     }
 
     func layoutIfNeeded() {
-        backingLayer?.layoutIfNeeded()
+        layer?.layoutIfNeeded()
     }
 
     func centerRotate(byDegrees: Double) {
-        let degrees = CGFloat(-byDegrees)
-        if degrees != boundsRotation {
-            backingLayer?.anchorPoint = CGPoint(x: 0.5, y: 0.5)
-            rotate(byDegrees: degrees - boundsRotation)
-        }
+        layer?.position = center
+        layer?.anchorPoint = CGPoint(x: 0.5, y: 0.5)
+        layer?.setAffineTransform(CGAffineTransform(rotationAngle: CGFloat(Double.pi * byDegrees / 180.0)))
     }
 }
 
 public extension NSImage {
     convenience init(cgImage: CGImage) {
         self.init(cgImage: cgImage, size: NSSize.zero)
+    }
+
+    @available(macOS 11.0, *)
+    convenience init?(systemName: String) {
+        self.init(systemSymbolName: systemName, accessibilityDescription: nil)
     }
 }
 
@@ -170,16 +181,10 @@ extension NSButton {
 
     var tintColor: UIColor? {
         get {
-            if #available(OSX 10.14, *) {
-                return contentTintColor
-            } else {
-                return nil
-            }
+            contentTintColor
         }
         set {
-            if #available(OSX 10.14, *) {
-                contentTintColor = newValue
-            } else {}
+            contentTintColor = newValue
         }
     }
 }
@@ -254,33 +259,6 @@ public extension NSSlider {
             nil
         }
         set {}
-    }
-
-    @IBInspectable var maximumValue: Float {
-        get {
-            Float(maxValue)
-        }
-        set {
-            maxValue = Double(newValue)
-        }
-    }
-
-    @IBInspectable var minimumValue: Float {
-        get {
-            Float(minValue)
-        }
-        set {
-            minValue = Double(newValue)
-        }
-    }
-
-    @IBInspectable var value: Float {
-        get {
-            floatValue
-        }
-        set {
-            floatValue = newValue
-        }
     }
 }
 
@@ -459,8 +437,8 @@ public class KSButton: NSButton {
     }
 
     override open func updateTrackingAreas() {
-        trackingAreas.forEach {
-            removeTrackingArea($0)
+        for trackingArea in trackingAreas {
+            removeTrackingArea(trackingArea)
         }
         let trackingArea = NSTrackingArea(rect: bounds, options: [.mouseEnteredAndExited, .mouseMoved, .activeInKeyWindow], owner: self, userInfo: nil)
         addTrackingArea(trackingArea)
@@ -498,6 +476,8 @@ public class KSSlider: NSSlider {
     weak var delegate: KSSliderDelegate?
     public var trackHeigt = CGFloat(2)
     public var isPlayable = false
+    public var isUserInteractionEnabled: Bool = true
+    var tintColor: UIColor?
     public convenience init() {
         self.init(frame: .zero)
     }
@@ -514,10 +494,39 @@ public class KSSlider: NSSlider {
     }
 
     @objc private func progressSliderTouchEnded(_ sender: KSSlider) {
-        delegate?.slider(value: Double(sender.floatValue), event: .touchUpInside)
+        if isUserInteractionEnabled {
+            delegate?.slider(value: Double(sender.floatValue), event: .touchUpInside)
+        }
     }
 
     open func setThumbImage(_: UIImage?, for _: State) {}
+
+    @IBInspectable var maximumValue: Float {
+        get {
+            Float(maxValue)
+        }
+        set {
+            maxValue = Double(newValue)
+        }
+    }
+
+    @IBInspectable var minimumValue: Float {
+        get {
+            Float(minValue)
+        }
+        set {
+            minValue = Double(newValue)
+        }
+    }
+
+    @IBInspectable var value: Float {
+        get {
+            floatValue
+        }
+        set {
+            floatValue = newValue
+        }
+    }
 }
 
 extension UIView {
@@ -542,6 +551,8 @@ open class UIAlertController: UIViewController {
     public convenience init(title _: String?, message _: String?, preferredStyle _: UIAlertController.Style) {
         self.init()
     }
+
+    var preferredAction: UIAlertAction?
 
     open func addAction(_: UIAlertAction) {}
 }

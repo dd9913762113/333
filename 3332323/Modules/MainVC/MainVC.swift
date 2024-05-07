@@ -413,7 +413,7 @@ class MainVC: UIViewController,  UITableViewDelegate, UITableViewDataSource {
         
         print("------------\nApplication\n------------")
         print("clipboardString: \(Luminous.Application.clipboardString ?? "-")")
-        print("version: \(Luminous.Application.version)")
+//        print("version: \(Luminous.Application.version)")
     }
     
     

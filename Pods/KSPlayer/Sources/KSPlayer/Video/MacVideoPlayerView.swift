@@ -8,12 +8,14 @@
 
 import AppKit
 import AVFoundation
+
 public extension NSPasteboard.PasteboardType {
     static let nsURL = NSPasteboard.PasteboardType("NSURL")
     static let nsFilenames = NSPasteboard.PasteboardType("NSFilenamesPboardType")
 }
 
 public extension NSDraggingInfo {
+    @MainActor
     func getUrl() -> URL? {
         guard let types = draggingPasteboard.types else { return nil }
 
@@ -43,8 +45,8 @@ open class MacVideoPlayerView: VideoPlayerView {
 
 extension MacVideoPlayerView {
     override open func updateTrackingAreas() {
-        trackingAreas.forEach {
-            removeTrackingArea($0)
+        for trackingArea in trackingAreas {
+            removeTrackingArea(trackingArea)
         }
         let trackingArea = NSTrackingArea(rect: bounds, options: [.mouseEnteredAndExited, .mouseMoved, .activeInKeyWindow], owner: self, userInfo: nil)
         addTrackingArea(trackingArea)
@@ -77,7 +79,7 @@ extension MacVideoPlayerView {
                 tmpPanValue += Float(delta / 10000) * Float(totalTime)
                 showSeekToView(second: Double(tmpPanValue), isAdd: delta > 0)
             } else {
-                if KSPlayerManager.enableVolumeGestures {
+                if KSOptions.enableVolumeGestures {
                     tmpPanValue -= Float(delta / 1000)
                     tmpPanValue = max(min(tmpPanValue, 1), 0)
                 }
@@ -87,7 +89,7 @@ extension MacVideoPlayerView {
                 slider(value: Double(tmpPanValue), event: .touchUpInside)
                 hideSeekToView()
             } else {
-                if KSPlayerManager.enableVolumeGestures {
+                if KSOptions.enableVolumeGestures {
                     playerLayer?.player.playbackVolume = tmpPanValue
                 }
             }
@@ -122,7 +124,7 @@ extension MacVideoPlayerView {
                 set(resource: KSPlayerResource(url: url, options: KSOptions()))
                 return true
             } else {
-                resource?.subtitle = KSURLSubtitle(url: url)
+                srtControl.selectedSubtitleInfo = URLSubtitleInfo(url: url)
                 return true
             }
         }
@@ -156,7 +158,7 @@ class UIActivityIndicatorView: UIView {
         loadingView.wantsLayer = true
         addSubview(loadingView)
         let imageView = NSImageView()
-        imageView.image = KSPlayerManager.image(named: "loading")
+        imageView.image = KSOptions.image(named: "loading")
         loadingView.addSubview(imageView)
         imageView.imageScaling = .scaleAxesIndependently
         imageView.translatesAutoresizingMaskIntoConstraints = false

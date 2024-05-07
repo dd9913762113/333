@@ -1,12 +1,10 @@
 //
 //  CustomAlertControllerTransitionAnimation.swift
-//  3332323
+//  Example
 //
-//  Created by dd on 29/9/2022.
-//  Copyright © 2022 XJW. All rights reserved.
+//  Created by long on 2022/7/1.
 //
 
-import Foundation
 import UIKit
 import ZLPhotoBrowser
 

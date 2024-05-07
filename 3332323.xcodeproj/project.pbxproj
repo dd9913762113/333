@@ -3,7 +3,7 @@
 	archiveVersion = 1;
 	classes = {
 	};
-	objectVersion = 53;
+	objectVersion = 54;
 	objects = {
 
 /* Begin PBXBuildFile section */
@@ -115,7 +115,6 @@
 		6328307926B296120041F5BF /* DelegateMediator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6328307826B296120041F5BF /* DelegateMediator.swift */; };
 		6328308026B2B0B10041F5BF /* PreviewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6328307F26B2B0B10041F5BF /* PreviewController.swift */; };
 		6328308326B2BD750041F5BF /* SPPermissionsVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6328308226B2BD750041F5BF /* SPPermissionsVC.swift */; };
-		63298B90295ACDCF007D7FCB /* V2exAPI in Frameworks */ = {isa = PBXBuildFile; productRef = 63298B8F295ACDCF007D7FCB /* V2exAPI */; };
 		6359945527AE56F800CF4A93 /* MineApplyAnchorVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6359945427AE56F800CF4A93 /* MineApplyAnchorVC.swift */; };
 		6359945A27AE675B00CF4A93 /* MineApplyAnchorModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6359945927AE675B00CF4A93 /* MineApplyAnchorModel.swift */; };
 		6359945E27AE711400CF4A93 /* MineApplyAnchorData.json in Resources */ = {isa = PBXBuildFile; fileRef = 6359945D27AE711400CF4A93 /* MineApplyAnchorData.json */; };
@@ -745,7 +744,6 @@
 				63E5F3B428E56EAE00F6D7E8 /* AVFoundation.framework in Frameworks */,
 				63E5F3B328E56EAD00F6D7E8 /* Foundation.framework in Frameworks */,
 				63608E7527BFA9CA00760485 /* NotificationCenter.framework in Frameworks */,
-				63298B90295ACDCF007D7FCB /* V2exAPI in Frameworks */,
 				63E5F3B228E56EAC00F6D7E8 /* CoreFoundation.framework in Frameworks */,
 				63D615DD26AD13FA00CDBA38 /* VideoToolbox.framework in Frameworks */,
 				6328303226B1060F0041F5BF /* MetalKit.framework in Frameworks */,
@@ -1884,15 +1882,15 @@
 		63B9A0AC26B4F701004AC889 /* ZLPhotoBrowser */ = {
 			isa = PBXGroup;
 			children = (
-				63B9A0B026B4F74C004AC889 /* ImageCell.swift */,
-				63B9A0B226B4F74C004AC889 /* ImageStickerContainerView.swift */,
 				63B9A0AE26B4F74C004AC889 /* LanguagePickerView.swift */,
-				63B9A0AD26B4F74C004AC889 /* PhotoConfigureCNViewController.swift */,
-				63B9A0B126B4F74C004AC889 /* PhotoConfigureViewController.swift */,
-				63B9A0B326B4F74C004AC889 /* WeChatMomentDemoViewController.swift */,
 				63B9A0AF26B4F74C004AC889 /* ZLCustomFilter.swift */,
+				63B9A0B126B4F74C004AC889 /* PhotoConfigureViewController.swift */,
+				63B9A0AD26B4F74C004AC889 /* PhotoConfigureCNViewController.swift */,
+				63B9A0B326B4F74C004AC889 /* WeChatMomentDemoViewController.swift */,
 				63E5F3B528E5771400F6D7E8 /* CustomAlertController.swift */,
 				63E5F3B728E5783400F6D7E8 /* CustomAlertControllerTransitionAnimation.swift */,
+				63B9A0B226B4F74C004AC889 /* ImageStickerContainerView.swift */,
+				63B9A0B026B4F74C004AC889 /* ImageCell.swift */,
 			);
 			path = ZLPhotoBrowser;
 			sourceTree = "<group>";
@@ -2031,16 +2029,13 @@
 				63A66774269861B4009235A3 /* Frameworks */,
 				63A66775269861B4009235A3 /* Resources */,
 				51117437E369241073F0D9DC /* [CP] Embed Pods Frameworks */,
-				513DD71E3DDF5EAAFDF14019 /* [CP] Copy Pods Resources */,
+				AFAD0A0DE69C360359B9A09F /* [CP] Copy Pods Resources */,
 			);
 			buildRules = (
 			);
 			dependencies = (
 			);
 			name = 3332323;
-			packageProductDependencies = (
-				63298B8F295ACDCF007D7FCB /* V2exAPI */,
-			);
 			productName = 3332323;
 			productReference = 63A66777269861B4009235A3 /* 3332323.app */;
 			productType = "com.apple.product-type.application";
@@ -2072,9 +2067,6 @@
 				Base,
 			);
 			mainGroup = 63A6676E269861B4009235A3;
-			packageReferences = (
-				63298B8E295ACDCF007D7FCB /* XCRemoteSwiftPackageReference "V2exAPI" */,
-			);
 			productRefGroup = 63A66778269861B4009235A3 /* Products */;
 			projectDirPath = "";
 			projectRoot = "";
@@ -2208,7 +2200,7 @@
 			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-3332323/Pods-3332323-frameworks.sh\"\n";
 			showEnvVarsInLog = 0;
 		};
-		513DD71E3DDF5EAAFDF14019 /* [CP] Copy Pods Resources */ = {
+		AFAD0A0DE69C360359B9A09F /* [CP] Copy Pods Resources */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -2612,7 +2604,7 @@
 				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
-				DEVELOPMENT_TEAM = TYK6LPV78P;
+				DEVELOPMENT_TEAM = 4LG88DNYM4;
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
 					"\"${PODS_CONFIGURATION_BUILD_DIR}/LookinServer\"",
@@ -2637,7 +2629,7 @@
 				INFOPLIST_FILE = 3332323/Info.plist;
 				INFOPLIST_KEY_CFBundleDisplayName = "Swift Test";
 				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.developer-tools";
-				IPHONEOS_DEPLOYMENT_TARGET = 13.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 14.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -2665,7 +2657,7 @@
 				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
-				DEVELOPMENT_TEAM = TYK6LPV78P;
+				DEVELOPMENT_TEAM = 4LG88DNYM4;
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
 					"\"${PODS_CONFIGURATION_BUILD_DIR}/LookinServer\"",
@@ -2690,7 +2682,7 @@
 				INFOPLIST_FILE = 3332323/Info.plist;
 				INFOPLIST_KEY_CFBundleDisplayName = "Swift Test";
 				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.developer-tools";
-				IPHONEOS_DEPLOYMENT_TARGET = 13.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 14.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -2731,25 +2723,6 @@
 			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
-
-/* Begin XCRemoteSwiftPackageReference section */
-		63298B8E295ACDCF007D7FCB /* XCRemoteSwiftPackageReference "V2exAPI" */ = {
-			isa = XCRemoteSwiftPackageReference;
-			repositoryURL = "https://github.com/isaced/V2exAPI.git";
-			requirement = {
-				branch = main;
-				kind = branch;
-			};
-		};
-/* End XCRemoteSwiftPackageReference section */
-
-/* Begin XCSwiftPackageProductDependency section */
-		63298B8F295ACDCF007D7FCB /* V2exAPI */ = {
-			isa = XCSwiftPackageProductDependency;
-			package = 63298B8E295ACDCF007D7FCB /* XCRemoteSwiftPackageReference "V2exAPI" */;
-			productName = V2exAPI;
-		};
-/* End XCSwiftPackageProductDependency section */
 	};
 	rootObject = 63A6676F269861B4009235A3 /* Project object */;
 }

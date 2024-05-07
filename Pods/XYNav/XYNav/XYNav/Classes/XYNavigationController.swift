@@ -7,7 +7,7 @@
 
 import UIKit
 
-func warpNewPushVC(_ desVC: UIViewController, _ superNav: XYNavigationController) -> UIViewController {
+fileprivate func warpNewPushVC(_ desVC: UIViewController, _ superNav: XYNavigationController) -> UIViewController {
     if desVC is XYContentController { return desVC }
     
     let contVC = XYContentController()
@@ -23,7 +23,7 @@ func warpNewPushVC(_ desVC: UIViewController, _ superNav: XYNavigationController
     return contVC
 }
 
-func warpVC(_ desVC: UIViewController, _ superNav: XYNavigationController, isRootVC: Bool) -> UIViewController {
+fileprivate func warpVC(_ desVC: UIViewController, _ superNav: XYNavigationController, isRootVC: Bool) -> UIViewController {
     let newVC = warpNewPushVC(desVC, superNav)
     if isRootVC{
         return newVC
@@ -34,7 +34,7 @@ func warpVC(_ desVC: UIViewController, _ superNav: XYNavigationController, isRoo
     }
 }
 
-func unWarpNewPushVC(_ desVC: UIViewController, needResign: Bool) -> UIViewController {
+fileprivate func unWarpNewPushVC(_ desVC: UIViewController, needResign: Bool) -> UIViewController {
     if desVC is XYContentController, let contentVC = desVC as? XYContentController {
         let resultVC = contentVC.contentVc
         if needResign {
@@ -47,8 +47,8 @@ func unWarpNewPushVC(_ desVC: UIViewController, needResign: Bool) -> UIViewContr
     return desVC
 }
 
-var backImage: UIImage? = nil
-func getBackImage() -> UIImage {
+fileprivate var backImage: UIImage? = nil
+fileprivate func getBackImage() -> UIImage {
     
     if backImage != nil {
         return backImage!
@@ -71,20 +71,26 @@ func getBackImage() -> UIImage {
     return image ?? UIImage()
 }
 
-open
-class XYNavigationController: UINavigationController {
+public class XYNavigationController: UINavigationController {
     
-    // MARK: - open vars
+    // MARK: - public vars
     var panGesture: UIPanGestureRecognizer?
+    private var tempViewControllers: [UIViewController] = []
+    private var recentInteractionPopedViewController: UIViewController?
+    public typealias PanGesturePopCallback = (_ popedViewController: UIViewController)->()
+    public typealias GlobalPopCallback = (_ popedViewControllers: [UIViewController], _ isGesture: Bool)->()
+    private static var panGestureEndCallbacks: [PanGesturePopCallback] = []
+    private static var popViewControllerCallbacks: [GlobalPopCallback] = []
     
     // MARK: - life circle
-    open override func viewDidLoad() {
+    public override func viewDidLoad() {
         super.viewDidLoad()
         
         super.interactivePopGestureRecognizer?.isEnabled = false
         panGesture = UIPanGestureRecognizer(target: super.interactivePopGestureRecognizer?.delegate, action: Selector(("handleNavigationTransition:")))
         panGesture!.delegate = self
         view.addGestureRecognizer(panGesture!)
+        self.delegate = self
         
         navigationBar.isHidden = true
     }
@@ -109,13 +115,14 @@ class XYNavigationController: UINavigationController {
     }
     
     // MARK: - push & pop
-    open override func pushViewController(_ viewController: UIViewController, animated: Bool) {
+    public override func pushViewController(_ viewController: UIViewController, animated: Bool) {
         var currentVCs = viewControllers
         currentVCs.append(viewController)
         setViewControllers(currentVCs, animated: animated)
     }
     
-    open override func popViewController(animated: Bool) -> UIViewController? {
+    public override func popViewController(animated: Bool) -> UIViewController? {
+        self.tempViewControllers = viewControllers
         let popVC = super.popViewController(animated: animated)
         if let resultVC = popVC as? XYContentController {
             return unWarpNewPushVC(resultVC, needResign: false)
@@ -123,8 +130,8 @@ class XYNavigationController: UINavigationController {
         return nil
     }
     
-    open override func popToViewController(_ viewController: UIViewController, animated: Bool) -> [UIViewController]? {
-        
+    public override func popToViewController(_ viewController: UIViewController, animated: Bool) -> [UIViewController]? {
+        self.tempViewControllers = viewControllers
         if self.viewControllers.contains(viewController) == true { // 在自己vc栈中执行
             let oldSelfViewControllers = self.viewControllers
             
@@ -153,7 +160,7 @@ class XYNavigationController: UINavigationController {
         return nil
     }
     
-    open override func popToRootViewController(animated: Bool) -> [UIViewController]? {
+    public override func popToRootViewController(animated: Bool) -> [UIViewController]? {
         if self.viewControllers.isEmpty {
             return nil
         }
@@ -171,7 +178,7 @@ class XYNavigationController: UINavigationController {
         }
         return vc
     }
-    open override func setViewControllers(_ viewControllers: [UIViewController], animated: Bool) {
+    public override func setViewControllers(_ viewControllers: [UIViewController], animated: Bool) {
         var warpedVCs: [UIViewController] = []
         let currentVCs = super.viewControllers
         for vc in viewControllers {
@@ -181,7 +188,7 @@ class XYNavigationController: UINavigationController {
         super.setViewControllers(warpedVCs, animated: animated)
     }
     
-    open override var viewControllers: [UIViewController]{
+    public override var viewControllers: [UIViewController]{
         set{
             var warpedVCs: [UIViewController] = []
             let currentVCs = super.viewControllers
@@ -202,7 +209,7 @@ class XYNavigationController: UINavigationController {
     }
     
     // MARK: - visibleViewController/topViewController
-    open override var visibleViewController: UIViewController?{
+    public override var visibleViewController: UIViewController?{
         let visibelVC = super.visibleViewController
         if let contentVC = visibelVC as? XYContentController{
             return contentVC.contentVc
@@ -210,15 +217,79 @@ class XYNavigationController: UINavigationController {
             return visibelVC
         }
     }
-}
-
-extension XYNavigationController {
+    
+    public override var preferredStatusBarStyle: UIStatusBarStyle {
+        if let vc = topViewController {
+            return vc.preferredStatusBarStyle
+        }
+        return .default
+    }
     
     /// XYNav 自定义返回 pop 事件
     /// - Returns: 返回最顶部的 viewController
     @objc func popByDefaultAction() -> UIViewController? {
         return self.popViewController(animated: true)
     }
+}
+
+// MARK: -  拓展一些用户可全局调整的方法
+extension XYNavigationController {
+    
+    static var showClassNameInNavBar: Bool = false
+    static var navBarDefaultColor: UIColor?
+    
+    /// 设置全局返回按钮图标, 默认是 左箭头 <
+    /// - Parameter image: 自定义图片
+    @objc static public func setDefaultBackImage(_ image: UIImage) {
+        let image = image.withRenderingMode(.alwaysOriginal)
+        backImage = image
+    }
+    
+    /// 是否在导航栏展示当前 VC 的类名称
+    /// - Parameter show: 默认不展示
+    /// - Note: 这是一个 DEBUG 环境下特性,  即使设置为展示, 也只在 DEBUG 环境下生效
+    @objc static public func showClassNameByDefault(_ show: Bool = false) {
+        showClassNameInNavBar = show
+    }
+    
+    /// 设置全局的导航栏颜色
+    /// - Parameter barColor: 导航栏本身颜色
+    /// - Note: 此属性设置之后会影响导航栏透明效果, 导航栏会变味不透明
+    @objc static public func setDefaultBarColor(_ barColor: UIColor) {
+        navBarDefaultColor = barColor
+    }
+    
+    /// 对全局导航栏设置几个全局默认效果
+    /// - Parameters:
+    ///   - backImage: 导航栏返回按钮图标, 默认是 <
+    ///   - showClassNameInNavbar: 是否在导航栏展示当前类的名称
+    ///   - navBarTintColor: 导航栏的全局背景色
+    @objc static public func nav_setGlobal(backBtnImage: UIImage? = nil,
+                                           showClassNameInNavbar: Bool = false,
+                                           navBarTintColor: UIColor? = nil) {
+        if let backBtnImage = backBtnImage {
+            backImage = backBtnImage
+        }
+        
+        showClassNameByDefault(showClassNameInNavbar)
+        
+        if let navBarTintColor = navBarTintColor {
+            setDefaultBarColor(navBarTintColor)
+        }
+    }
+    
+    /// 添加全局侧滑返回手势结束的监听
+    /// - Parameter callback: 回调, 参数为当前被侧滑返回的 viewController
+    @objc static public func addPanGestureEndCallback(callback: @escaping PanGesturePopCallback) {
+        panGestureEndCallbacks.append(callback)
+    }
+    
+    /// 添加全局 pop 监听, 当有 viewController 被 pop 之后回调, 触发条件包含点击返回按钮 & 侧滑手势返回
+    /// - Parameter callback: 回调, 参数为当前被 pop 的 viewController
+    @objc static public func addPopCallback(callback: @escaping GlobalPopCallback) {
+        popViewControllerCallbacks.append(callback)
+    }
+    
 }
 
 extension XYNavigationController : UIGestureRecognizerDelegate{
@@ -230,6 +301,7 @@ extension XYNavigationController : UIGestureRecognizerDelegate{
             
             let point = gestureRecognizer.location(in: gestureRecognizer.view)
             if point.x < (UIScreen.main.bounds.width * self.viewControllers.last!.xy_popGestureRatio) && self.viewControllers.last!.xy_isPopGestureEnable {
+                self.tempViewControllers = viewControllers
                 return true
             }
             return false
@@ -239,62 +311,63 @@ extension XYNavigationController : UIGestureRecognizerDelegate{
     }
 }
 
-extension UIViewController {
+extension XYNavigationController {
     
-    fileprivate struct AssociatedKeys {
-        static var isPopGestureEnable: String = "isPopGestureEnable"
-        static var popGestureRatio: String = "popGestureRatio"
-        static var customNavBarClass: String = "customNavBarClass"
-    }
-    
-    // MARK: - 是否启用侧滑返回功能
-    /// 默认支持侧滑返回功能
-    @objc public var xy_isPopGestureEnable: Bool {
-        set{
-            objc_setAssociatedObject(self, &AssociatedKeys.isPopGestureEnable, newValue, .OBJC_ASSOCIATION_RETAIN_NONATOMIC)
-        }
+    public override var tabBarItem: UITabBarItem! {
+        set{}
         get{
-            guard let isPopGestureEnable = objc_getAssociatedObject(self, &AssociatedKeys.isPopGestureEnable) as? Bool else {
-                return true
-            }
-            return isPopGestureEnable
-        }
-    }
-    
-    /// 支持侧滑返回的比例 0~1
-    @objc public var xy_popGestureRatio: CGFloat {
-        set{
-            objc_setAssociatedObject(self, &AssociatedKeys.popGestureRatio, newValue, .OBJC_ASSOCIATION_RETAIN_NONATOMIC)
-        }
-        get{
-            guard let popGestureRatio = objc_getAssociatedObject(self, &AssociatedKeys.popGestureRatio) as? CGFloat else {
-                return 0.1
-            }
-            return popGestureRatio
-        }
-    }
-    
-    /// 设置自定义类型的导航栏
-    ///
-    /// 必须在调用 push方法之前进行设置。默认使用 UINavigationBar
-    @objc public var xy_customNavBarClass: AnyClass {
-        set{
-            objc_setAssociatedObject(self, &AssociatedKeys.customNavBarClass, newValue, .OBJC_ASSOCIATION_RETAIN_NONATOMIC)
-        }
-        get{
-            guard let customNavBarClass = objc_getAssociatedObject(self, &AssociatedKeys.customNavBarClass) as? AnyClass else {
-                return XYNavBar.self
-            }
-            return customNavBarClass
+            self.viewControllers.first?.tabBarItem
         }
     }
 }
 
-func getImageWithColor(_ color: UIColor) -> UIImage {
-    UIGraphicsBeginImageContextWithOptions(CGSize(width: 1, height: 1), false, 0)
-    let ctx = UIGraphicsGetCurrentContext()
-    ctx?.setFillColor(color.cgColor)
-    ctx?.fill(CGRect(x: 0, y: 0, width: 1, height: 1))
-    let image = UIGraphicsGetImageFromCurrentImageContext()
-    return image ?? UIImage()
+extension XYNavigationController: UINavigationControllerDelegate {
+    public func navigationController(_ navigationController: UINavigationController, willShow viewController: UIViewController, animated: Bool) {
+        if #available(iOS 10.0, *) {
+            let beforeControllers = self.tempViewControllers
+            viewController.transitionCoordinator?.notifyWhenInteractionChanges({ context in
+                if context.isCancelled { return }
+                let afterControllers = self.viewControllers
+                if beforeControllers.count > afterControllers.count, let poped = beforeControllers.last { // pop last
+                    DispatchQueue.main.async {
+                        NotificationCenter.default.post(name: NSNotification.Name.XYNavGesturePopNotification, object: poped)
+                        XYNavigationController.panGestureEndCallbacks.forEach({$0(poped)})
+                        
+                        self.recentInteractionPopedViewController = poped
+                        XYNavigationController.popViewControllerCallbacks.forEach({$0([poped], true)})
+                    }
+                }
+            })
+        } else {
+            // Fallback on earlier versions
+        }
+    }
+    
+    public func navigationController(_ navigationController: UINavigationController, didShow viewController: UIViewController, animated: Bool) {
+        
+        let beforeControllers = self.tempViewControllers
+        let afterControllers = self.viewControllers
+        if beforeControllers.count > afterControllers.count, let poped_last = beforeControllers.last { // pop last
+            let popdCount = beforeControllers.count - afterControllers.count
+            if popdCount == 1, let rctVC = recentInteractionPopedViewController {
+                DispatchQueue.main.async {
+                    if rctVC != poped_last {
+                        XYNavigationController.popViewControllerCallbacks.forEach({$0([poped_last], false)})
+                    } else {
+                        self.recentInteractionPopedViewController = nil
+                    }
+                }
+            } else {
+                let popedControllers: Array<UIViewController> = .init(beforeControllers.dropFirst(afterControllers.count))
+                DispatchQueue.main.async {
+                    XYNavigationController.popViewControllerCallbacks.forEach({$0(popedControllers, false)})
+                }
+            }
+        }
+        self.tempViewControllers = []
+    }
+}
+
+extension NSNotification.Name {
+    public static let XYNavGesturePopNotification = NSNotification.Name("XYNavGesturePopNotification")
 }

@@ -118,10 +118,9 @@ class CacheLastDataViewController: SportBaseVC {
         DaisyNet.openResultLog = true
         /// 20s过期
         DaisyNet.cacheExpiryConfig(expiry: DaisyExpiry.seconds(20))
-        /// 10s超时
-        DaisyNet.timeoutIntervalForRequest(10)
-
-        DaisyNet.request(urlStr, params: params).cache(true).responseCacheAndString(queue: .main) { value in
+//        /// 10s超时
+//        DaisyNet.timeoutIntervalForRequest(10)
+        DaisyNet.request(urlStr, params: params).cache(true).responseCacheAndString { value in
             switch value.result {
             case .success(let string):
                 print(Thread.current)
@@ -135,6 +134,20 @@ class CacheLastDataViewController: SportBaseVC {
                 print(error)
             }
         }
+//        DaisyNet.request(urlStr, params: params).cache(true).responseCacheAndString(queue: .main) { value in
+//            switch value.result {
+//            case .success(let string):
+//                print(Thread.current)
+//                if value.isCacheData {
+//                    self.cacheTextView.text = string
+//                } else {
+//                    self.textView.text = string
+//                }
+//
+//            case .failure(let error):
+//                print(error)
+//            }
+//        }
     }
     
     func clearCache(_ sender: UIBarButtonItem) {

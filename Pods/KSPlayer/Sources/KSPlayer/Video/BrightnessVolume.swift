@@ -7,14 +7,15 @@
 #if canImport(UIKit)
 import UIKit
 
+@MainActor
 open class BrightnessVolume {
     private var brightnessObservation: NSKeyValueObservation?
     public static let shared = BrightnessVolume()
     public var progressView: BrightnessVolumeViewProtocol & UIView = ProgressView()
     init() {
-        #if !os(tvOS)
+        #if !os(tvOS) && !os(xrOS)
         brightnessObservation = UIScreen.main.observe(\.brightness, options: .new) { [weak self] _, change in
-            if let self = self, let value = change.newValue {
+            if let self, let value = change.newValue {
                 self.appearView()
                 self.progressView.setProgress(Float(value), type: 0)
             }
@@ -70,8 +71,8 @@ private final class SystemView: UIVisualEffectView {
     private let stackView = UIStackView()
     private let imageView = UIImageView()
     private let titleLabel = UILabel()
-    private lazy var brightnessImage = KSPlayerManager.image(named: "KSPlayer_brightness")
-    private lazy var volumeImage = KSPlayerManager.image(named: "KSPlayer_volume")
+    private lazy var brightnessImage = UIImage(systemName: "sun.max")
+    private lazy var volumeImage = UIImage(systemName: "speaker.wave.3.fill")
     private convenience init() {
         self.init(effect: UIBlurEffect(style: .extraLight))
         clipsToBounds = true
@@ -162,10 +163,10 @@ extension SystemView: BrightnessVolumeViewProtocol {
 }
 
 private final class ProgressView: UIView {
-    private lazy var brightnessImage = KSPlayerManager.image(named: "ic_light")
-    private lazy var volumeImage = KSPlayerManager.image(named: "ic_voice")
-    private lazy var brightnessOffImage = KSPlayerManager.image(named: "ic_light_off")
-    private lazy var volumeOffImage = KSPlayerManager.image(named: "ic_voice_off")
+    private lazy var brightnessImage = UIImage(systemName: "sun.max")
+    private lazy var volumeImage = UIImage(systemName: "speaker.fill")
+    private lazy var brightnessOffImage = UIImage(systemName: "sun.min")
+    private lazy var volumeOffImage = UIImage(systemName: "speaker.slash.fill")
     private let progressView = UIProgressView()
     private let imageView = UIImageView()
 
