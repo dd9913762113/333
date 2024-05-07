@@ -23,7 +23,8 @@ class ImageCollectionsVC: SportBaseVC {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        
+        self.view.backgroundColor = UIColor.white
+
         self.getHeadData()
         self.getHttpData()
        

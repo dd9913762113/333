@@ -42,7 +42,7 @@ class MainVC: UIViewController,  UITableViewDelegate, UITableViewDataSource {
     override func viewDidLoad() {
         super.viewDidLoad()
 //        self.navigationController?.navigationBar.isHidden = true
-
+        self.view.backgroundColor = UIColor.white
         self.array = ["DownLoad", "SwiftDate 时间测试", "collectionview", "TVListVC",
                       "天女散花", "各种权限", "图片选择器",
                       "图文发布", "申请主播", "JitsiMeet 音视频在线会议",

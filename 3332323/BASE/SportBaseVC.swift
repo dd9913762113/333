@@ -20,8 +20,9 @@ public class SportBaseVC: UIViewController {
     }
     public override func viewDidLoad() {
         super.viewDidLoad()
-        view.backgroundColor = .white
-        
+//        view.backgroundColor = .white
+        self.view.backgroundColor = UIColor.white
+
 //        self.navigationItem.leftBarButtonItem = UIBarButtonItem(image: UIImage(named: "top_back"), style: .plain, target: self, action: #selector(back))
         
  

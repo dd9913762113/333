@@ -38,6 +38,7 @@ class DK_LottieTest: SportBaseVC {
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        self.view.backgroundColor = UIColor.white
         self.view.addSubview(anminationView)
         
         anminationView.snp.makeConstraints { make in
